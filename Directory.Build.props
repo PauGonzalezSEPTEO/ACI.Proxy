@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>10</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Authors>Pablo González Velasco</Authors>
+    <Copyright>Copyright © ACI 2024</Copyright>
+    <Version>1.2.1</Version>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)ACI.Base.ruleset</CodeAnalysisRuleSet>
+ </PropertyGroup>
+</Project>

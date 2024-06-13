@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="scrollable-box">
+                <ng-select class="form-select form-select-solid form-select-lg" [items]="languages"
+                    [(ngModel)]="selectedLanguage" bindLabel="name" bindValue="code" (change)="changeLanguage($event)"
+                    appendTo=".scrollable-box"
+                    placeholder="{{ 'LANGUAGES.SELECT_A_LANGUAGE_FOR_TRANSLATIONS' | translate }}">
+                    <ng-template ng-label-tmp let-item="item">
+                        <span class="symbol symbol-20px me-4">
+                            <img alt="metronic" class="rounded-1" [src]="item.flag">
+                        </span>
+                        {{item.name}}
+                    </ng-template>
+                </ng-select>
+            </div>
+        </div>
+        <div class="col-4">
+            <button [hidden]="!hasTranslations || isReadOnly" type="button" class="btn btn-secondary" (click)="removeTranslations()">
+                {{ 'LANGUAGES.REMOVE_TRANSLATIONS' | translate }}
+            </button>
+        </div>
+    </div>

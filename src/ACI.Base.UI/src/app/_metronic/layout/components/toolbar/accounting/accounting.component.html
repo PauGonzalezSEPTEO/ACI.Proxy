@@ -1,0 +1,84 @@
+<!--begin::Input group-->
+<div class="d-flex align-items-center flex-shrink-0">
+  <!--begin::Label-->
+  <span class="fs-7 text-gray-700 fw-bold pe-3 d-none d-md-block" [translate]="'TOOLBAR.ACCOUNTING.ACTIONS'"></span>
+  <!--end::Label-->
+
+  <!--begin::Actions-->
+  <div class="d-flex flex-shrink-0">
+    <!--begin::Button-->
+    <div data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="{{ 'TOOLBAR.ACCOUNTING.ADD_A_TEAM_MEMBER' | translate }}">
+      <a href="#" class="btn btn-sm btn-icon btn-active-color-success">
+        <app-keenicon name="plus-square" class="fs-2x"></app-keenicon>
+      </a>
+    </div>
+    <!--end::Button-->
+
+    <!--begin::Button-->
+    <div data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="{{ 'TOOLBAR.ACCOUNTING.CREATE_NEW_ACCOUNT' | translate }}">
+      <a href="#" class="btn btn-sm btn-icon btn-active-color-success">
+        <app-keenicon name="gen037.svg" class="fs-2x"></app-keenicon>
+      </a>
+    </div>
+    <!--end::Button-->
+
+    <!--begin::Button-->
+    <div data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="{{ 'TOOLBAR.ACCOUNTING.INVITE_FRIENDS' | translate }}">
+      <a href="#" class="btn btn-sm btn-icon btn-active-color-success">
+        <app-keenicon name="dots-square" class="fs-2x"></app-keenicon>
+      </a>
+    </div>
+    <!--end::Button-->
+  </div>
+  <!--end::Actions-->
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="d-flex align-items-center flex-shrink-0">
+  <!--begin::Desktop separartor-->
+  <div class="bullet bg-secondary h-35px w-1px mx-5"></div>
+  <!--end::Desktop separartor-->
+
+  <!--begin::Label-->
+  <span class="fs-7 text-gray-700 fw-bold pe-4 ps-1 d-none d-md-block" [translate]="'TOOLBAR.ACCOUNTING.PROGRESS'"></span>
+  <!--end::Label-->
+
+  <div class="progress w-100px w-xl-150px w-xxl-300px h-25px bg-light-success">
+    <div class="progress-bar rounded bg-success fs-7 fw-bold" role="progressbar" style="width: 72%;" aria-valuenow="72"
+      aria-valuemin="0" aria-valuemax="100">72%</div>
+  </div>
+</div>
+<!--end::Input group-->
+<!--end::Toolbar start-->
+
+<!--begin::Toolbar end-->
+<div class="d-flex align-items-center">
+  <!--begin::Input group-->
+  <div class="me-3">
+    <!--begin::Select-->
+    <select class="form-select form-select-sm form-select-solid" data-control="select2" data-placeholder="Latest"
+      data-hide-search="true">
+      <option value=""></option>
+      <option value="1" selected  [translate]="'TOOLBAR.ACCOUNTING.TODAY_16_FEB'"></option>
+      <option value="2" [translate]="'TOOLBAR.ACCOUNTING.IN_PROGRESS'"></option>
+      <option value="3" [translate]="'TOOLBAR.ACCOUNTING.DONE'"></option>
+    </select>
+    <!--end::Select-->
+  </div>
+  <!--end::Input group--->
+
+  <!--begin::Input group--->
+  <div class="m-0">
+    <!--begin::Select-->
+    <select class="form-select form-select-sm form-select-solid w-md-125px" data-control="select2"
+      data-hide-search="true">
+      <option value=""></option>
+      <option value="1" selected [translate]="'TOOLBAR.ACCOUNTING.FILTERS'"></option>
+      <option value="2" [translate]="'TOOLBAR.ACCOUNTING.IN_PROGRESS'"></option>
+      <option value="3" [translate]="'TOOLBAR.ACCOUNTING.DONE'"></option>
+    </select>
+    <!--end::Content-->
+  </div>
+  <!--end::Input group--->
+</div>

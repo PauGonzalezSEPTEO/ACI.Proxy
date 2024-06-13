@@ -1,0 +1,20 @@
+<form class="form w-100" novalidate="novalidate">
+  <!--begin::Heading-->
+  <div class="text-center mb-11">
+    <!--begin::Title-->
+    <h1 class="text-dark fw-bolder mb-3" [translate]="'AUTH.CHANGE_EMAIL.CHANGE_EMAIL'">
+    </h1>
+    <!--end::Title-->
+  </div>
+  <!--end::Heading-->
+</form>
+<!-- begin::Alert error-->
+<ng-container *ngIf="hasError">
+  <div class="mb-lg-15 alert alert-danger">
+    <div class="alert-text font-weight-bold"
+         [translate]="'AUTH.CHANGE_EMAIL.THE_CHANGE_EMAIL_DETAILS_ARE_INCORRECT'">
+    </div>
+    <span [innerHTML]="errorMessage"></span>
+  </div>
+</ng-container>
+<!-- end::Alert error-->

@@ -1,0 +1,430 @@
+<div class="card mb-5 mb-xl-10">
+  <div title="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.PROFILE_DETAILS' | translate }}" class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+    <div class="card-title m-0">
+      <h3 class="fw-bolder m-0" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.PROFILE_DETAILS'"></h3>
+    </div>
+  </div>
+  <div id="kt_account_profile_details" class="collapse show">
+    <!-- begin::Alert error-->
+    <ng-container *ngIf="hasError">
+      <div class="mb-lg-15 alert alert-danger">
+        <div class="alert-text font-weight-bold" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.THE_PROFILE_DETAILS_ARE_INCORRECT'">
+        </div>
+        <span [innerHTML]="errorMessage"></span>
+      </div>
+    </ng-container>
+    <!-- end::Alert error-->
+    <form novalidate="" class="form" [formGroup]="profileDetailsForm">
+      <div class="card-body border-top p-9">
+        <div class="row mb-6">
+          <label id="avatar-label" for="avatar" class="col-lg-4 col-form-label fw-bold fs-6" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.AVATAR'"></label>
+          <app-avatar name="avatar" formControlName="avatar"></app-avatar>
+        </div>
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label required fw-bold fs-6" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.FULL_NAME'"></label>
+          <div class="col-lg-8">
+            <div class="row">
+              <div class="col-lg-6 fv-row">
+                <input type="text" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" name="firstname" formControlName="firstname"
+                        placeholder="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.FIRSTNAME' | translate }}" autocomplete="off" [ngClass]="{
+                  'is-invalid': profileDetailsForm.controls['firstname'].invalid,
+                  'is-valid': profileDetailsForm.controls['firstname'].valid
+                }" />
+                <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'required',
+                  message: 'FIRSTNAME_IS_REQUIRED',
+                  control: profileDetailsForm.controls['firstname']
+                }"></ng-container>
+                <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'minlength',
+                  message: 'FIRSTNAME_SHOULD_HAVE_AT_LEAST_2_CHARACTERS',
+                  control: profileDetailsForm.controls['firstname']
+                }"></ng-container>
+                <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'maxLength',
+                  message: 'FIRSTNAME_SHOULD_HAVE_MAXIMUM_256_CHARACTERS',
+                  control: profileDetailsForm.controls['firstname']
+                }"></ng-container>
+              </div>
+              <div class="col-lg-6 fv-row">
+                <input type="text" class="form-control form-control-lg form-control-solid" name="lastname" formControlName="lastname"
+                        placeholder="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.LASTNAME' | translate }}" autocomplete="off" [ngClass]="{
+                  'is-invalid': profileDetailsForm.controls['lastname'].invalid,
+                  'is-valid': profileDetailsForm.controls['lastname'].valid
+                }" />
+                <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'required',
+                  message: 'LASTNAME_IS_REQUIRED',
+                  control: profileDetailsForm.controls['lastname']
+                }"></ng-container>
+                <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'minlength',
+                  message: 'LASTNAME_SHOULD_HAVE_AT_LEAST_2_CHARACTERS',
+                  control: profileDetailsForm.controls['lastname']
+                }"></ng-container>
+                <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'maxLength',
+                  message: 'LASTNAME_SHOULD_HAVE_MAXIMUM_256_CHARACTERS',
+                  control: profileDetailsForm.controls['lastname']
+                }"></ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label fw-bold fs-6" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.COMPANY'"></label>
+          <div class="col-lg-8 fv-row">
+            <input type="text" class="form-control form-control-lg form-control-solid" name="companyName" formControlName="companyName"
+                    placeholder="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.COMPANY_NAME' | translate }}" [ngClass]="{
+                  'is-invalid': profileDetailsForm.controls['companyName'].invalid,
+                  'is-valid': profileDetailsForm.controls['companyName'].valid
+                }" />
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'minlength',
+                  message: 'COMPANY_NAME_SHOULD_HAVE_AT_LEAST_4_CHARACTERS',
+                  control: profileDetailsForm.controls['companyName']
+                }"></ng-container>
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'maxLength',
+                  message: 'COMPANY_NAME_SHOULD_HAVE_MAXIMUM_15_CHARACTERS',
+                  control: profileDetailsForm.controls['companyName']
+                }"></ng-container>
+          </div>
+        </div>
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label fw-bold fs-6"><span [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.CONTACT_PHONE'"></span></label>
+          <div class="col-lg-8 fv-row">
+            <input type="tel" class="form-control form-control-lg form-control-solid" name="phoneNumber" formControlName="phoneNumber"
+                    placeholder="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.PHONE_NUMBER' | translate }}" autocomplete="off" [ngClass]="{
+                  'is-invalid': profileDetailsForm.controls['phoneNumber'].invalid,
+                  'is-valid': profileDetailsForm.controls['phoneNumber'].valid
+                }" />
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'minlength',
+                  message: 'PHONE_NUMBER_SHOULD_HAVE_AT_LEAST_4_CHARACTERS',
+                  control: profileDetailsForm.controls['phoneNumber']
+                }"></ng-container>
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                  validation: 'maxLength',
+                  message: 'PHONE_NUMBER_SHOULD_HAVE_MAXIMUM_15_CHARACTERS',
+                  control: profileDetailsForm.controls['phoneNumber']
+                }"></ng-container>
+          </div>
+        </div>
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label fw-bold fs-6"><span [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.COUNTRY'"></span></label>
+          <div class="col-lg-8 fv-row">
+            <select title="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.COUNTRY' | translate }}" class="form-select form-select-solid form-select-lg fw-bold" name="countryAlpha2Code" formControlName="countryAlpha2Code">
+              <option value="" [translate]="'COUNTRIES.SELECT_A_COUNTRY'"></option>
+              <option value="AG" [translate]="'COUNTRIES.ANTIGUA_AND_BARBUDA'"></option>
+              <option value="AR" [translate]="'COUNTRIES.ARGENTINA'"></option>
+              <option value="AM" [translate]="'COUNTRIES.ARMENIA'"></option>
+              <option value="AW" [translate]="'COUNTRIES.ARUBA'"></option>
+              <option value="AU" [translate]="'COUNTRIES.AUSTRALIA'"></option>
+              <option value="AT" [translate]="'COUNTRIES.AUSTRIA'"></option>
+              <option value="AZ" [translate]="'COUNTRIES.AZERBAIJAN'"></option>
+              <option value="BS" [translate]="'COUNTRIES.BAHAMAS'"></option>
+              <option value="BH" [translate]="'COUNTRIES.BAHRAIN'"></option>
+              <option value="BD" [translate]="'COUNTRIES.BANGLADESH'"></option>
+              <option value="BB" [translate]="'COUNTRIES.BARBADOS'"></option>
+              <option value="BY" [translate]="'COUNTRIES.BELARUS'"></option>
+              <option value="BE" [translate]="'COUNTRIES.BELGIUM'"></option>
+              <option value="BZ" [translate]="'COUNTRIES.BELIZE'"></option>
+              <option value="BJ" [translate]="'COUNTRIES.BENIN'"></option>
+              <option value="BM" [translate]="'COUNTRIES.BERMUDA'"></option>
+              <option value="BT" [translate]="'COUNTRIES.BHUTAN'"></option>
+              <option value="BO" [translate]="'COUNTRIES.BOLIVIA_PLURINATIONAL_STATE_OF'"></option>
+              <option value="BA" [translate]="'COUNTRIES.BOSNIA_AND_HERZEGOVINA'"></option>
+              <option value="BW" [translate]="'COUNTRIES.BOTSWANA'"></option>
+              <option value="BR" [translate]="'COUNTRIES.BRAZIL'"></option>
+              <option value="IO" [translate]="'COUNTRIES.BRITISH_INDIAN_OCEAN_TERRITORY'"></option>
+              <option value="BN" [translate]="'COUNTRIES.BRUNEI_DARUSSALAM'"></option>
+              <option value="BG" [translate]="'COUNTRIES.BULGARIA'"></option>
+              <option value="BF" [translate]="'COUNTRIES.BURKINA_FASO'"></option>
+              <option value="BI" [translate]="'COUNTRIES.BURUNDI'"></option>
+              <option value="KH" [translate]="'COUNTRIES.CAMBODIA'"></option>
+              <option value="CM" [translate]="'COUNTRIES.CAMEROON'"></option>
+              <option value="CA" [translate]="'COUNTRIES.CANADA'"></option>
+              <option value="CV" [translate]="'COUNTRIES.CAPE_VERDE'"></option>
+              <option value="KY" [translate]="'COUNTRIES.CAYMAN_ISLANDS'"></option>
+              <option value="CF" [translate]="'COUNTRIES.CENTRAL_AFRICAN_REPUBLIC'"></option>
+              <option value="TD" [translate]="'COUNTRIES.CHAD'"></option>
+              <option value="CL" [translate]="'COUNTRIES.CHILE'"></option>
+              <option value="CN" [translate]="'COUNTRIES.CHINA'"></option>
+              <option value="CX" [translate]="'COUNTRIES.CHRISTMAS_ISLAND'"></option>
+              <option value="CC" [translate]="'COUNTRIES.COCOS_KEELING_ISLANDS'"></option>
+              <option value="CO" [translate]="'COUNTRIES.COLOMBIA'"></option>
+              <option value="KM" [translate]="'COUNTRIES.COMOROS'"></option>
+              <option value="CG" [translate]="'COUNTRIES.CONGO'"></option>
+              <option value="CD" [translate]="'COUNTRIES.CONGO_DEMOCRATIC_REPUBLIC_OF_THE'"></option>
+              <option value="CK" [translate]="'COUNTRIES.COOK_ISLANDS'"></option>
+              <option value="CR" [translate]="'COUNTRIES.COSTA_RICA'"></option>
+              <option value="CI" [translate]="'COUNTRIES.COTE_DIVOIRE'"></option>
+              <option value="HR" [translate]="'COUNTRIES.CROATIA'"></option>
+              <option value="CU" [translate]="'COUNTRIES.CUBA'"></option>
+              <option value="CW" [translate]="'COUNTRIES.CURACAO'"></option>
+              <option value="CY" [translate]="'COUNTRIES.CYPRUS'"></option>
+              <option value="CZ" [translate]="'COUNTRIES.CZECH_REPUBLIC'"></option>
+              <option value="DK" [translate]="'COUNTRIES.DENMARK'"></option>
+              <option value="DJ" [translate]="'COUNTRIES.DJIBOUTI'"></option>
+              <option value="DM" [translate]="'COUNTRIES.DOMINICA'"></option>
+              <option value="DO" [translate]="'COUNTRIES.DOMINICAN_REPUBLIC'"></option>
+              <option value="EC" [translate]="'COUNTRIES.ECUADOR'"></option>
+              <option value="EG" [translate]="'COUNTRIES.EGYPT'"></option>
+              <option value="SV" [translate]="'COUNTRIES.EL_SALVADOR'"></option>
+              <option value="GQ" [translate]="'COUNTRIES.EQUATORIAL_GUINEA'"></option>
+              <option value="ER" [translate]="'COUNTRIES.ERITREA'"></option>
+              <option value="EE" [translate]="'COUNTRIES.ESTONIA'"></option>
+              <option value="ET" [translate]="'COUNTRIES.ETHIOPIA'"></option>
+              <option value="FK" [translate]="'COUNTRIES.FALKLAND_ISLANDS_MALVINAS'"></option>
+              <option value="FO" [translate]="'COUNTRIES.FAROE_ISLANDS'"></option>
+              <option value="FJ" [translate]="'COUNTRIES.FIJI'"></option>
+              <option value="FI" [translate]="'COUNTRIES.FINLAND'"></option>
+              <option value="FR" [translate]="'COUNTRIES.FRANCE'"></option>
+              <option value="GF" [translate]="'COUNTRIES.FRENCH_GUIANA'"></option>
+              <option value="PF" [translate]="'COUNTRIES.FRENCH_POLYNESIA'"></option>
+              <option value="TF" [translate]="'COUNTRIES.FRENCH_SOUTHERN_TERRITORIES'"></option>
+              <option value="GA" [translate]="'COUNTRIES.GABON'"></option>
+              <option value="GM" [translate]="'COUNTRIES.GAMBIA'"></option>
+              <option value="GE" [translate]="'COUNTRIES.GEORGIA'"></option>
+              <option value="DE" [translate]="'COUNTRIES.GERMANY'"></option>
+              <option value="GH" [translate]="'COUNTRIES.GHANA'"></option>
+              <option value="GI" [translate]="'COUNTRIES.GIBRALTAR'"></option>
+              <option value="GR" [translate]="'COUNTRIES.GREECE'"></option>
+              <option value="GL" [translate]="'COUNTRIES.GREENLAND'"></option>
+              <option value="GD" [translate]="'COUNTRIES.GRENADA'"></option>
+              <option value="GP" [translate]="'COUNTRIES.GUADELOUPE'"></option>
+              <option value="GU" [translate]="'COUNTRIES.GUAM'"></option>
+              <option value="GT" [translate]="'COUNTRIES.GUATEMALA'"></option>
+              <option value="GG" [translate]="'COUNTRIES.GUERNSEY'"></option>
+              <option value="GN" [translate]="'COUNTRIES.GUINEA'"></option>
+              <option value="GW" [translate]="'COUNTRIES.GUINEA_BISSAU'"></option>
+              <option value="GY" [translate]="'COUNTRIES.GUYANA'"></option>
+              <option value="HT" [translate]="'COUNTRIES.HAITI'"></option>
+              <option value="HM" [translate]="'COUNTRIES.HEARD_ISLAND_AND_MCDONALD_ISLANDS'"></option>
+              <option value="VA" [translate]="'COUNTRIES.HOLY_SEE_VATICAN_CITY_STATE'"></option>
+              <option value="HN" [translate]="'COUNTRIES.HONDURAS'"></option>
+              <option value="HK" [translate]="'COUNTRIES.HONG_KONG'"></option>
+              <option value="HU" [translate]="'COUNTRIES.HUNGARY'"></option>
+              <option value="IS" [translate]="'COUNTRIES.ICELAND'"></option>
+              <option value="IN" [translate]="'COUNTRIES.INDIA'"></option>
+              <option value="ID" [translate]="'COUNTRIES.INDONESIA'"></option>
+              <option value="IR" [translate]="'COUNTRIES.IRAN_ISLAMIC_REPUBLIC_OF'"></option>
+              <option value="IQ" [translate]="'COUNTRIES.IRAQ'"></option>
+              <option value="IE" [translate]="'COUNTRIES.IRELAND'"></option>
+              <option value="IM" [translate]="'COUNTRIES.ISLE_OF_MAN'"></option>
+              <option value="IL" [translate]="'COUNTRIES.ISRAEL'"></option>
+              <option value="IT" [translate]="'COUNTRIES.ITALY'"></option>
+              <option value="JM" [translate]="'COUNTRIES.JAMAICA'"></option>
+              <option value="JP" [translate]="'COUNTRIES.JAPAN'"></option>
+              <option value="JE" [translate]="'COUNTRIES.JERSEY'"></option>
+              <option value="JO" [translate]="'COUNTRIES.JORDAN'"></option>
+              <option value="KZ" [translate]="'COUNTRIES.KAZAKHSTAN'"></option>
+              <option value="KE" [translate]="'COUNTRIES.KENYA'"></option>
+              <option value="KI" [translate]="'COUNTRIES.KIRIBATI'"></option>
+              <option value="KP" [translate]="'COUNTRIES.KOREA_DEMOCRATIC_PEOPLES_REPUBLIC_OF'"></option>
+              <option value="KR" [translate]="'COUNTRIES.KOREA_REPUBLIC_OF'"></option>
+              <option value="KW" [translate]="'COUNTRIES.KUWAIT'"></option>
+              <option value="KG" [translate]="'COUNTRIES.KYRGYZSTAN'"></option>
+              <option value="LA" [translate]="'COUNTRIES.LAO_PEOPLES_DEMOCRATIC_REPUBLIC'"></option>
+              <option value="LV" [translate]="'COUNTRIES.LATVIA'"></option>
+              <option value="LB" [translate]="'COUNTRIES.LEBANON'"></option>
+              <option value="LS" [translate]="'COUNTRIES.LESOTHO'"></option>
+              <option value="LR" [translate]="'COUNTRIES.LIBERIA'"></option>
+              <option value="LY" [translate]="'COUNTRIES.LIBYA'"></option>
+              <option value="LI" [translate]="'COUNTRIES.LIECHTENSTEIN'"></option>
+              <option value="LT" [translate]="'COUNTRIES.LITHUANIA'"></option>
+              <option value="LU" [translate]="'COUNTRIES.LUXEMBOURG'"></option>
+              <option value="MO" [translate]="'COUNTRIES.MACAO'"></option>
+              <option value="MK" [translate]="'COUNTRIES.MACEDONIA_THE_FORMER_YUGOSLAV_REPUBLIC_OF'"></option>
+              <option value="MG" [translate]="'COUNTRIES.MADAGASCAR'"></option>
+              <option value="MW" [translate]="'COUNTRIES.MALAWI'"></option>
+              <option value="MY" [translate]="'COUNTRIES.MALAYSIA'"></option>
+              <option value="MV" [translate]="'COUNTRIES.MALDIVES'"></option>
+              <option value="ML" [translate]="'COUNTRIES.MALI'"></option>
+              <option value="MT" [translate]="'COUNTRIES.MALTA'"></option>
+              <option value="MH" [translate]="'COUNTRIES.MARSHALL_ISLANDS'"></option>
+              <option value="MQ" [translate]="'COUNTRIES.MARTINIQUE'"></option>
+              <option value="MR" [translate]="'COUNTRIES.MAURITANIA'"></option>
+              <option value="MU" [translate]="'COUNTRIES.MAURITIUS'"></option>
+              <option value="YT" [translate]="'COUNTRIES.MAYOTTE'"></option>
+              <option value="MX" [translate]="'COUNTRIES.MEXICO'"></option>
+              <option value="FM" [translate]="'COUNTRIES.MICRONESIA_FEDERATED_STATES_OF'"></option>
+              <option value="MD" [translate]="'COUNTRIES.MOLDOVA_REPUBLIC_OF'"></option>
+              <option value="MC" [translate]="'COUNTRIES.MONACO'"></option>
+              <option value="MN" [translate]="'COUNTRIES.MONGOLIA'"></option>
+              <option value="ME" [translate]="'COUNTRIES.MONTENEGRO'"></option>
+              <option value="MS" [translate]="'COUNTRIES.MONTSERRAT'"></option>
+              <option value="MA" [translate]="'COUNTRIES.MOROCCO'"></option>
+              <option value="MZ" [translate]="'COUNTRIES.MOZAMBIQUE'"></option>
+              <option value="MM" [translate]="'COUNTRIES.MYANMAR'"></option>
+              <option value="NA" [translate]="'COUNTRIES.NAMIBIA'"></option>
+              <option value="NR" [translate]="'COUNTRIES.NAURU'"></option>
+              <option value="NP" [translate]="'COUNTRIES.NEPAL'"></option>
+              <option value="NL" [translate]="'COUNTRIES.NETHERLANDS'"></option>
+              <option value="NC" [translate]="'COUNTRIES.NEW_CALEDONIA'"></option>
+              <option value="NZ" [translate]="'COUNTRIES.NEW_ZEALAND'"></option>
+              <option value="NI" [translate]="'COUNTRIES.NICARAGUA'"></option>
+              <option value="NE" [translate]="'COUNTRIES.NIGER'"></option>
+              <option value="NG" [translate]="'COUNTRIES.NIGERIA'"></option>
+              <option value="NU" [translate]="'COUNTRIES.NIUE'"></option>
+              <option value="NF" [translate]="'COUNTRIES.NORFOLK_ISLAND'"></option>
+              <option value="MP" [translate]="'COUNTRIES.NORTHERN_MARIANA_ISLANDS'"></option>
+              <option value="NO" [translate]="'COUNTRIES.NORWAY'"></option>
+              <option value="OM" [translate]="'COUNTRIES.OMAN'"></option>
+              <option value="PK" [translate]="'COUNTRIES.PAKISTAN'"></option>
+              <option value="PW" [translate]="'COUNTRIES.PALAU'"></option>
+              <option value="PS" [translate]="'COUNTRIES.PALESTINIAN_TERRITORY_OCCUPIED'"></option>
+              <option value="PA" [translate]="'COUNTRIES.PANAMA'"></option>
+              <option value="PG" [translate]="'COUNTRIES.PAPUA_NEW_GUINEA'"></option>
+              <option value="PY" [translate]="'COUNTRIES.PARAGUAY'"></option>
+              <option value="PE" [translate]="'COUNTRIES.PERU'"></option>
+              <option value="PH" [translate]="'COUNTRIES.PHILIPPINES'"></option>
+              <option value="PN" [translate]="'COUNTRIES.PITCAIRN'"></option>
+              <option value="PL" [translate]="'COUNTRIES.POLAND'"></option>
+              <option value="PT" [translate]="'COUNTRIES.PORTUGAL'"></option>
+              <option value="PR" [translate]="'COUNTRIES.PUERTO_RICO'"></option>
+              <option value="QA" [translate]="'COUNTRIES.QATAR'"></option>
+              <option value="RE" [translate]="'COUNTRIES.REUNION'"></option>
+              <option value="RO" [translate]="'COUNTRIES.ROMANIA'"></option>
+              <option value="RU" [translate]="'COUNTRIES.RUSSIAN_FEDERATION'"></option>
+              <option value="RW" [translate]="'COUNTRIES.RWANDA'"></option>
+              <option value="BL" [translate]="'COUNTRIES.SAINT_BARTHELEMY'"></option>
+              <option value="SH" [translate]="'COUNTRIES.SAINT_HELENA_ASCENSION_AND_TRISTAN_DA_CUNHA'"></option>
+              <option value="KN" [translate]="'COUNTRIES.SAINT_KITTS_AND_NEVIS'"></option>
+              <option value="LC" [translate]="'COUNTRIES.SAINT_LUCIA'"></option>
+              <option value="MF" [translate]="'COUNTRIES.SAINT_MARTIN_FRENCH_PART'"></option>
+              <option value="PM" [translate]="'COUNTRIES.SAINT_PIERRE_AND_MIQUELON'"></option>
+              <option value="VC" [translate]="'COUNTRIES.SAINT_VINCENT_AND_THE_GRENADINES'"></option>
+              <option value="WS" [translate]="'COUNTRIES.SAMOA'"></option>
+              <option value="SM" [translate]="'COUNTRIES.SAN_MARINO'"></option>
+              <option value="ST" [translate]="'COUNTRIES.SAO_TOME_AND_PRINCIPE'"></option>
+              <option value="SA" [translate]="'COUNTRIES.SAUDI_ARABIA'"></option>
+              <option value="SN" [translate]="'COUNTRIES.SENEGAL'"></option>
+              <option value="RS" [translate]="'COUNTRIES.SERBIA'"></option>
+              <option value="SC" [translate]="'COUNTRIES.SEYCHELLES'"></option>
+              <option value="SL" [translate]="'COUNTRIES.SIERRA_LEONE'"></option>
+              <option value="SG" [translate]="'COUNTRIES.SINGAPORE'"></option>
+              <option value="SX" [translate]="'COUNTRIES.SINT_MAARTEN_DUTCH_PART'"></option>
+              <option value="SK" [translate]="'COUNTRIES.SLOVAKIA'"></option>
+              <option value="SI" [translate]="'COUNTRIES.SLOVENIA'"></option>
+              <option value="SB" [translate]="'COUNTRIES.SOLOMON_ISLANDS'"></option>
+              <option value="SO" [translate]="'COUNTRIES.SOMALIA'"></option>
+              <option value="ZA" [translate]="'COUNTRIES.SOUTH_AFRICA'"></option>
+              <option value="GS" [translate]="'COUNTRIES.SOUTH_GEORGIA_AND_THE_SOUTH_SANDWICH_ISLANDS'"></option>
+              <option value="SS" [translate]="'COUNTRIES.SOUTH_SUDAN'"></option>
+              <option value="ES" [translate]="'COUNTRIES.SPAIN'"></option>
+              <option value="LK" [translate]="'COUNTRIES.SRI_LANKA'"></option>
+              <option value="SD" [translate]="'COUNTRIES.SUDAN'"></option>
+              <option value="SR" [translate]="'COUNTRIES.SURINAME'"></option>
+              <option value="SJ" [translate]="'COUNTRIES.SVALBARD_AND_JAN_MAYEN'"></option>
+              <option value="SZ" [translate]="'COUNTRIES.SWAZILAND'"></option>
+              <option value="SE" [translate]="'COUNTRIES.SWEDEN'"></option>
+              <option value="CH" [translate]="'COUNTRIES.SWITZERLAND'"></option>
+              <option value="SY" [translate]="'COUNTRIES.SYRIAN_ARAB_REPUBLIC'"></option>
+              <option value="TW" [translate]="'COUNTRIES.TAIWAN_PROVINCE_OF_CHINA'"></option>
+              <option value="TJ" [translate]="'COUNTRIES.TAJIKISTAN'"></option>
+              <option value="TZ" [translate]="'COUNTRIES.TANZANIA_UNITED_REPUBLIC_OF'"></option>
+              <option value="TH" [translate]="'COUNTRIES.THAILAND'"></option>
+              <option value="TL" [translate]="'COUNTRIES.TIMOR_LESTE'"></option>
+              <option value="TG" [translate]="'COUNTRIES.TOGO'"></option>
+              <option value="TK" [translate]="'COUNTRIES.TOKELAU'"></option>
+              <option value="TO" [translate]="'COUNTRIES.TONGA'"></option>
+              <option value="TT" [translate]="'COUNTRIES.TRINIDAD_AND_TOBAGO'"></option>
+              <option value="TN" [translate]="'COUNTRIES.TUNISIA'"></option>
+              <option value="TR" [translate]="'COUNTRIES.TURKEY'"></option>
+              <option value="TM" [translate]="'COUNTRIES.TURKMENISTAN'"></option>
+              <option value="TC" [translate]="'COUNTRIES.TURKS_AND_CAICOS_ISLANDS'"></option>
+              <option value="TV" [translate]="'COUNTRIES.TUVALU'"></option>
+              <option value="UG" [translate]="'COUNTRIES.UGANDA'"></option>
+              <option value="UA" [translate]="'COUNTRIES.UKRAINE'"></option>
+              <option value="AE" [translate]="'COUNTRIES.UNITED_ARAB_EMIRATES'"></option>
+              <option value="GB" [translate]="'COUNTRIES.UNITED_KINGDOM'"></option>
+              <option value="US" [translate]="'COUNTRIES.UNITED_STATES'"></option>
+              <option value="UM" [translate]="'COUNTRIES.UNITED_STATES_MINOR_OUTLYING_ISLANDS'"></option>
+              <option value="UY" [translate]="'COUNTRIES.URUGUAY'"></option>
+              <option value="UZ" [translate]="'COUNTRIES.UZBEKISTAN'"></option>
+              <option value="VU" [translate]="'COUNTRIES.VANUATU'"></option>
+              <option value="VE" [translate]="'COUNTRIES.VENEZUELA_BOLIVARIAN_REPUBLIC_OF'"></option>
+              <option value="VN" [translate]="'COUNTRIES.VIET_NAM'"></option>
+              <option value="VG" [translate]="'COUNTRIES.VIRGIN_ISLANDS_BRITISH'"></option>
+              <option value="VI" [translate]="'COUNTRIES.VIRGIN_ISLANDS_US'"></option>
+              <option value="WF" [translate]="'COUNTRIES.WALLIS_AND_FUTUNA'"></option>
+              <option value="EH" [translate]="'COUNTRIES.WESTERN_SAHARA'"></option>
+              <option value="YE" [translate]="'COUNTRIES.YEMEN'"></option>
+              <option value="ZM" [translate]="'COUNTRIES.ZAMBIA'"></option>
+              <option value="ZW" [translate]="'COUNTRIES.ZIMBABWE'"></option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label fw-bold fs-6" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.LANGUAGE'"></label>
+          <div class="col-lg-8 fv-row">
+            <select title="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.LANGUAGE' | translate }}" class="form-select form-select-solid form-select-lg" name="languageAlpha2Code" formControlName="languageAlpha2Code">
+              <option value="" [translate]="'LANGUAGES.SELECT_A_LANGUAGE'"></option>
+              <option value="en" [translate]="'LANGUAGES.ENGLISH'"></option>
+              <option value="es" [translate]="'LANGUAGES.SPANISH'"></option>
+            </select>
+            <div class="form-text" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.PLEASE_SELECT_A_PREFERRED_LANGUAGE'">
+            </div>
+          </div>
+        </div>
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label fw-bold fs-6" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.CURRENCY'"></label>
+          <div class="col-lg-8 fv-row">
+            <select title="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.CURRENCY' | translate }}" class="form-select form-select-solid form-select-lg" name="currencyCode" formControlName="currencyCode">
+              <option value="" [translate]="'CURRENCIES.SELECT_A_CURRENCY'"></option>
+              <option value="USD" [translate]="'CURRENCIES.USA_DOLAR'"></option>
+              <option value="EUR" [translate]="'CURRENCIES.EURO'"></option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-6">
+          <label class="col-lg-4 col-form-label fw-bold fs-6" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.COMMUNICATION'"></label>
+          <div class="col-lg-8 fv-row">
+            <div class="d-flex align-items-center mt-3">
+              <label class="form-check form-check-inline form-check-solid me-5">
+                <input title="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.EMAIL' | translate }}" class="form-check-input" name="communicationByMail" formControlName="communicationByMail" type="checkbox" /><span class="fw-bold ps-2 fs-6" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.EMAIL'"></span>
+              </label><label class="form-check form-check-inline form-check-solid">
+                <input title="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.PHONE' | translate }}" class="form-check-input" name="communicationByPhone" formControlName="communicationByPhone" type="checkbox" /><span class="fw-bold ps-2 fs-6" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.PHONE'"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-0">
+          <label class="col-lg-4 col-form-label fw-bold fs-6" [translate]="'ACCOUNT.SETTINGS.PROFILE_DETAILS.ALLOW_COMMERCIAL_MAIL'"></label>
+          <div class="col-lg-8 d-flex align-items-center">
+            <div class="form-check form-check-solid form-switch fv-row">
+              <input title="{{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.ALLOW_COMMERCIAL_MAIL' | translate }}" class="form-check-input w-45px h-30px" type="checkbox" name="allowCommercialMail" formControlName="allowCommercialMail" /><label class="form-check-label"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer d-flex justify-content-end py-6 px-9">
+        <button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="saveSettings()">
+          <ng-container *ngIf="!isLoading">
+            {{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.SAVE_CHANGES' | translate }}
+          </ng-container>
+          <ng-container *ngIf="isLoading">
+            <span clas="indicator-progress" [style.display]="'block'">
+              {{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.PLEASE_WAIT' | translate }}
+              {{ " " }}
+              <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+            </span>
+          </ng-container>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="fv-plugins-message-container">
+      <div class="fv-help-block">
+        <span role="alert">
+          {{ 'ACCOUNT.SETTINGS.PROFILE_DETAILS.' + message | translate }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

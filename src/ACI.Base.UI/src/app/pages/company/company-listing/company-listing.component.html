@@ -1,0 +1,108 @@
+<div class="card">
+    <div class="card-header border-0 pt-6">
+      <!--begin::Card title-->
+      <div class="card-title">
+        <!--begin::Search-->
+        <div class="d-flex align-items-center position-relative my-1">
+          <app-keenicon name="magnifier" class="fs-3 position-absolute ms-5"></app-keenicon>
+          <input type="text" data-action="filter" class="form-control form-control-solid w-250px ps-12" placeholder="{{ 'COMPANIES.LIST.SEARCH_BY_NAME' | translate }}">
+        </div>
+        <!--end::Search-->
+      </div>
+      <!--begin::Card title-->
+      <!--begin::Card toolbar-->
+      <div class="card-toolbar">
+        <!--begin::Toolbar-->
+        <div class="d-flex justify-content-end">
+          <!--begin::Add company-->
+          <button *ngIf="authService.userHasRole(['Administrator'])" type="button" class="btn btn-primary" data-action="create">
+            {{ 'COMPANIES.LIST.ADD_COMPANY' | translate }}
+          </button>
+          <!--end::Add company-->
+        </div>
+        <!--end::Toolbar-->
+      </div>
+      <!--end::Card toolbar-->
+    </div>
+    <div *ngIf="authService.userHasRole(['Administrator']); else nonAdmintrator" class="card-body pt-0">
+      <app-crud [datatableConfig]="datatableConfig" route="/apps/companies" (deleteEvent)="delete($event)"
+        (editEvent)="edit($event)" (createEvent)="create()" [reload]="reloadEvent" [modal]="formModal"></app-crud>
+    </div>
+    <ng-template #nonAdmintrator>
+      <app-crud [datatableConfig]="datatableConfig" route="/apps/companies" (editEvent)="edit($event)" [reload]="reloadEvent" [modal]="formModal" [isReadOnly]="true"></app-crud>
+    </ng-template>    
+  </div>
+  <swal #noticeSwal [swalOptions]="swalOptions">
+  </swal>
+  <ng-template #formModal let-modal>
+    <form #myForm="ngForm" (ngSubmit)="onSubmit($event, myForm)">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{ 'COMPANIES.LIST.COMPANY_DETAILS' | translate }}</h4>
+        <button title="{{ 'COMPANIES.LIST.CLOSE' | translate }}" type="button" class="btn-close" attr.aria-label="{{ 'COMPANIES.LIST.CLOSE' | translate }}" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex flex-column scroll-y me-n7 pe-7 mw-650px" id="kt_modal_update_customer_scroll"
+          data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
+          data-kt-scroll-dependencies="#kt_modal_update_customer_header"
+          data-kt-scroll-wrappers="#kt_modal_update_customer_scroll" data-kt-scroll-offset="300px">
+          <!--begin::Company toggle-->
+          <div class="fw-bold fs-3 rotate collapsible mb-7" data-bs-toggle="collapse" role="button"
+            (click)="collapse1.toggle()" [attr.aria-expanded]="!isCollapsed1">{{ 'COMPANIES.LIST.COMPANY_INFORMATION' | translate }}
+            <span class="ms-2 rotate-180">
+              <i class="ki-duotone ki-down fs-3" [ngClass]="{ 'ki-up': !isCollapsed1 }"></i>
+            </span>
+          </div>
+          <!--end::Company toggle-->
+          <!--begin::Company form-->
+          <div class="collapse show" #collapse1="ngbCollapse" [(ngbCollapse)]="isCollapsed1">
+            <!--begin::Input group-->
+            <div class="fv-row mb-7">
+              <!--begin::Label-->
+              <label class="required fw-semibold fs-6 mb-2" [translate]="'COMPANIES.LIST.NAME'"></label>
+              <!--end::Label-->
+              <!--begin::Input-->
+              <input type="text" title="{{ 'COMPANIES.LIST.NAME' | translate }}" class="form-control form-control-solid" name="name"
+                [(ngModel)]="companyModel.name" #name="ngModel" required minlength="4" maxlength="256" [readonly]="isReadOnly" />
+              <div *ngIf="myForm.submitted && myForm.invalid"
+                class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+                <div *ngIf="name.errors?.['required']">{{ 'COMPANIES.LIST.NAME_IS_REQUIRED' | translate }}</div>
+                <div *ngIf="name.errors?.['minlength']">{{ 'COMPANIES.LIST.NAME_SHOULD_HAVE_AT_LEAST_4_CHARACTERS' |
+                  translate }}</div>
+                <div *ngIf="name.errors?.['maxlength']">{{ 'COMPANIES.LIST.NAME_SHOULD_HAVE_MAXIMUM_256_CHARACTERS' |
+                  translate }}</div>
+              </div>
+              <!--end::Input-->
+            </div>
+            <!--end::Input group-->
+          </div>
+          <!--end::Company form-->
+        </div>
+      </div>
+      <div class="modal-footer flex-center">
+        <!--begin::Button-->
+        <button *ngIf="!isReadOnly" type="reset" id="kt_modal_update_customer_cancel" class="btn btn-light me-3"
+          (click)="modal.dismiss('cancel')">
+          {{ 'COMPANIES.LIST.DISCARD' | translate }}
+        </button>
+        <!--end::Button-->
+        <!--begin::Button-->
+        <button *ngIf="!isReadOnly" type="submit" id="kt_modal_update_customer_submit" class="btn btn-primary"
+          [attr.data-kt-indicator]="isLoading ? 'on' : 'off'">
+          <span class="indicator-label">
+            {{ 'COMPANIES.LIST.SUBMIT' | translate }}
+          </span>
+          <span class="indicator-progress">
+            {{ 'COMPANIES.LIST.PLEASE_WAIT' | translate }}
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </button>
+        <!--end::Button-->
+      <!--begin::Button-->
+      <button *ngIf="isReadOnly" type="reset" id="kt_modal_update_customer_close" class="btn btn-primary me-3"
+        (click)="modal.dismiss('cancel')">
+        {{ 'COMPANIES.LIST.CLOSE' | translate }}
+      </button>
+      <!--end::Button-->          
+      </div>
+    </form>
+  </ng-template>

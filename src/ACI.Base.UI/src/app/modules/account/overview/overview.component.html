@@ -1,0 +1,45 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+  <div class="card-header cursor-pointer">
+    <div class="card-title m-0">
+      <h3 class="fw-bolder m-0" [translate]="'ACCOUNT.OVERVIEW.PROFILE_DETAILS'"></h3>
+    </div>
+    <a routerLink="/crafted/account/settings" class="btn btn-primary align-self-center"
+      [translate]="'ACCOUNT.OVERVIEW.EDIT_PROFILE'">
+    </a>
+  </div>
+  <div class="card-body p-9">
+    <div class="row mb-7">
+      <label class="col-lg-4 fw-bold text-muted" [translate]="'ACCOUNT.OVERVIEW.FULL_NAME'"></label>
+      <div class="col-lg-8">
+        <span class="fw-bolder fs-6 text-gray-900">{{account?.firstname}} {{account?.lastname}}</span>
+      </div>
+    </div>
+    <div class="row mb-7">
+      <label class="col-lg-4 fw-bold text-muted" [translate]="'ACCOUNT.OVERVIEW.COMPANY'"></label>
+      <div class="col-lg-8 fv-row">
+        <span class="fw-bold fs-6">{{account?.companyName}}</span>
+      </div>
+    </div>
+    <div class="row mb-7">
+      <label class="col-lg-4 fw-bold text-muted" [translate]="'ACCOUNT.OVERVIEW.CONTACT_PHONE'"></label>
+
+      <div class="col-lg-8 d-flex align-items-center">
+        <span class="fw-bolder fs-6 me-2">{{account?.phoneNumber}}</span>
+      </div>
+    </div>
+    <div class="row mb-7">
+      <label class="col-lg-4 fw-bold text-muted" [translate]="'ACCOUNT.OVERVIEW.COUNTRY'"></label>
+      <div class="col-lg-8">
+        <span class="fw-bolder fs-6 text-gray-900">{{getCountryTranslation()}}</span>
+      </div>
+    </div>
+    <div class="row mb-7">
+      <label class="col-lg-4 fw-bold text-muted" [translate]="'ACCOUNT.OVERVIEW.COMMUNICATION'"></label>
+      <div class="col-lg-8">
+        <span *ngIf="account?.communicationByMail" class="fw-bolder fs-6 text-gray-900">{{ 'ACCOUNT.OVERVIEW.EMAIL' | translate }}</span>
+        <span *ngIf="account?.communicationByMail && account?.communicationByPhone" class="fw-bolder fs-6 text-gray-900">, </span>
+        <span *ngIf="account?.communicationByPhone" class="fw-bolder fs-6 text-gray-900">{{ 'ACCOUNT.OVERVIEW.PHONE' | translate }}</span>
+      </div>
+    </div>
+  </div>
+</div>

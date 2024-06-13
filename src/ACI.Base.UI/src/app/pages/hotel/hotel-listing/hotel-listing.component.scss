@@ -1,0 +1,10 @@
+.overflow-box {
+    padding: 5px;
+    overflow: hidden;
+}
+
+.scrollable-box {
+    position: relative;
+    height: 300px;
+    overflow: auto;
+}

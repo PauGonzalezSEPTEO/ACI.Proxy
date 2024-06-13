@@ -1,0 +1,52 @@
+<div class="card">
+  <div title="{{ 'ACCOUNT.SETTINGS.DEACTIVATE_ACCOUNT.DEACTIVATE_ACCOUNT' | translate }}" class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_deactivate" aria-expanded="true" aria-controls="kt_account_deactivate">
+    <div class="card-title m-0">
+      <h3 class="fw-bolder m-0" [translate]="'ACCOUNT.SETTINGS.DEACTIVATE_ACCOUNT.DEACTIVATE_ACCOUNT'"></h3>
+    </div>
+  </div>
+  <div id="kt_account_deactivate" class="collapse show">
+    <!-- begin::Alert error-->
+    <ng-container *ngIf="hasError">
+      <div class="mb-lg-15 alert alert-danger">
+        <span [innerHTML]="errorMessage"></span>
+      </div>
+    </ng-container>
+    <!-- end::Alert error-->
+    <form id="kt_account_deactivate_form" class="form" novalidate="novalidate" [formGroup]="deactivateAccountForm" (ngSubmit)="submit()">
+      <div class="card-body border-top p-9">
+        <div class="noticed-flex bg-light-warning rounded border-warning border border-dashed mb-9 p-6">
+          <div class="d-flex flex-stack flex-grow-1">
+            <div class="fw-bold">
+              <h4 class="text-gray-800 fw-bolder" [translate]="'ACCOUNT.SETTINGS.DEACTIVATE_ACCOUNT.YOU_ARE_DEACTIVATING_YOUR_ACCOUNT'">
+              </h4>
+              <div class="fs-6 text-gray-600" [translate]="'ACCOUNT.SETTINGS.DEACTIVATE_ACCOUNT.THIS_PROCESS_CANNOT_BE_REVERSED'">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-check form-check-solid fv-row">
+          <input id="confirm" title="{{ 'ACCOUNT.SETTINGS.DEACTIVATE_ACCOUNT.I_CONFIRM_MY_ACCOUNT_DEACTIVATION' | translate }}" class="form-check-input" type="checkbox" formControlName="confirm" name="confirm" value="false" />
+          <label class="form-check-label fw-bold ps-2 fs-6" for="confirm" [translate]="'ACCOUNT.SETTINGS.DEACTIVATE_ACCOUNT.I_CONFIRM_MY_ACCOUNT_DEACTIVATION'"></label>
+        </div>
+        <div class="fv-plugins-message-container">
+          <div class="fv-help-block" [translate]="'ACCOUNT.SETTINGS.DEACTIVATE_ACCOUNT.PLEASE_CHECK_THE_BOX_TO_DEACTIVATE_YOUR_ACCOUNT'">
+          </div>
+        </div>
+      </div>
+      <div class="card-footer d-flex justify-content-end py-6 px-9">
+        <button id="kt_account_deactivate_account_submit" type="submit" [disabled]="!deactivateAccountForm.controls['confirm'].value" class="btn btn-danger fw-bold">
+          <ng-container *ngIf="!isLoading">
+            {{ 'ACCOUNT.SETTINGS.DEACTIVATE_ACCOUNT.DEACTIVATE_ACCOUNT' | translate }}
+          </ng-container>
+          <ng-container *ngIf="isLoading">
+            <span clas="indicator-progress" [style.display]="'block'">
+              {{ 'ACCOUNT.SETTINGS.DEACTIVATE_ACCOUNT.PLEASE_WAIT' | translate }}
+              {{ " " }}
+              <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+            </span>
+          </ng-container>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="avatar-container">
+    <div class="image-container" *ngIf="base64Avatar; else placeholder"
+    [ngStyle]="{backgroundImage: 'url(' + base64Avatar + ')'}">
+    </div>
+    <ng-template #placeholder>
+        <div class="image-container avatar-placeholder">
+        </div>
+    </ng-template>
+    <label for="avatar">
+        <div class="icon-wrapper">
+            <input type="file" id="avatar" name="avatar" accept="image/*" (change)="onChange($event)" aria-labelledby="avatar-label" />
+            <app-keenicon name="plus-square" class="fs-2x ms-5"></app-keenicon>
+        </div>
+    </label>
+    <app-keenicon *ngIf="base64Avatar;" name="cross-square" class="avatar-clean fs-2x ms-5" (click)="onClear($event)"></app-keenicon>
+</div>

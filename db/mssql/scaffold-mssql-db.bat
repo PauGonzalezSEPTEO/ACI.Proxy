@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold "Data Source=mssql,1433;Initial Catalog=Base;User ID=sa;Password=.acisa159753" Microsoft.EntityFrameworkCore.SqlServer --project ..\..\src\ACI.Base.Core\ACI.Base.Core.csproj --startup-project ..\..\src\ACI.Base.Api\ACI.Base.Api.csproj --output-dir Models --context BaseContext --context-dir ./ --data-annotations --verbose

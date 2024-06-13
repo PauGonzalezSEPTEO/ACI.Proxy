@@ -1,0 +1,297 @@
+<div class="card mb-5 mb-xl-10">
+  <div title="{{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.SIGN_IN_METHOD' | translate }}"
+    class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse"
+    data-bs-target="#kt_account_signin_method">
+    <div class="card-title m-0">
+      <h3 class="fw-bolder m-0" [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.SIGN_IN_METHOD'"></h3>
+    </div>
+  </div>
+  <div id="kt_account_signin_method" class="collapse show">
+    <div class="card-body border-top p-9">
+      <ng-container *ngIf="!showChangeEmailForm">
+        <div class="d-flex flex-wrap align-items-center">
+          <div class="false">
+            <div class="fs-6 fw-bolder mb-1" [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.EMAIL_ADDRESS'"></div>
+            <div class="fw-bold text-gray-600">{{account.email}}</div>
+          </div>
+          <div class="ms-auto false">
+            <button title="{{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.CHANGE_EMAIL' | translate }}"
+              class="btn btn-light btn-active-light-primary" (click)="toggleEmailForm(true)"
+              [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.CHANGE_EMAIL'">
+            </button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="showChangeEmailForm">
+        <div class="d-flex flex-wrap align-items-center">
+          <div class="flex-row-fluid false">
+            <!-- begin::Alert error-->
+            <ng-container *ngIf="changeEmailHasError">
+              <div class="mb-lg-15 alert alert-danger">
+                <span [innerHTML]="changeEmailErrorMessage"></span>
+              </div>
+            </ng-container>
+            <!-- end::Alert error-->
+            <ng-container *ngIf="changeEmailErrorState === errorStates.NoError">
+              <div class="mb-10 bg-light-info p-8 rounded">
+                <div class="text-info"
+                  [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.SENT_CHANGE_EMAIL_PLEASE_CHECK_YOUR_NEW_EMAIL'"></div>
+              </div>
+            </ng-container>
+            <form class="form" novalidate="novalidate" [formGroup]="changeEmailForm" (ngSubmit)="changeEmail()">
+              <div class="row mb-6">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                  <div class="fv-row mb-0">
+                    <label for="newEmail" class="form-label fs-6 fw-bolder mb-3"
+                      [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.ENTER_NEW_EMAIL_ADDRESS'"></label>
+                    <input id="newEmail" type="email" class="form-control form-control-lg form-control-solid"
+                      placeholder="{{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.EMAIL_ADDRESS' | translate }}" name="newEmail"
+                      formControlName="newEmail" autocomplete="off" [ngClass]="{
+                      'is-invalid': changeEmailForm.controls['newEmail'].invalid,
+                      'is-valid': changeEmailForm.controls['newEmail'].valid
+                    }" />
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                      validation: 'required',
+                      message: 'EMAIL_IS_REQUIRED',
+                      control: changeEmailForm.controls['newEmail']
+                    }"></ng-container>
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                      validation: 'email',
+                      message: 'EMAIL_IS_INVALID',
+                      control: changeEmailForm.controls['newEmail']
+                    }"></ng-container>
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                      validation: 'minlength',
+                      message: 'EMAIL_SHOULD_HAVE_AT_LEAST_3_CHARACTERS',
+                      control: changeEmailForm.controls['newEmail']
+                    }"></ng-container>
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                      validation: 'maxLength',
+                      message: 'EMAIL_SHOULD_HAVE_MAXIMUM_256_CHARACTERS',
+                      control: changeEmailForm.controls['newEmail']
+                    }"></ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex">
+                <button type="submit" [disabled]="changeEmailForm.invalid" class="btn btn-primary me-2 px-6">
+                  <ng-container *ngIf="(isLoading$ | async) === false"> {{
+                    'ACCOUNT.SETTINGS.SIGN_IN_METHOD.UPDATE_EMAIL' | translate }} </ng-container>
+                  <ng-container *ngIf="isLoading$ | async">
+                    <span class="indicator-progress" [style.display]="'block'">
+                      {{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.PLEASE_WAIT' | translate }}
+                      <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                  </ng-container>
+                </button>
+                <button type="button" class="btn btn-color-gray-400 btn-active-light-primary px-6"
+                  (click)="toggleEmailForm(false)">
+                  {{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.CANCEL' | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </ng-container>
+      <div class="separator separator-dashed my-6"></div>
+      <ng-container *ngIf="!showChangePasswordForm">
+        <div class="d-flex flex-wrap align-items-center mb-10">
+          <div class="false">
+            <div class="fs-6 fw-bolder mb-1" [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.PASSWORD'"></div>
+          </div>
+          <div class="ms-auto false">
+            <button class="btn btn-light btn-active-light-primary" (click)="togglePasswordForm(true)">
+              {{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.RESET_PASSWORD' | translate }}
+            </button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="showChangePasswordForm">
+        <div class="d-flex flex-wrap align-items-center mb-10">
+          <div class="flex-row-fluid false">
+            <!-- begin::Alert error-->
+            <ng-container *ngIf="changePasswordHasError">
+              <div class="mb-lg-15 alert alert-danger">
+                <span [innerHTML]="changePasswordErrorMessage"></span>
+              </div>
+            </ng-container>
+            <!-- end::Alert error-->
+            <ng-container *ngIf="changePasswordErrorState === errorStates.NoError">
+              <div class="mb-10 bg-light-info p-8 rounded">
+                <div class="text-info"
+                  [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.THE_PASSWORD_HAS_BEEN_CHANGED_SUCCESSFULLY'"></div>
+              </div>
+            </ng-container>
+            <form class="form" novalidate="novalidate" [formGroup]="changePasswordForm" (ngSubmit)="changePassword()">
+              <div class="row mb-1">
+                <div class="col-lg-4">
+                  <div class="fv-row mb-0">
+                    <label for="currentPassword" class="form-label fs-6 fw-bolder mb-3"
+                      [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.CURRENT_PASSWORD'"></label>
+                    <input class="form-control form-control-lg form-control-solid" type="password"
+                      placeholder="{{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.PASSWORD' | translate }}" id="currentPassword"
+                      name="currentPassword" formControlName="currentPassword" autocomplete="off" [ngClass]="{
+                      'is-invalid': changePasswordForm.controls['currentPassword'].invalid,
+                      'is-valid': changePasswordForm.controls['currentPassword'].valid
+                    }" />
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                      validation: 'required',
+                      message: 'PASSWORD_IS_REQUIRED',
+                      control: changePasswordForm.controls['currentPassword']
+                    }"></ng-container>
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                      validation: 'minlength',
+                      message: 'PASSWORD_SHOULD_HAVE_AT_LEAST_6_CHARACTERS',
+                      control: changePasswordForm.controls['currentPassword']
+                    }"></ng-container>
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                      validation: 'maxLength',
+                      message: 'PASSWORD_SHOULD_HAVE_MAXIMUM_100_CHARACTERS',
+                      control: changePasswordForm.controls['currentPassword']
+                    }"></ng-container>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="fv-row mb-0">
+                    <label for="newPassword" class="form-label fs-6 fw-bolder mb-3"
+                      [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.NEW_PASSWORD'"></label>
+                    <input type="password" class="form-control form-control-lg form-control-solid"
+                      placeholder="{{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.NEW_PASSWORD' | translate }}" id="newPassword"
+                      name="newPassword" formControlName="newPassword" autocomplete="off" [ngClass]="{
+                      'is-invalid': changePasswordForm.controls['newPassword'].invalid,
+                      'is-valid': changePasswordForm.controls['newPassword'].valid
+                    }" />
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                      validation: 'required',
+                      message: 'NEW_PASSWORD_IS_REQUIRED',
+                      control: changePasswordForm.controls['newPassword']
+                    }"></ng-container>
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                      validation: 'minlength',
+                      message: 'NEW_PASSWORD_SHOULD_HAVE_AT_LEAST_6_CHARACTERS',
+                      control: changePasswordForm.controls['newPassword']
+                    }"></ng-container>
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                      validation: 'maxLength',
+                      message: 'NEW_PASSWORD_SHOULD_HAVE_MAXIMUM_100_CHARACTERS',
+                      control: changePasswordForm.controls['newPassword']
+                    }"></ng-container>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="fv-row mb-0">
+                    <label for="newConfirmationPassword" class="form-label fs-6 fw-bolder mb-3"
+                      [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.NEW_CONFIRMATION_PASSWORD'"></label>
+                    <input type="password" class="form-control form-control-lg form-control-solid"
+                      id="newConfirmationPassword"
+                      placeholder="{{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.NEW_CONFIRMATION_PASSWORD' | translate }}"
+                      name="newConfirmationPassword" autocomplete="off" formControlName="newConfirmationPassword"
+                      [ngClass]="{
+                        'is-invalid': changePasswordForm.controls['newConfirmationPassword'].invalid,
+                        'is-valid': changePasswordForm.controls['newConfirmationPassword'].valid
+                      }" />
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                        validation: 'required',
+                        message: 'NEW_CONFIRMATION_PASSWORD_IS_REQUIRED',
+                        control: changePasswordForm.controls['newConfirmationPassword']
+                      }"></ng-container>
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                        validation: 'minlength',
+                        message: 'NEW_CONFIRMATION_PASSWORD_SHOULD_HAVE_AT_LEAST_6_CHARACTERS',
+                        control: changePasswordForm.controls['newConfirmationPassword']
+                      }"></ng-container>
+                    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                        validation: 'maxLength',
+                        message: 'NEW_CONFIRMATION_PASSWORD_SHOULD_HAVE_MAXIMUM_100_CHARACTERS',
+                        control: changePasswordForm.controls['newConfirmationPassword']
+                      }"></ng-container>
+                    <ng-container *ngIf="
+                        changePasswordForm.controls['newConfirmationPassword'].errors &&
+                        changePasswordForm.controls['newConfirmationPassword'].errors.newConfirmationPassword
+                      ">
+                      <div class="fv-plugins-message-container">
+                        <div class="fv-help-block">
+                          {{
+                          'ACCOUNT.SETTINGS.SIGN_IN_METHOD.THE_NEW_PASSWORD_AND_NEW_CONFIRMATION_PASSWORD_DO_NOT_MATCH'
+                          | translate }}
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="form-text mb-5"
+                [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.PASSWORD_MUST_BE_AT_LEAST_6_CHARACTERS'">
+              </div>
+              <div class="d-flex">
+                <button type="submit" [disabled]="changePasswordForm.invalid" class="btn btn-primary me-2 px-6">
+                  <ng-container *ngIf="(isLoading$ | async) === false">
+                    <span class="indicator-label"
+                      [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.UPDATE_PASSWORD'"></span>
+                  </ng-container>
+                  <ng-container *ngIf="isLoading$ | async">
+                    <span class="indicator-progress" [style.display]="'block'">
+                      {{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.PLEASE_WAIT' | translate }}
+                      <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                  </ng-container>
+                </button>
+                <button type="button" class="btn btn-color-gray-400 btn-active-light-primary px-6"
+                  (click)="togglePasswordForm(false)">
+                  {{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.CANCEL' | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </ng-container>
+      <!-- begin::Alert error-->
+      <ng-container *ngIf="twoFactorEnabledHasError">
+        <div class="mb-lg-15 alert alert-danger">
+          <span [innerHTML]="twoFactorEnabledErrorMessage"></span>
+        </div>
+      </ng-container>
+      <!-- end::Alert error-->
+      <ng-container *ngIf="twoFactorEnabledErrorState === errorStates.NoError">
+        <div class="mb-10 bg-light-info p-8 rounded">
+          <div class="text-info"
+            [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.TWO_FACTOR_AUTHENTICATION_HAS_BEEN_CHANGED_SUCCESSFULLY'">
+          </div>
+        </div>
+      </ng-container>
+      <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+        <span class="svg-icon svg-icon-2tx svg-icon-primary me-4"
+          [inlineSVG]="'./assets/media/icons/duotune/general/gen048.svg'">
+        </span>
+        <div class="d-flex flex-stack flex-grow-1 flex-wrap flex-md-nowrap">
+          <div class="mb-3 mb-md-0 fw-bold">
+            <h4 class="text-gray-800 fw-bolder" [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.SECURE_YOUR_ACCOUNT'">
+            </h4>
+            <div class="fs-6 text-gray-600 pe-7"
+              [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.TWO_FACTOR_AUTHENTICATION_ADDS_AN_EXTRA_LAYER_OF_SECURITY_TO_YOUR_ACCOUNT_TO_LOG_IN_IN_ADDTION_YOU_LL_NEED_TO_PROVIDE_A_6_DIGIT_CODE'">
+            </div>
+          </div>
+          <ng-container *ngIf="!account.twoFactorEnabled">
+            <a class="btn btn-primary px-6 align-self-center text-nowrap cursor-pointer" [routerLink]=""
+              (click)="setTwoFactorEnabled(true)" [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.ENABLE'"></a>
+          </ng-container>
+          <ng-container *ngIf="account.twoFactorEnabled">
+            <a class="btn btn-secondary px-6 align-self-center text-nowrap cursor-pointer" [routerLink]=""
+              (click)="setTwoFactorEnabled(false)" [translate]="'ACCOUNT.SETTINGS.SIGN_IN_METHOD.DISABLE'"></a>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="fv-plugins-message-container">
+      <div class="fv-help-block">
+        <span role="alert">
+          {{ 'ACCOUNT.SETTINGS.SIGN_IN_METHOD.' + message | translate }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

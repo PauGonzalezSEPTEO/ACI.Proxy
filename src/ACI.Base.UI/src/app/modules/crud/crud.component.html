@@ -1,0 +1,39 @@
+<table datatable id="crud-table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+  class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer">
+  <thead>
+    <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+      <ng-container *ngFor="let column of dtOptions.columns">
+        <th>{{ column.title }}</th>
+      </ng-container>
+    </tr>
+  </thead>
+  <tbody class="fw-semibold text-gray-600">
+  </tbody>
+</table>
+
+<swal #deleteSwal [swalOptions]="swalOptions" title="{{ 'CRUD.ARE_YOU_SURE_TO_DELETE_IT' | translate }}"
+  text="{{ 'CRUD.THIS_CANNOT_BE_UNDONE' | translate }}" confirmButtonText="{{ 'CRUD.OK' | translate }}" cancelButtonText="{{ 'CRUD.CANCEL' | translate }}" icon="warning" [showCancelButton]="true" [focusCancel]="true"
+  (confirm)="triggerDelete()" [customClass]="{confirmButton: 'btn btn-danger', cancelButton: 'btn btn-active-light'}">
+</swal>
+
+<swal #emailSwal [swalOptions]="swalOptions" title="{{ 'CRUD.DO_YOU_WANT_TO_RESEND_THE_VERIFICATION_EMAIL' | translate }}"
+  confirmButtonText="{{ 'CRUD.SEND' | translate }}" cancelButtonText="{{ 'CRUD.CANCEL' | translate }}" icon="question" [showCancelButton]="true" [focusCancel]="true"
+  (confirm)="triggerEmail()" [customClass]="{confirmButton: 'btn btn-primary', cancelButton: 'btn btn-active-light'}">
+</swal>
+
+<swal #unlinkSwal [swalOptions]="swalOptions" title="{{ 'CRUD.ARE_YOU_SURE_TO_UNLINK_IT' | translate }}"
+  confirmButtonText="{{ 'CRUD.OK' | translate }}" cancelButtonText="{{ 'CRUD.CANCEL' | translate }}" icon="warning" [showCancelButton]="true" [focusCancel]="true"
+  (confirm)="triggerUnlink()" [customClass]="{confirmButton: 'btn btn-danger', cancelButton: 'btn btn-active-light'}">
+</swal>
+
+<swal #successDeleteSwal [swalOptions]="swalOptions" title="{{ 'CRUD.DELETE_SUCCESSFULLY' | translate }}" text=""
+  icon="success" [customClass]="{confirmButton: 'btn btn-success'}">
+</swal>
+
+<swal #successEmailSwal [swalOptions]="swalOptions" title="{{ 'CRUD.EMAIL_SENDED_SUCCESSFULLY' | translate }}" text=""
+  icon="success" [customClass]="{confirmButton: 'btn btn-success'}">
+</swal>
+
+<swal #successUnlinkSwal [swalOptions]="swalOptions" title="{{ 'CRUD.UNLINK_SUCCESSFULLY' | translate }}" text=""
+  icon="success" [customClass]="{confirmButton: 'btn btn-success'}">
+</swal>

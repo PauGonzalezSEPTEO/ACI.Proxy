@@ -1,0 +1,66 @@
+<form class="form w-100" novalidate="novalidate" [formGroup]="twoFactorForm" (ngSubmit)="submit()">
+  <!--begin::Heading-->
+  <div class="text-center mb-11">
+    <!--begin::Title-->
+    <h1 class="text-dark fw-bolder mb-3" [translate]="'AUTH.TWO_FACTOR.TWO_FACTOR_AUTHENTICATION'">
+    </h1>
+    <!--end::Title-->
+  </div>
+  <!--end::Heading-->
+  <!--begin::Form group-->
+  <div class="fv-row mb-8">
+    <label class="form-label fs-6 fw-bolder text-dark" [translate]="'AUTH.TWO_FACTOR.CODE'"></label>
+    <input class="form-control bg-transparent" type="text" name="token" formControlName="token" autocomplete="off"
+           [ngClass]="{
+        'is-invalid': twoFactorForm.controls['token'].invalid,
+        'is-valid': twoFactorForm.controls['token'].valid
+      }" />
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'required',
+        message: 'CODE_IS_REQUIRED',
+        control: twoFactorForm.controls['token']
+      }"></ng-container>
+  </div>
+  <!--end::Form group-->
+  <!--begin::Action-->
+  <div class="d-grid mb-10">
+    <button type="submit" [disabled]="twoFactorForm.invalid" class="btn btn-primary">
+      <ng-container *ngIf="(isLoading$ | async) === false">
+        <span class="indicator-label" [translate]="'AUTH.TWO_FACTOR.SUBMIT'"></span>
+      </ng-container>
+      <ng-container *ngIf="isLoading$ | async">
+        <span class="indicator-progress" [style.display]="'block'">
+          {{ 'AUTH.TWO_FACTOR.PLEASE_WAIT' | translate }}
+          <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+      </ng-container>
+    </button>
+  </div>
+  <!--end::Action-->
+</form>
+<!--begin::Sign up-->
+<div class="text-gray-500 text-center fw-semibold fs-6">
+  <a routerLink="/auth/login" class="link-primary fw-semibold" [translate]="'AUTH.TWO_FACTOR.SIGN_IN'"></a>
+</div>
+<!--end::Sign up-->
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="fv-plugins-message-container">
+      <div class="fv-help-block">
+        <span role="alert">
+          {{ 'AUTH.TWO_FACTOR.' + message | translate }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+<!-- begin::Alert error-->
+<ng-container *ngIf="hasError">
+  <div class="mb-lg-15 alert alert-danger">
+    <div class="alert-text font-weight-bold"
+         [translate]="'AUTH.TWO_FACTOR.THE_TWO_FACTOR_AUTHENTICATION_DETAILS_ARE_INCORRECT'">
+    </div>
+    <span [innerHTML]="errorMessage"></span>
+  </div>
+</ng-container>
+<!-- end::Alert error-->

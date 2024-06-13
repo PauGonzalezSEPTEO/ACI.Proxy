@@ -1,0 +1,14 @@
+<!-- begin::Alert error-->
+<ng-container *ngIf="hasError">
+<div class="mb-lg-15 alert alert-danger">
+    <div class="alert-text font-weight-bold" [translate]="'ACCOUNT.SETTINGS.THE_ACCOUNT_DETAILS_ARE_INCORRECT'">
+    </div>
+    <span [innerHTML]="errorMessage"></span>
+</div>
+</ng-container>
+<!-- end::Alert error-->
+<div *ngIf="account">
+<app-profile-details [account]="account"></app-profile-details>
+<app-sign-in-method [account]="account"></app-sign-in-method>
+<app-deactivate-account></app-deactivate-account>
+</div>

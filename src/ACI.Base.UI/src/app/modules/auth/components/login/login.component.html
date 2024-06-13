@@ -1,0 +1,127 @@
+<!--begin::Form-->
+<form class="form w-100 login-form" [formGroup]="loginForm" novalidate="novalidate"
+      (ngSubmit)="submit()">
+  <!--begin::Heading-->
+  <div class="text-center mb-11">
+    <h1 class="text-dark fw-bolder mb-3" [translate]="'AUTH.LOGIN.SIGN_IN'">
+    </h1>
+  </div>
+  <!--end::Heading-->
+    <!-- begin::Alert error-->
+    <ng-container *ngIf="hasError">
+      <div class="mb-lg-15 alert alert-danger">
+        <div class="alert-text font-weight-bold" [translate]="'AUTH.LOGIN.THE_LOGIN_DETAILS_ARE_INCORRECT'">
+        </div>
+        <span [innerHTML]="errorMessage"></span>
+      </div>
+    </ng-container>
+    <!-- end::Alert error-->
+  <!-- begin::Alert info-->
+  <ng-container *ngIf="errorState === errorStates.AccessFailedCount">
+    <div class="mb-10 bg-light-info p-8 rounded">
+      <div class="text-info"
+           [innerHTML]="'AUTH.LOGIN.IT_TAKES_ATTEMPT_OUT_OF_3_BEFORE_THE_ACCOUNT_IS_LOCKED_FOR_5_MINUTES' | translate:{ accessFailedCount: accessFailedCount }">
+      </div>
+    </div>
+  </ng-container>
+  <!-- end::Alert info-->
+  <!-- begin::Alert info-->
+  <ng-container *ngIf="errorState === errorStates.LockedOut">
+    <div class="mb-lg-15 alert alert-danger">
+      <div class="alert-text font-weight-bold" [translate]="'AUTH.LOGIN.MAXIMUM_ALLOWABLE_LOGIN_ATTEMPTS_3_HAVE_EXCEEDED_YOUR_ACCOUNT_IS_LOCKED_FOR_5_MINUTES_PLEASE_CHECK_YOUR_CREDENTIALS_AND_RETRY_AFTER_5_MINUTES'">
+      </div>
+    </div>
+  </ng-container>
+  <!-- end::Alert info-->
+  <!--begin::Form group-->
+  <div class="fv-row mb-8">
+    <label for="email" class="form-label fs-6 fw-bolder text-dark" [translate]="'AUTH.LOGIN.EMAIL'"></label>
+    <input class="form-control bg-transparent" type="email" id="email" name="email" title="{{ 'AUTH.LOGIN.EMAIL' | translate }}" formControlName="email" autocomplete="off" [ngClass]="{ 'is-invalid': loginForm.controls['email'].invalid, 'is-valid': loginForm.controls['email'].valid }" />
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'required',
+        message: 'EMAIL_IS_REQUIRED',
+        control: loginForm.controls['email']
+      }"></ng-container>
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'email',
+        message: 'EMAIL_IS_INVALID',
+        control: loginForm.controls['email']
+      }"></ng-container>
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'minLength',
+        message: 'EMAIL_SHOULD_HAVE_AT_LEAST_3_CHARACTERS',
+        control: loginForm.controls['email']
+      }"></ng-container>
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'maxLength',
+        message: 'EMAIL_SHOULD_HAVE_MAXIMUM_256_CHARACTERS',
+        control: loginForm.controls['email']
+      }"></ng-container>
+  </div>
+  <!--end::Form group-->
+  <!--begin::Form group-->
+  <div class="fv-row mb-3">
+    <label for="password" class="form-label fw-bolder text-dark fs-6 mb-0" [translate]="'AUTH.LOGIN.PASSWORD'"></label>
+    <input id="password" title="{{ 'AUTH.LOGIN.PASSWORD' | translate }}" class="form-control bg-transparent" type="password" name="password" autocomplete="off"
+           formControlName="password" [ngClass]="{
+        'is-invalid': loginForm.controls['password'].invalid,
+        'is-valid': loginForm.controls['password'].valid
+      }" />
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'required',
+        message: 'PASSWORD_IS_REQUIRED',
+        control: loginForm.controls['password']
+      }"></ng-container>
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'minlength',
+        message: 'PASSWORD_SHOULD_HAVE_AT_LEAST_6_CHARACTERS',
+        control: loginForm.controls['password']
+      }"></ng-container>
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'maxLength',
+        message: 'PASSWORD_SHOULD_HAVE_MAXIMUM_100_CHARACTERS',
+        control: loginForm.controls['password']
+      }"></ng-container>
+  </div>
+  <!--end::Form group-->
+  <!--begin::Wrapper-->
+  <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
+    <div></div>
+    <!--begin::Link-->
+    <a routerLink="/auth/forgot-password" class="link-primary" [translate]="'AUTH.LOGIN.FORGOT_PASSWORD'">
+    </a>
+    <!--end::Link-->
+  </div>
+  <!--end::Wrapper-->
+  <!--begin::Action-->
+  <div class="d-grid mb-10">
+    <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">
+      <ng-container *ngIf="isLoading$ | async">
+        <span class="indicator-progress" [style.display]="'block'">
+          {{ 'AUTH.LOGIN.PLEASE_WAIT' | translate }}
+          <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+      </ng-container>
+      <ng-container *ngIf="(isLoading$ | async) === false">
+        <span class="indicator-label" [translate]="'AUTH.LOGIN.CONTINUE'"></span>
+      </ng-container>
+    </button>
+  </div>
+  <div *ngIf="register" class="text-gray-500 text-center fw-semibold fs-6" [translate]="'AUTH.LOGIN.NOT_A_MEMBER_YET'">
+    <a routerLink="/auth/registration" class="link-primary" [translate]="'AUTH.LOGIN.SIGN_UP'">
+    </a>
+  </div>
+  <!--end::Action-->
+</form>
+<!--end::Form-->
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="fv-plugins-message-container">
+      <div class="fv-help-block">
+        <span role="alert">
+          {{ 'AUTH.LOGIN.' + message | translate }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

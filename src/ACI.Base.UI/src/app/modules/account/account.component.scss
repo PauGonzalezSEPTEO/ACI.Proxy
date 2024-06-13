@@ -1,0 +1,10 @@
+.image-container {
+    height: 125px;
+    width: 125px;
+    background-position: center;
+    background-size: cover;
+
+    &.avatar-placeholder{
+        background-image: url('/assets/media/avatars/blank.png');
+    }
+}

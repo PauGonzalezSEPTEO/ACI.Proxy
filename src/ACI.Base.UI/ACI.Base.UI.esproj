@@ -1,0 +1,91 @@
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.128-alpha">
+  <PropertyGroup Label="Globals">
+    <SccProjectName>
+    </SccProjectName>
+    <SccProvider>
+    </SccProvider>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccLocalPath>
+    </SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupCommand>npm start</StartupCommand>
+    <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
+    <!-- Allows the build (or compile) script located on package.json to run on Build -->
+    <ShouldRunBuildScript>false</ShouldRunBuildScript>
+    <!-- Folder where production build objects will be placed -->
+    <PublishAssetsDirectory>$(MSBuildProjectDirectory)\dist\ACI.Base.UI\</PublishAssetsDirectory>
+    <BuildCommand>
+    </BuildCommand>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="src\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptConfiguration Remove="src\app\modules\apps\chat\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\private-chat\private-chat.component.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\private-chat\private-chat.component.spec.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\private-chat\private-chat.component.scss" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\private-chat\private-chat.component.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\group-chat\group-chat.component.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\group-chat\group-chat.component.spec.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\group-chat\group-chat.component.scss" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\group-chat\group-chat.component.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\drawer-chat\drawer-chat.component.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\drawer-chat\drawer-chat.component.spec.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\drawer-chat\drawer-chat.component.scss" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\drawer-chat\drawer-chat.component.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\chat.module.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\chat.component.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\chat.component.spec.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\chat.component.scss" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\chat.component.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\apps\chat\chat-routing.module.ts" />
+  </ItemGroup>
+</Project>

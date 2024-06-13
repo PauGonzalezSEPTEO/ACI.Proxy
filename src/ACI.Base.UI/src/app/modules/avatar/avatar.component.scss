@@ -1,0 +1,30 @@
+.avatar-container {
+    position: relative;
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+.image-container {
+    height: 125px;
+    width: 125px;
+    z-index: 1;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+
+    &.avatar-placeholder{
+        background-image: url('/assets/media/avatars/blank.png');
+    }
+}
+
+.icon-wrapper {
+    cursor: pointer;
+
+    input[type='file'] {
+        display: none;
+    }
+}
+
+.avatar-clean {
+    cursor: pointer;
+}
