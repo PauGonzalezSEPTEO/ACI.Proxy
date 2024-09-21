@@ -57,7 +57,6 @@ namespace ACI.HAM.Core.Data
                         keyValues[propertyName] = property.CurrentValue;
                         continue;
                     }
-
                     switch (entry.State)
                     {
                         case EntityState.Added:
@@ -98,18 +97,25 @@ namespace ACI.HAM.Core.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
-            modelBuilder.Entity<UserCompany>(userCompany =>
+            modelBuilder.HasAnnotation("ProductVersion", "1.0.0-servicing-10000");
+            modelBuilder.Entity<UserHotelCompany>(userHotelCompany =>
             {
-                userCompany.HasKey(e => new { e.UserId, e.CompanyId });
-                userCompany.HasOne(e => e.Company)
-                    .WithMany(r => r.Users)
-                    .HasForeignKey(e => e.CompanyId)
-                    .IsRequired();
-                userCompany.HasOne(e => e.User)
-                    .WithMany(r => r.Companies)
+                userHotelCompany.HasKey(e => new { e.Id });
+                userHotelCompany.HasOne(e => e.User)
+                    .WithMany(r => r.UserHotelsCompanies)
                     .HasForeignKey(e => e.UserId)
                     .IsRequired();
+                userHotelCompany.HasOne(e => e.Company)
+                    .WithMany(r => r.UserHotelsCompanies)
+                    .HasForeignKey(e => e.CompanyId)
+                    .IsRequired();
+                userHotelCompany.HasOne(e => e.Hotel)
+                    .WithMany(r => r.UserHotelsCompanies)
+                    .HasForeignKey(e => e.HotelId)
+                    .IsRequired(false);
+                userHotelCompany.HasIndex(e => new { e.UserId, e.CompanyId, e.HotelId })
+                    .IsUnique()
+                    .HasDatabaseName("UQ_UserCompanyHotel");
             });
             modelBuilder.Entity<UserRole>(userRole =>
             {
@@ -245,6 +251,6 @@ namespace ACI.HAM.Core.Data
             return await base.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual DbSet<UserCompany> UserCompanies { get; set; }
+        public virtual DbSet<UserHotelCompany> UserHotelsCompanies { get; set; }
     }
 }

@@ -96,10 +96,21 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<RoomTypeEditableDto>> UpdateByIdAsync(int id, [FromBody] RoomTypeEditableDto roomTypeEditableDto, CancellationToken cancellationToken = default)
         {
             bool result = await _roomTypeService.UpdateByIdAsync(id, roomTypeEditableDto, cancellationToken);
-            return Ok(roomTypeEditableDto);
+            if (result)
+            {
+                return Ok(roomTypeEditableDto);
+            }
+            else
+            {
+
+                //ToDo: Add translations
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el tipo de habitación en la base de datos.");
+
+            }
         }
     }
 }

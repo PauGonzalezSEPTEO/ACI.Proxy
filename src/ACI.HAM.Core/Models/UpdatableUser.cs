@@ -30,7 +30,7 @@ namespace ACI.HAM.Core.Models
         [MaxLength(256)]
         public string NormalizedUserName => Email?.ToUpperInvariant();
 
-        public virtual ICollection<UserCompany> UserCompanies { get; } = new List<UserCompany>();
+        public virtual ICollection<UserHotelCompany> UserHotelCompany { get; } = new List<UserHotelCompany>();
 
         public virtual ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
     }

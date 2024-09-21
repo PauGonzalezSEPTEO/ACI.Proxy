@@ -10,8 +10,9 @@ import { RoleService } from '../../role/services/role-service';
 import { DataTablesResponse } from 'src/app/shared/models/data-tables-response.model';
 import { Role } from '../../role/models/role.model';
 import { AuthService } from 'src/app/modules/auth';
-import { CompanyService } from '../../company/services/company-service';
 import { Company } from '../../company/models/company.model';
+import { CompanyService } from '../../company/services/company-service';
+import { HotelService } from '../../hotel/services/hotel-service';
 import moment from 'moment';
 
 @Component({
@@ -36,7 +37,6 @@ export class UserListingComponent implements OnInit, AfterViewInit, OnDestroy {
   noticeSwal!: SwalComponent;
   swalOptions: SweetAlertOptions = {};
   roles$: Observable<Role[]>;
-
   companiesList: Company[] | null = null;
 
   constructor(
@@ -44,6 +44,7 @@ export class UserListingComponent implements OnInit, AfterViewInit, OnDestroy {
     private roleService: RoleService,
     private authService: AuthService,
     private companyService: CompanyService,        
+    private hotelService: HotelService,        
     private cdr: ChangeDetectorRef,
     private translate: TranslateService
   )
@@ -52,7 +53,7 @@ export class UserListingComponent implements OnInit, AfterViewInit, OnDestroy {
     this.translate.onLangChange
       .subscribe((event: LangChangeEvent) => {
         moment.locale(event.lang);
-    });    
+    });
   }
 
   create() {
@@ -69,7 +70,8 @@ export class UserListingComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isReadOnly = event.isReadOnly;
     this.aUser = this.userService.get(event.id);
     this.aUser.subscribe((user: User) => {
-      this.userModel = user;
+      this.userModel = new User(user);
+      this.loadHotelsForSelectedCompanies();
     });
   }
 
@@ -101,6 +103,17 @@ export class UserListingComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.userModel?.isAtLeastOneRoleSelected();
   }
 
+  loadHotelsForSelectedCompanies() {
+    const selectedCompanyIds = this.userModel.companies;
+    this.hotelService.getByCompanyIds(selectedCompanyIds).subscribe(hotels => {
+      const selectedHotelIds = this.userModel.hotels;
+      this.userModel.hotelsList = hotels
+      this.userModel.hotels = hotels
+        .filter(hotel => selectedHotelIds.includes(hotel.id))
+        .map(hotel => hotel.id);
+    });
+  }
+
   ngAfterViewInit(): void {
   }
 
@@ -118,7 +131,7 @@ export class UserListingComponent implements OnInit, AfterViewInit, OnDestroy {
     getRolesFn();
     this.companyService.search('', '', this.translate.currentLang).subscribe((companies: Company[]) => {
       this.companiesList = companies;
-    });    
+    });
     var that = this;
     const capitalizeFirstLetter = (string: string) => {
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -164,7 +177,6 @@ export class UserListingComponent implements OnInit, AfterViewInit, OnDestroy {
           title: this.translate.instant('USERS.LIST.EMAIL'), name: "USERS.LIST.EMAIL", data: 'email', type: 'string'
         },
         {
-
           title: this.translate.instant('USERS.LIST.EMAIL_CONFIRMED'), name: "USERS.LIST.EMAIL_CONFIRMED", data: 'emailConfirmed', 
           render: function (_data, _type, full) {            
             if (_data) {
@@ -222,6 +234,10 @@ export class UserListingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onChange($event: any, role: string) {
     this.userModel.updateRole(role, $event.target.checked);
+  }
+
+  onCompaniesChange() {
+    this.loadHotelsForSelectedCompanies();
   }
 
   onSubmit(_event: Event, myForm: NgForm) {

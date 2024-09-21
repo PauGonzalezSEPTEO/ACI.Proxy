@@ -16,11 +16,11 @@ namespace ACI.HAM.Core.Extensions
             {
                 var userId = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
                 User user = await context.Users
-                    .Include(x => x.Companies)
+                    .Include(x => x.UserHotelsCompanies)
                     .FirstOrDefaultAsync(x => x.Id == userId);
                 if (user != null)
                 {
-                    companies = user.Companies.Select(x => x.CompanyId).ToList();
+                    companies = user.UserHotelsCompanies.Select(x => x.CompanyId).ToList();
                 }
             }
             return companies;

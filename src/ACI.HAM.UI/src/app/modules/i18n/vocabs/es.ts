@@ -661,9 +661,6 @@ export const locale = {
       SELECT_A_LANGUAGE_FOR_TRANSLATIONS: 'Selecciona un idioma para las traducciones...',
       SPANISH: 'Español'
     },
-    TRANSLATOR: {
-      SELECT: 'Elige tu idioma',
-    },
     MENU: {
       ACCOUNTING: 'Contabilidad',
       ACCOUNT_SETTINGS: 'Configuración de la cuenta',
@@ -704,6 +701,9 @@ export const locale = {
       TRY: 'Probar',
       USER_MANAGEMENT: 'Gestión de usuarios',
       USERS: 'Usuarios'
+    },
+    TRANSLATOR: {
+      SELECT: 'Elige tu idioma',
     },
     ROLES: {
       DETAILS: {
@@ -850,6 +850,7 @@ export const locale = {
         FIRSTNAME_IS_REQUIRED: 'El nombre es requerido',
         FIRSTNAME_SHOULD_HAVE_AT_LEAST_2_CHARACTERS: 'El nombre de pila debe tener al menos 2 caracteres',
         FIRSTNAME_SHOULD_HAVE_MAXIMUM_256_CHARACTERS: 'El nombre de pila debe tener un máximo de 256 caracteres',
+        HOTELS: 'Hoteles',        
         ID: 'Id',
         JOINED_DATE: 'Fecha de ingreso',
         LASTNAME: 'Apellido',

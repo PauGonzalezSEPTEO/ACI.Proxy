@@ -101,10 +101,21 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CompanyEditableDto>> UpdateByIdAsync(int id, [FromBody] CompanyEditableDto companyEditableDto, CancellationToken cancellationToken = default)
         {
             bool result = await _companyService.UpdateByIdAsync(id, companyEditableDto, cancellationToken);
-            return Ok(companyEditableDto);
+            if (result)
+            {
+                return Ok(companyEditableDto);
+            }
+            else
+            {
+
+                //ToDo: Add translations
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar la compañía en la base de datos.");
+
+            }
         }
     }
 }

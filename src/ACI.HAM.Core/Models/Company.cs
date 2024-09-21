@@ -35,6 +35,6 @@ namespace ACI.HAM.Core.Models
         }
 
         [InverseProperty("Company")]
-        public virtual ICollection<UserCompany> Users { get; } = new List<UserCompany>();
+        public virtual ICollection<UserHotelCompany> UserHotelsCompanies { get; } = new List<UserHotelCompany>();
     }
 }

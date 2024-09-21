@@ -96,10 +96,21 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<BuildingEditableDto>> UpdateByIdAsync(int id, [FromBody] BuildingEditableDto buildingEditableDto, CancellationToken cancellationToken = default)
         {
             bool result = await _buildingService.UpdateByIdAsync(id, buildingEditableDto, cancellationToken);
-            return Ok(buildingEditableDto);
+            if (result)
+            {
+                return Ok(buildingEditableDto);
+            }
+            else
+            {
+
+                //ToDo: Add translations
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el edificio en la base de datos.");
+
+            }
         }
     }
 }

@@ -11,6 +11,8 @@ namespace ACI.HAM.Core.Dtos
         [MaxLength(256, ErrorMessage = "Name should have maximum 256 characters")]
         public string Name { get; set; }
 
+        public int CompanyId { get; set; }
+
         public string CompanyName { get; set; }
     }
 }

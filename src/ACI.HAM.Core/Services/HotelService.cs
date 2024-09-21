@@ -15,6 +15,7 @@ namespace ACI.HAM.Core.Services
 {
     public interface IHotelService : ICRUDService<HotelDto, HotelEditableDto, int>, ISearchService<HotelDto>
     {
+        Task<List<HotelDto>> ReadByCompanyIdsAsync(int[] companyIds, ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken = default);
     }
 
     public class HotelService : IHotelService
@@ -49,6 +50,24 @@ namespace ACI.HAM.Core.Services
         {
             var query = _baseContext.Hotels.AsQueryable();
             return await query.GetResultAsync<Hotel, HotelDto>(_mapper, null, null, languageCode, cancellationToken);
+        }
+
+        public async Task<List<HotelDto>> ReadByCompanyIdsAsync(int[] companyIds, ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken = default)
+        {
+            List<int> commonCompanies;
+            if (claimsPrincipal.IsInRole("Administrator"))
+            {
+                commonCompanies = companyIds.ToList();
+            }
+            else
+            {
+                List<int> companies = await _baseContext.GetUserCompaniesAsync(claimsPrincipal);
+                commonCompanies = companyIds.Intersect(companies).ToList();
+            }
+            return await _baseContext.Hotels
+                .Where(x => commonCompanies.Contains(x.CompanyId))
+                .ProjectTo<HotelDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<DataTablesResult<HotelDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, ClaimsPrincipal claimsPrincipal, string languageCode = null, CancellationToken cancellationToken = default)

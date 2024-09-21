@@ -36,7 +36,7 @@ namespace ACI.HAM.Core.Services
         {
             User user = await _baseContext.Users
                 .Include(x => x.UserRoles)
-                .Include(x => x.Companies)
+                .Include(x => x.UserHotelsCompanies)
                 .SingleOrDefaultAsync(x => x.Id == id);
             _baseContext.Remove(user);
             await _baseContext.SaveChangesAsync(cancellationToken);
@@ -48,7 +48,7 @@ namespace ACI.HAM.Core.Services
             var query = _baseContext.Users
                 .Include(x => x.UserRoles)
                 .ThenInclude(x => x.Role)
-                .Include(x => x.Companies)
+                .Include(x => x.UserHotelsCompanies)
                 .ThenInclude(x => x.Company)
                 .AsQueryable();
             return await query.GetResultAsync<User, UserDto>(_mapper, null, null, languageCode, cancellationToken);
@@ -60,7 +60,7 @@ namespace ACI.HAM.Core.Services
                 .Include(x => x.UserRoles)
                 .ThenInclude(x => x.Role)
                 .ThenInclude(x => x.Translations)
-                .Include(x => x.Companies)
+                .Include(x => x.UserHotelsCompanies)
                 .ThenInclude(x => x.Company)
                 .AsQueryable();
             return await query.GetDataTablesResultAsync<User, UserDto>(_mapper, dataTablesParameters, languageCode, cancellationToken);
@@ -71,7 +71,7 @@ namespace ACI.HAM.Core.Services
             return await _baseContext.Users
                 .Include(x => x.UserRoles)
                 .ThenInclude(x => x.Role)
-                .Include(x => x.Companies)
+                .Include(x => x.UserHotelsCompanies)
                 .ThenInclude(x => x.Company)
                 .AsNoTracking()
                 .ProjectTo<UserEditableDto>(_mapper.ConfigurationProvider)
@@ -83,7 +83,7 @@ namespace ACI.HAM.Core.Services
             var query = _baseContext.Users
                 .Include(x => x.UserRoles)
                 .ThenInclude(x => x.Role)
-                .Include(x => x.Companies)
+                .Include(x => x.UserHotelsCompanies)
                 .ThenInclude(x => x.Company)
                 .AsQueryable();
             return await query.GetResultAsync<User, UserDto>(_mapper, search, ordering, languageCode, cancellationToken);
@@ -94,7 +94,7 @@ namespace ACI.HAM.Core.Services
             UpdatableUser user = _mapper.Map<UpdatableUser>(userEditableDto);
             var existingUser = _baseContext.Set<User>()
                 .Include(x => x.UserRoles)
-                .Include(x => x.Companies)
+                .Include(x => x.UserHotelsCompanies)
                 .SingleOrDefault(x => x.Id == user.Id);
             if (existingUser != null)
             {
@@ -107,13 +107,13 @@ namespace ACI.HAM.Core.Services
                         _baseContext.Set<UserRole>().Remove(existingRole);
                     }
                 }
-                ICollection<UserCompany> companies = user.UserCompanies
+                ICollection<UserHotelCompany> userHotelCompany = user.UserHotelCompany
                     .ToList();
-                foreach (var existingCompany in existingUser.Companies)
+                foreach (var existingCompany in existingUser.UserHotelsCompanies)
                 {
-                    if (companies.All(x => x.CompanyId != existingCompany.CompanyId))
+                    if (userHotelCompany.All(x => x.CompanyId != existingCompany.CompanyId || x.HotelId != existingCompany.HotelId))
                     {
-                        _baseContext.Set<UserCompany>().Remove(existingCompany);
+                        _baseContext.Set<UserHotelCompany>().Remove(existingCompany);
                     }
                 }
                 _baseContext.Entry(existingUser).CurrentValues.SetValues(user);
@@ -130,35 +130,27 @@ namespace ACI.HAM.Core.Services
                 foreach (var pair in rolePairs)
                 {
                     pair.newRole.UserId = existingUser.Id;
-                    if (pair.existingRole != null)
-                    {
-                        _baseContext.Entry(pair.existingRole).CurrentValues.SetValues(pair.newRole);
-                    }
-                    else
+                    if (pair.existingRole == null)
                     {
                         _baseContext.Set<UserRole>().Add(pair.newRole);
                     }
                 }
-                var companyPairs = companies
+                var userHotelCompanyPairs = userHotelCompany
                     .GroupJoin(
-                        existingUser.Companies,
-                        newCompany => newCompany.CompanyId,
-                        existingCompany => existingCompany.CompanyId,
-                        (newCompany, existingCompany) => new { newCompany, existingCompany })
+                        existingUser.UserHotelsCompanies,
+                        newUserHotelCompany => new { newUserHotelCompany.CompanyId, newUserHotelCompany.HotelId },
+                        existingUserHotelCompany => new { existingUserHotelCompany.CompanyId, existingUserHotelCompany.HotelId },
+                        (newUserHotelCompany, existingUserHotelCompany) => new { newUserHotelCompany, existingUserHotelCompany })
                     .SelectMany(
-                        x => x.existingCompany.DefaultIfEmpty(),
-                        (x, existingCompany) => new { x.newCompany, existingCompany })
+                        x => x.existingUserHotelCompany.DefaultIfEmpty(),
+                        (x, existingUserHotelCompany) => new { x.newUserHotelCompany, existingUserHotelCompany })
                     .ToList();
-                foreach (var pair in companyPairs)
+                foreach (var pair in userHotelCompanyPairs)
                 {
-                    pair.newCompany.UserId = existingUser.Id;
-                    if (pair.existingCompany != null)
+                    pair.newUserHotelCompany.UserId = existingUser.Id;
+                    if (pair.existingUserHotelCompany == null)
                     {
-                        _baseContext.Entry(pair.existingCompany).CurrentValues.SetValues(pair.newCompany);
-                    }
-                    else
-                    {
-                        _baseContext.Set<UserCompany>().Add(pair.newCompany);
+                        _baseContext.Set<UserHotelCompany>().Add(pair.newUserHotelCompany);
                     }
                 }
                 await _baseContext.SaveChangesAsync(cancellationToken);

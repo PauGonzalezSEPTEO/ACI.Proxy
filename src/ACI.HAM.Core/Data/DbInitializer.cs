@@ -39,7 +39,7 @@ namespace ACI.HAM.Core.Data
                     Firstname = "Pablo",
                     Lastname = "González",
                     EmailConfirmed = true,
-                    PasswordHash = passwordHasher.HashPassword(null, "l56Ba0")                    
+                    PasswordHash = passwordHasher.HashPassword(null, "l56Ba0")
                 };
                 await userManager.CreateAsync(administratorUser);
             }

@@ -3,8 +3,6 @@
     overflow: hidden;
 }
 
-.scrollable-box {
+.scrollable-companies-box, .scrollable-hotels-box {
     position: relative;
-    height: 300px;
-    overflow: auto;
 }

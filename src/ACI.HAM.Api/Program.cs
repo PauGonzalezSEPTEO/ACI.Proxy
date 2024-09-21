@@ -2,6 +2,9 @@ using ACI.HAM.Api;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+#if DEBUG
+using System.Diagnostics;
+#endif
 
 #if DEBUG
 //while (!Debugger.IsAttached) { Thread.Sleep(100); }

@@ -19,9 +19,6 @@ namespace ACI.HAM.Core.Models
 
         public bool? CommunicationByPhone { get; set; }
 
-        [InverseProperty("User")]
-        public virtual ICollection<UserCompany> Companies { get; } = new List<UserCompany>();
-
         [MinLength(2)]
         [MaxLength(256)]
         public string CompanyName { get; set; }
@@ -34,6 +31,18 @@ namespace ACI.HAM.Core.Models
 
         [StringLength(3)]
         public string CurrencyCode { get; set; }
+
+        public static IQueryable<UserDto> FilterAndOrder(IQueryable<User> query, IMapper mapper, string search, string ordering, string languageCode)
+        {
+            if (string.IsNullOrEmpty(ordering))
+            {
+                ordering = "lastname asc";
+            }
+            return query
+                .ProjectTo<UserDto>(mapper.ConfigurationProvider, new { languageCode })
+                .Where(x => string.IsNullOrEmpty(search) || (!string.IsNullOrEmpty(x.Lastname) && x.Lastname.Contains(search)))
+                .OrderBy(ordering);
+        }
 
         [Required]
         [MinLength(2)]
@@ -55,18 +64,9 @@ namespace ACI.HAM.Core.Models
 
         public DateTimeOffset RefreshTokenExpiryTime { get; set; }
 
-        public virtual ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
+        [InverseProperty("User")]
+        public virtual ICollection<UserHotelCompany> UserHotelsCompanies { get; } = new List<UserHotelCompany>();
 
-        public static IQueryable<UserDto> FilterAndOrder(IQueryable<User> query, IMapper mapper, string search, string ordering, string languageCode)
-        {
-            if (string.IsNullOrEmpty(ordering))
-            {
-                ordering = "lastname asc";
-            }
-            return query
-                .ProjectTo<UserDto>(mapper.ConfigurationProvider, new { languageCode })
-                .Where(x => string.IsNullOrEmpty(search) || (!string.IsNullOrEmpty(x.Lastname) && x.Lastname.Contains(search)))
-                .OrderBy(ordering);
-        }
+        public virtual ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
     }
 }

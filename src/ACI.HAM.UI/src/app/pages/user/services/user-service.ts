@@ -1,7 +1,7 @@
 import { environment } from '../../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, first, map } from 'rxjs';
 import { User } from '../models/user.model';
 import { DataTablesResponse } from 'src/app/shared/models/data-tables-response.model';
 
@@ -54,6 +54,6 @@ export class UserService {
     }
 
     update(id: string, user: User): Observable<User> {
-        return this.http.put<User>(`${API_USERS_URL}/update-by-id/${id}`, user).pipe(map(user => new User(user)));
+        return this.http.put<User>(`${API_USERS_URL}/update-by-id/${id}`, user.getPayload()).pipe(map(user => new User(user)));
     }
 }

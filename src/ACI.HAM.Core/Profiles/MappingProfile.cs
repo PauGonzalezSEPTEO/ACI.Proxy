@@ -22,22 +22,31 @@ namespace ACI.HAM.Core.Profiles
             CreateMap<CreateUserDto, User>()
                 .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email))
                 .ForMember(x => x.UserRoles, opt => opt.MapFrom(x => x.Roles.Select(y => new UserRole() { RoleId = y }).ToList()))
-                .ForMember(x => x.Companies, opt => opt.MapFrom(x => x.Companies.Select(y => new UserCompany() { CompanyId = y }).ToList()));    
+                .ForMember(x => x.UserHotelsCompanies, opt => opt.MapFrom(x => x.Companies.Select(y => new UserHotelCompany() { CompanyId = y }).ToList()));
             CreateMap<RegistrationDto, User>()
                 .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email));
             CreateMap<User, AccountDto>().ReverseMap();
             CreateMap<ProfileDetailsDto, User>();
+            CreateMap<UserHotelCompany, UserHotelCompanyDto>()
+                .ForMember(x => x.CompanyName, opt => opt.MapFrom(x => x.Company.Name))
+                .ForMember(x => x.HotelName, opt => opt.MapFrom(x => x.Hotel != null ? x.Hotel.Name : null))
+                .ReverseMap();
             CreateMap<User, UserEditableDto>()
                 .ForMember(x => x.Roles, opt => opt.MapFrom(x => x.UserRoles.Select(y => y.RoleId).ToList()))
-                .ForMember(x => x.Companies, opt => opt.MapFrom(x => x.Companies.Select(y => y.CompanyId).ToList()))
                 .ReverseMap();
             CreateMap<UserEditableDto, UpdatableUser>()
                 .ForMember(x => x.UserRoles, opt => opt.MapFrom(x => x.Roles.Select(y => new UserRole() { UserId = x.Id, RoleId = y }).ToList()))
-                .ForMember(x => x.UserCompanies, opt => opt.MapFrom(x => x.Companies.Select(y => new UserCompany() { UserId = x.Id, CompanyId = y }).ToList()));
+                .ForMember(x => x.UserHotelCompany, opt => opt.MapFrom(x => x.UserHotelsCompanies.Select(y => new UserHotelCompany() { UserId = x.Id, CompanyId = y.CompanyId, HotelId = y.HotelId }).ToList()));
             CreateMap<User, UserDto>()
                 .ForCtorParam("languageCode", opt => opt.MapFrom(x => languageCode))
                 .ForMember(x => x.Roles, opt => opt.MapFrom(x => x.UserRoles.Select(y => y.Role)))
-                .ForMember(x => x.Companies, opt => opt.MapFrom(x => x.Companies.Select(y => y.Company)));
+                .ForMember(x => x.UserHotelCompany, opt => opt.MapFrom(x => x.UserHotelsCompanies.Select(y => new UserHotelCompanyDto
+                 {
+                     CompanyId = y.CompanyId,
+                     HotelId = y.HotelId,
+                     CompanyName = y.Company.Name,
+                     HotelName = y.Hotel != null ? y.Hotel.Name : null
+                 }).ToList()));
             CreateMap<CompanyEditableDto, Company>().ReverseMap();
             CreateMap<Company, CompanyDto>();
             CreateMap<HotelEditableDto, Hotel>().ReverseMap();

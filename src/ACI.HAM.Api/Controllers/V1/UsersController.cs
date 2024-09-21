@@ -105,10 +105,21 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserEditableDto>> UpdateByIdAsync(string id, [FromBody] UserEditableDto userEditableDto, CancellationToken cancellationToken = default)
         {
             bool result = await _userService.UpdateByIdAsync(id, userEditableDto, cancellationToken);
-            return Ok(userEditableDto);
+            if (result)
+            {
+                return Ok(userEditableDto);
+            }
+            else
+            {
+
+                //ToDo: Add translations
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el usuario en la base de datos.");
+
+            }            
         }
     }
 }

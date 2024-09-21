@@ -282,17 +282,16 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UserCompanies]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UserHotelsCompanies]') AND type in (N'U'))
 BEGIN
-CREATE TABLE [dbo].[UserCompanies](
+CREATE TABLE [dbo].[UserHotelsCompanies](
+  Id INT IDENTITY(1,1) PRIMARY KEY,
 	[UserId] [nvarchar](450) NOT NULL,
-	[CompanyId] [int] NOT NULL
- CONSTRAINT [PK_UserCompanies] PRIMARY KEY CLUSTERED 
-(
-	[UserId] ASC,
-	[CompanyId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+	[CompanyId] [int] NOT NULL,
+  [HotelId] [int] NULL
+ CONSTRAINT UQ_UserCompanyHotel UNIQUE ([UserId], [CompanyId], [HotelId])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON
+)) ON [PRIMARY]
 END
 GO
 
@@ -442,7 +441,11 @@ SET IDENTITY_INSERT [dbo].[Hotels] ON
 GO
 INSERT [dbo].[Hotels] ([Id], [Name], [CompanyId]) VALUES (1, N'Paradise Hotel', 1)
 GO
-INSERT [dbo].[Hotels] ([Id], [Name], [CompanyId]) VALUES (2, N'Mountain Hotel', 2)
+INSERT [dbo].[Hotels] ([Id], [Name], [CompanyId]) VALUES (2, N'Tropical Hotel', 1)
+GO
+INSERT [dbo].[Hotels] ([Id], [Name], [CompanyId]) VALUES (3, N'Mountain Hotel', 2)
+GO
+INSERT [dbo].[Hotels] ([Id], [Name], [CompanyId]) VALUES (4, N'White Hotel', 2)
 GO
 SET IDENTITY_INSERT [dbo].[Hotels] OFF
 GO
@@ -491,18 +494,25 @@ GO
 ALTER TABLE [dbo].[Hotels] CHECK CONSTRAINT [FK_Hotels_Companies]
 GO
 
-ALTER TABLE [dbo].[UserCompanies]  WITH CHECK ADD CONSTRAINT [FK_UserCompanies_AspNetUsers] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[UserHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_UserHotelsCompanies_AspNetUsers] FOREIGN KEY([UserId])
 REFERENCES [dbo].[AspNetUsers] ([Id])
 ON DELETE CASCADE
 GO
-ALTER TABLE [dbo].[UserCompanies] CHECK CONSTRAINT [FK_UserCompanies_AspNetUsers]
+ALTER TABLE [dbo].[UserHotelsCompanies] CHECK CONSTRAINT [FK_UserHotelsCompanies_AspNetUsers]
 GO
 
-ALTER TABLE [dbo].[UserCompanies]  WITH CHECK ADD CONSTRAINT [FK_UserCompanies_Companies] FOREIGN KEY([CompanyId])
+ALTER TABLE [dbo].[UserHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_UserHotelsCompanies_Companies] FOREIGN KEY([CompanyId])
 REFERENCES [dbo].[Companies] ([Id])
 ON DELETE CASCADE
 GO
-ALTER TABLE [dbo].[UserCompanies] CHECK CONSTRAINT [FK_UserCompanies_Companies]
+ALTER TABLE [dbo].[UserHotelsCompanies] CHECK CONSTRAINT [FK_UserHotelsCompanies_Companies]
+GO
+
+ALTER TABLE [dbo].[UserHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_UserHotelsCompanies_Hotels] FOREIGN KEY([HotelId])
+REFERENCES [dbo].[Hotels] ([Id])
+ON DELETE NO ACTION
+GO
+ALTER TABLE [dbo].[UserHotelsCompanies] CHECK CONSTRAINT [FK_UserHotelsCompanies_Hotels]
 GO
 
 ALTER TABLE [dbo].[RoomTypeTranslations]  WITH CHECK ADD CONSTRAINT [FK_RoomTypeTranslations_RoomTypes] FOREIGN KEY([RoomTypeId])
@@ -586,7 +596,7 @@ GRANT ALL ON BoardTranslations TO [user];
 GRANT ALL ON BoardsBuildings TO [user];
 GRANT ALL ON Buildings TO [user];
 GRANT ALL ON BuildingTranslations TO [user];
-GRANT ALL ON UserCompanies TO [user];
+GRANT ALL ON UserHotelsCompanies TO [user];
 
 END
 

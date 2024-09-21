@@ -8,15 +8,13 @@ namespace ACI.HAM.Core.Dtos
 
         public UserEditableDto(UserEditableDto source)
         {
-            Companies = source.Companies;
             Email = source.Email;
             Firstname = source.Firstname;
             Id = source.Id;
             Lastname = source.Lastname;
             Roles = source.Roles;
+            UserHotelsCompanies = source.UserHotelsCompanies;
         }
-
-        public ICollection<int> Companies { get; set; }
 
         [MinLength(3, ErrorMessage = "Email should have at least 3 characters")]
         [MaxLength(256, ErrorMessage = "Email should have maximum 256 characters")]
@@ -37,5 +35,7 @@ namespace ACI.HAM.Core.Dtos
         public string Lastname { get; set; }
 
         public ICollection<string> Roles { get; set; }
+
+        public ICollection<UserHotelCompanyDto> UserHotelsCompanies { get; set; }
     }
 }

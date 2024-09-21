@@ -120,10 +120,21 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<RoleEditableDto>> UpdateByIdAsync(string id, [FromBody] RoleEditableDto roleEditableDto, CancellationToken cancellationToken = default)
         {
             bool result = await _roleService.UpdateByIdAsync(id, roleEditableDto, cancellationToken);
-            return Ok(roleEditableDto);
+            if (result)
+            {
+                return Ok(roleEditableDto);
+            }
+            else
+            {
+
+                //ToDo: Add translations
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el rol en la base de datos.");
+
+            }
         }
     }
 }

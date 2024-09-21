@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using ACI.HAM.Core.Models;
 
 namespace ACI.HAM.Core.Dtos
 {
@@ -13,13 +14,26 @@ namespace ACI.HAM.Core.Dtos
 
         public DateTimeOffset? CreateDate { get; set; }
 
-        internal ICollection<CompanyDto> Companies { get; set; } = new HashSet<CompanyDto>();
-
         public ICollection<string> CompanyNames
         {
             get
             {
-                return Companies.Select(x => x.Name).ToList();
+                return UserHotelCompany
+                    .Select(x => x.CompanyName)
+                    .Distinct()
+                    .ToList();
+            }
+        }
+
+        public ICollection<string> HotelNames
+        {
+            get
+            {
+                return UserHotelCompany
+                    .Where(x => x.HotelName != null)
+                    .Select(x => x.HotelName)
+                    .Distinct()
+                    .ToList();
             }
         }
 
@@ -53,5 +67,7 @@ namespace ACI.HAM.Core.Dtos
         }
 
         internal ICollection<RoleDto> Roles { get; set; } = new HashSet<RoleDto>();
+
+        public ICollection<UserHotelCompanyDto> UserHotelCompany { get; set; }
     }
 }

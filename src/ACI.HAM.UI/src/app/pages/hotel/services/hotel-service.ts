@@ -26,6 +26,10 @@ export class HotelService {
         return this.http.get<Hotel>(`${API_HOTELS_URL}/read-editable-by-id/${id}`).pipe(map(hotel => new Hotel(hotel)));
     }
 
+    getByCompanyIds(companyIds: number[]): Observable<Hotel[]> {
+        return this.http.post<Hotel[]>(`${API_HOTELS_URL}/read-by-company-ids`, companyIds);        
+    }
+
     readDataTable(params: any, languageCode: string): Observable<DataTablesResponse> {
         const httpParams = new HttpParams()
             .append('languageCode', languageCode);

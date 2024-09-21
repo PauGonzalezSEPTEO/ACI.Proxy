@@ -50,6 +50,19 @@ namespace ACI.HAM.Api.V1.Controllers
         }
 
         [HttpPost]
+        [Route("read-by-company-ids")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<HotelDto>>> ReadByCompanyIdsAsync([FromBody] int[] companyIds, CancellationToken cancellationToken = default)
+        {
+            var claimsPrincipal = _httpContextAccessor.HttpContext.User;
+            List<HotelDto> hotelsDto = await _hotelService.ReadByCompanyIdsAsync(companyIds, claimsPrincipal, cancellationToken);
+            return Ok(hotelsDto);
+        }
+
+
+        [HttpPost]
         [Route("read-data-table")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -90,10 +103,21 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<HotelEditableDto>> UpdateByIdAsync(int id, [FromBody] HotelEditableDto hotelEditableDto, CancellationToken cancellationToken = default)
         {
             bool result = await _hotelService.UpdateByIdAsync(id, hotelEditableDto, cancellationToken);
-            return Ok(hotelEditableDto);
+            if (result)
+            {
+                return Ok(hotelEditableDto);
+            }
+            else
+            {
+
+                //ToDo: Add translations
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el hotel en la base de datos.");
+
+            }
         }
     }
 }

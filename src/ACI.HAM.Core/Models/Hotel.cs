@@ -40,5 +40,8 @@ namespace ACI.HAM.Core.Models
                 .Where(x => string.IsNullOrEmpty(search) || (!string.IsNullOrEmpty(x.Name) && x.Name.Contains(search)))
                 .OrderBy(ordering);
         }
+
+        [InverseProperty("Hotel")]
+        public virtual ICollection<UserHotelCompany> UserHotelsCompanies { get; } = new List<UserHotelCompany>();
     }
 }

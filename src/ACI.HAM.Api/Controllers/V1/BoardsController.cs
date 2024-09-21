@@ -76,10 +76,21 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<BoardEditableDto>> UpdateByIdAsync(int id, [FromBody] BoardEditableDto boardEditableDto, CancellationToken cancellationToken = default)
         {
             bool result = await _boardService.UpdateByIdAsync(id, boardEditableDto, cancellationToken);
-            return Ok(boardEditableDto);
+            if (result)
+            {
+                return Ok(boardEditableDto);
+            }
+            else
+            {
+
+                //ToDo: Add translations
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar la pensión en la base de datos.");
+
+            }
         }
     }
 }
