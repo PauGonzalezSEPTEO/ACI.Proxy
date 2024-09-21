@@ -1,7 +1,5 @@
-version: '3.4'
-
 services:
-  aci.base.api:
+  aci.ham.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:

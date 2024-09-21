@@ -1,5 +1,3 @@
-version: '3.4'
-
 services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -15,16 +13,18 @@ services:
       - dbdata:/var/opt/mssql/data
       - ./db/mssql/docker-entrypoint.sh:/entrypoint.sh
       - ./db/mssql/docker-db-init.sh:/db-init.sh
-      - ./db/mssql/mssql-base.sql:/db-init.sql
+      - ./db/mssql/mssql-ham.sql:/db-init.sql
     expose:
       - "1433"
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-Usa", "-P.acisa159753", "-Q", "select 1"]
-      interval: 1s
-      retries: 60
+      test: /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P ".acisa159753" -Q "SELECT 1" -b -o /dev/null
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
 
-  aci.base.api:
-    image: ${DOCKER_REGISTRY-}acibaseapi
+  aci.ham.api:
+    image: ${DOCKER_REGISTRY-}acihamapi
     build:
       context: .
       dockerfile: Dockerfile

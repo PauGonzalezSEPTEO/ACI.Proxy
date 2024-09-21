@@ -10,6 +10,6 @@
   <PropertyGroup>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
-    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)ACI.Base.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)ACI.HAM.ruleset</CodeAnalysisRuleSet>
  </PropertyGroup>
 </Project>
