@@ -47,6 +47,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\V1.Controllers.UsersController.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>V1.Controllers.UsersController.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\V1.Controllers.UsersController.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>V1.Controllers.UsersController.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.3.44">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

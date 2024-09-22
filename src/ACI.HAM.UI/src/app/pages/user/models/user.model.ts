@@ -11,12 +11,12 @@ export class UserHotelCompany {
 }
 
 export class User {
-  companies: number[];
+  companies: number[] = [];
   createDate?: Date;
   email: string;
   emailConfirmed: boolean;
   firstname: string;
-  hotels: number[];
+  hotels: number[] = [];
   id: string;
   lastLoginDate?: Date;
   lastname: string;

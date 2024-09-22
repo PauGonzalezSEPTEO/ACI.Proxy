@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace ACI.HAM.Api.V1.Controllers
 {
@@ -17,8 +18,9 @@ namespace ACI.HAM.Api.V1.Controllers
     {
         private readonly ICompanyService _companyService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStringLocalizer<UsersController> _messages;
 
-        public CompaniesController(ICompanyService companyService, IHttpContextAccessor httpContextAccessor)
+        public CompaniesController(ICompanyService companyService, IHttpContextAccessor httpContextAccessor, IStringLocalizer<UsersController> messages)
         {
             _companyService = companyService ?? throw new ArgumentNullException(nameof(companyService));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
@@ -111,10 +113,7 @@ namespace ACI.HAM.Api.V1.Controllers
             }
             else
             {
-
-                //ToDo: Add translations
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar la compañía en la base de datos.");
-
+                return StatusCode(StatusCodes.Status500InternalServerError, _messages["Error updating the company in the database"].Value);
             }
         }
     }

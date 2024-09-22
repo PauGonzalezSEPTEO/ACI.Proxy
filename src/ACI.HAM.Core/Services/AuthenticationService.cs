@@ -143,39 +143,46 @@ namespace ACI.HAM.Core.Services
 
         public async Task<RegistrationResultDto> CreateUserAsync(CreateUserDto createUserDto, CancellationToken cancellationToken = default)
         {
-            RegistrationResultDto registrationResultDto = new RegistrationResultDto();
-            User user = _mapper.Map<User>(createUserDto);
-            user.CreateDate = DateTimeOffset.UtcNow;
-            IdentityResult identityResult = await _userManager.CreateAsync(user);
-            if (!identityResult.Succeeded)
+            try
             {
-                registrationResultDto.HasErrors = true;
-                registrationResultDto.Errors = identityResult.Errors;
-                return registrationResultDto;
+                RegistrationResultDto registrationResultDto = new RegistrationResultDto();
+                User user = _mapper.Map<User>(createUserDto);
+                user.CreateDate = DateTimeOffset.UtcNow;
+                IdentityResult identityResult = await _userManager.CreateAsync(user);
+                if (!identityResult.Succeeded)
+                {
+                    registrationResultDto.HasErrors = true;
+                    registrationResultDto.Errors = identityResult.Errors;
+                    return registrationResultDto;
+                }
+                else
+                {
+                    registrationResultDto.Id = user.Id;
+                    registrationResultDto.User = new AccountDto()
+                    {
+                        Firstname = user.Firstname,
+                        Lastname = user.Lastname
+                    };
+                    var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    string tokenEmailConfirmation = HttpUtility.UrlEncode(emailConfirmationToken);
+                    string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    string tokenPasswordReset = HttpUtility.UrlEncode(passwordResetToken);
+                    Uri baseUri = new Uri(_uiSettings.BaseUrl);
+                    Uri confirmEmailUrl = new Uri(baseUri, _uiSettings.ConfirmEmailAndSetPasswordRelativeUrl + $"?email={user.Email}&email-token={tokenEmailConfirmation}&password-token={tokenPasswordReset}");
+                    SendPasswordResetMailDto sendPasswordResetMailDto = new SendPasswordResetMailDto()
+                    {
+                        Subject = _localizer["Confirm email and set password"],
+                        To = user.Email,
+                        Url = confirmEmailUrl.AbsoluteUri
+                    };
+                    _ = Task.Run(() => _mailService.SendPasswordResetMailAsync(sendPasswordResetMailDto, cancellationToken));
+                    return registrationResultDto;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                registrationResultDto.Id = user.Id;
-                registrationResultDto.User = new AccountDto()
-                {
-                    Firstname = user.Firstname,
-                    Lastname = user.Lastname
-                };
-                var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                string tokenEmailConfirmation = HttpUtility.UrlEncode(emailConfirmationToken);
-                string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                string tokenPasswordReset = HttpUtility.UrlEncode(passwordResetToken);
-                Uri baseUri = new Uri(_uiSettings.BaseUrl);
-                Uri confirmEmailUrl = new Uri(baseUri, _uiSettings.ConfirmEmailAndSetPasswordRelativeUrl + $"?email={user.Email}&email-token={tokenEmailConfirmation}&password-token={tokenPasswordReset}");
-                SendPasswordResetMailDto sendPasswordResetMailDto = new SendPasswordResetMailDto()
-                {
-                    Subject = _localizer["Confirm email and set password"],
-                    To = user.Email,
-                    Url = confirmEmailUrl.AbsoluteUri
-                };
-                _ = Task.Run(() => _mailService.SendPasswordResetMailAsync(sendPasswordResetMailDto, cancellationToken));
-                return registrationResultDto;
             }
+            return null;
         }
 
         public async Task<DeactivateResultDto> DeactivateAsync(string name, CancellationToken cancellationToken)

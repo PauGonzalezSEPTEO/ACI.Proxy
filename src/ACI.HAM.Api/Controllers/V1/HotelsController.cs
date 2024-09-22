@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace ACI.HAM.Api.V1.Controllers
 {
@@ -17,8 +18,9 @@ namespace ACI.HAM.Api.V1.Controllers
     {
         private readonly IHotelService _hotelService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStringLocalizer<UsersController> _messages;
 
-        public HotelsController(IHotelService hotelService, IHttpContextAccessor httpContextAccessor)
+        public HotelsController(IHotelService hotelService, IHttpContextAccessor httpContextAccessor, IStringLocalizer<UsersController> messages)
         {
             _hotelService = hotelService ?? throw new ArgumentNullException(nameof(hotelService));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
@@ -113,10 +115,7 @@ namespace ACI.HAM.Api.V1.Controllers
             }
             else
             {
-
-                //ToDo: Add translations
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el hotel en la base de datos.");
-
+                return StatusCode(StatusCodes.Status500InternalServerError, _messages["Error updating the hotel in the database"].Value);
             }
         }
     }

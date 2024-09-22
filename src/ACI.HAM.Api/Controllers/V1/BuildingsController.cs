@@ -5,6 +5,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace ACI.HAM.Api.V1.Controllers
 {
@@ -15,8 +16,9 @@ namespace ACI.HAM.Api.V1.Controllers
     {
         private readonly IBuildingService _buildingService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStringLocalizer<UsersController> _messages;
 
-        public BuildingsController(IBuildingService buildingService, IHttpContextAccessor httpContextAccessor)
+        public BuildingsController(IBuildingService buildingService, IHttpContextAccessor httpContextAccessor, IStringLocalizer<UsersController> messages)
         {
             _buildingService = buildingService ?? throw new ArgumentNullException(nameof(buildingService));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
@@ -106,10 +108,7 @@ namespace ACI.HAM.Api.V1.Controllers
             }
             else
             {
-
-                //ToDo: Add translations
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el edificio en la base de datos.");
-
+                return StatusCode(StatusCodes.Status500InternalServerError, _messages["Error updating the building in the database"].Value);
             }
         }
     }

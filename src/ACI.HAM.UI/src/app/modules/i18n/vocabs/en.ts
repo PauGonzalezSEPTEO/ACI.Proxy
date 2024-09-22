@@ -702,59 +702,6 @@ export const locale = {
       USER_MANAGEMENT: 'User management',
       USERS: 'Users'
     },
-    TOOLBAR: {
-      ACCOUNTING: {
-        ACTIONS: 'Actions:',
-        ADD_A_TEAM_MEMBER: 'Add a team member',
-        CREATE_NEW_ACCOUNT: 'Create new account',
-        DONE: 'Done',
-        FILTERS: 'Filters',
-        IN_PROGRESS: 'In progress',
-        INVITE_FRIENDS: 'Invite friends',
-        PROGRESS: 'Progress:',
-        TODAY_16_FEB: 'Today 16 Feb'
-      },
-      CLASSIC: {
-        CREATE: 'Create',
-        FILTER: 'Filter',
-        LOADING_DATA_RANGE: 'Loading date range...'
-      },
-      EXTENDED: {
-        DONE: 'Done',
-        ENABLE_GRID_VIEW: 'Enable grid view',
-        ENABLE_ROW_VIEW: 'Enable row view',
-        IN_PROGRESS: 'In progress',
-        INVITE_A_TEAM_MEMBER: 'Invite a team member',
-        LATEST: 'Latest',
-        SEARCH_TEAM: 'Search team',
-        SORT_BY: 'Sort by:',
-        TEAM: 'Team:'
-      },
-      REPORTS: {
-        DAY: 'Day',
-        DONE: 'Done',
-        ENABLE_GRID_VIEW: 'Enable grid view',
-        ENABLE_ROW_VIEW: 'Enable row view',
-        FILTER_BY: 'Filter by:',
-        IN_PROGRESS: 'In progress',
-        LATEST: 'Latest',
-        SORT_BY: 'Sort by:',
-        TODAY: 'Today',
-        WEEK: 'Week'
-      },
-      SAAS: {
-        ADD_NEW_CATEGORY: 'Add new category',
-        ADD_NEW_PAGE: 'Add new page',
-        ADD_NEW_SECTION: 'Add new section',
-        DONE: 'Done',
-        IMPACT_LEVEL: 'Impact level:',
-        IN_PROGRESS: 'In progress',
-        LATEST: 'Latest',
-        QUICK_TOOLS: 'Quick tools:',
-        SET_IMPACT_LEVEL: 'Set impact level',
-        SORT_BY: 'Sort by:'
-      }
-    },
     ROLES: {
       DETAILS: {
         EDIT_ROLE: 'Edit role',
@@ -826,6 +773,59 @@ export const locale = {
         SUCCESS: 'Success!',
         SUBMIT: 'Submit',
         TRANSLATION: 'Translation'
+      }
+    },
+    TOOLBAR: {
+      ACCOUNTING: {
+        ACTIONS: 'Actions:',
+        ADD_A_TEAM_MEMBER: 'Add a team member',
+        CREATE_NEW_ACCOUNT: 'Create new account',
+        DONE: 'Done',
+        FILTERS: 'Filters',
+        IN_PROGRESS: 'In progress',
+        INVITE_FRIENDS: 'Invite friends',
+        PROGRESS: 'Progress:',
+        TODAY_16_FEB: 'Today 16 Feb'
+      },
+      CLASSIC: {
+        CREATE: 'Create',
+        FILTER: 'Filter',
+        LOADING_DATA_RANGE: 'Loading date range...'
+      },
+      EXTENDED: {
+        DONE: 'Done',
+        ENABLE_GRID_VIEW: 'Enable grid view',
+        ENABLE_ROW_VIEW: 'Enable row view',
+        IN_PROGRESS: 'In progress',
+        INVITE_A_TEAM_MEMBER: 'Invite a team member',
+        LATEST: 'Latest',
+        SEARCH_TEAM: 'Search team',
+        SORT_BY: 'Sort by:',
+        TEAM: 'Team:'
+      },
+      REPORTS: {
+        DAY: 'Day',
+        DONE: 'Done',
+        ENABLE_GRID_VIEW: 'Enable grid view',
+        ENABLE_ROW_VIEW: 'Enable row view',
+        FILTER_BY: 'Filter by:',
+        IN_PROGRESS: 'In progress',
+        LATEST: 'Latest',
+        SORT_BY: 'Sort by:',
+        TODAY: 'Today',
+        WEEK: 'Week'
+      },
+      SAAS: {
+        ADD_NEW_CATEGORY: 'Add new category',
+        ADD_NEW_PAGE: 'Add new page',
+        ADD_NEW_SECTION: 'Add new section',
+        DONE: 'Done',
+        IMPACT_LEVEL: 'Impact level:',
+        IN_PROGRESS: 'In progress',
+        LATEST: 'Latest',
+        QUICK_TOOLS: 'Quick tools:',
+        SET_IMPACT_LEVEL: 'Set impact level',
+        SORT_BY: 'Sort by:'
       }
     },
     USERS: {

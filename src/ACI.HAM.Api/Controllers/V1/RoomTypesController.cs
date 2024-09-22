@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+
 #if DEBUG
 using Microsoft.FeatureManagement.Mvc;
 #endif
@@ -20,9 +22,10 @@ namespace ACI.HAM.Api.V1.Controllers
     public class RoomTypesController : ApiControllerBase
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStringLocalizer<UsersController> _messages;
         private readonly IRoomTypeService _roomTypeService;
 
-        public RoomTypesController(IRoomTypeService roomTypeService, IHttpContextAccessor httpContextAccessor)
+        public RoomTypesController(IRoomTypeService roomTypeService, IHttpContextAccessor httpContextAccessor, IStringLocalizer<UsersController> messages)
         {
             _roomTypeService = roomTypeService ?? throw new ArgumentNullException(nameof(roomTypeService));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
@@ -106,10 +109,7 @@ namespace ACI.HAM.Api.V1.Controllers
             }
             else
             {
-
-                //ToDo: Add translations
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el tipo de habitación en la base de datos.");
-
+                return StatusCode(StatusCodes.Status500InternalServerError, _messages["Error updating the room type in the database"].Value);
             }
         }
     }

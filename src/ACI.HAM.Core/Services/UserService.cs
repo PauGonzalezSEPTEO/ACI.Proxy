@@ -107,11 +107,11 @@ namespace ACI.HAM.Core.Services
                         _baseContext.Set<UserRole>().Remove(existingRole);
                     }
                 }
-                ICollection<UserHotelCompany> userHotelCompany = user.UserHotelCompany
+                ICollection<UserHotelCompany> userHotelsCompanies = user.UserHotelsCompanies
                     .ToList();
                 foreach (var existingCompany in existingUser.UserHotelsCompanies)
                 {
-                    if (userHotelCompany.All(x => x.CompanyId != existingCompany.CompanyId || x.HotelId != existingCompany.HotelId))
+                    if (userHotelsCompanies.All(x => x.CompanyId != existingCompany.CompanyId || x.HotelId != existingCompany.HotelId))
                     {
                         _baseContext.Set<UserHotelCompany>().Remove(existingCompany);
                     }
@@ -135,7 +135,7 @@ namespace ACI.HAM.Core.Services
                         _baseContext.Set<UserRole>().Add(pair.newRole);
                     }
                 }
-                var userHotelCompanyPairs = userHotelCompany
+                var userHotelCompanyPairs = userHotelsCompanies
                     .GroupJoin(
                         existingUser.UserHotelsCompanies,
                         newUserHotelCompany => new { newUserHotelCompany.CompanyId, newUserHotelCompany.HotelId },

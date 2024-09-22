@@ -1,12 +1,14 @@
 using ACI.HAM.Api.Controllers;
 using ACI.HAM.Api.Controllers.V1;
 using ACI.HAM.Core.Dtos;
+using ACI.HAM.Core.Localization;
 using ACI.HAM.Core.Services;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace ACI.HAM.Api.V1.Controllers
 {
@@ -17,12 +19,14 @@ namespace ACI.HAM.Api.V1.Controllers
     public class UsersController : ApiControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly IStringLocalizer<UsersController> _messages;
         private readonly IUserService _userService;
 
-        public UsersController(IAuthenticationService authenticationService, IUserService userService)
+        public UsersController(IAuthenticationService authenticationService, IUserService userService, IStringLocalizer<UsersController> messages)
         {
             _authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _messages = messages ?? throw new ArgumentNullException(nameof(messages));
         }
 
         [HttpPost]
@@ -114,10 +118,8 @@ namespace ACI.HAM.Api.V1.Controllers
                 return Ok(userEditableDto);
             }
             else
-            {
-
-                //ToDo: Add translations
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el usuario en la base de datos.");
+            {                
+                return StatusCode(StatusCodes.Status500InternalServerError, _messages["Error updating the user in the database"].Value);
 
             }            
         }

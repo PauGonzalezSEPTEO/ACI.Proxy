@@ -22,7 +22,7 @@ namespace ACI.HAM.Core.Profiles
             CreateMap<CreateUserDto, User>()
                 .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email))
                 .ForMember(x => x.UserRoles, opt => opt.MapFrom(x => x.Roles.Select(y => new UserRole() { RoleId = y }).ToList()))
-                .ForMember(x => x.UserHotelsCompanies, opt => opt.MapFrom(x => x.Companies.Select(y => new UserHotelCompany() { CompanyId = y }).ToList()));
+                .ForMember(x => x.UserHotelsCompanies, opt => opt.MapFrom(x => x.UserHotelsCompanies.Select(y => new UserHotelCompany() { CompanyId = y.CompanyId, HotelId = y.HotelId }).ToList()));
             CreateMap<RegistrationDto, User>()
                 .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email));
             CreateMap<User, AccountDto>().ReverseMap();
@@ -36,11 +36,11 @@ namespace ACI.HAM.Core.Profiles
                 .ReverseMap();
             CreateMap<UserEditableDto, UpdatableUser>()
                 .ForMember(x => x.UserRoles, opt => opt.MapFrom(x => x.Roles.Select(y => new UserRole() { UserId = x.Id, RoleId = y }).ToList()))
-                .ForMember(x => x.UserHotelCompany, opt => opt.MapFrom(x => x.UserHotelsCompanies.Select(y => new UserHotelCompany() { UserId = x.Id, CompanyId = y.CompanyId, HotelId = y.HotelId }).ToList()));
+                .ForMember(x => x.UserHotelsCompanies, opt => opt.MapFrom(x => x.UserHotelsCompanies.Select(y => new UserHotelCompany() { UserId = x.Id, CompanyId = y.CompanyId, HotelId = y.HotelId }).ToList()));
             CreateMap<User, UserDto>()
                 .ForCtorParam("languageCode", opt => opt.MapFrom(x => languageCode))
                 .ForMember(x => x.Roles, opt => opt.MapFrom(x => x.UserRoles.Select(y => y.Role)))
-                .ForMember(x => x.UserHotelCompany, opt => opt.MapFrom(x => x.UserHotelsCompanies.Select(y => new UserHotelCompanyDto
+                .ForMember(x => x.UserHotelsCompanies, opt => opt.MapFrom(x => x.UserHotelsCompanies.Select(y => new UserHotelCompanyDto
                  {
                      CompanyId = y.CompanyId,
                      HotelId = y.HotelId,

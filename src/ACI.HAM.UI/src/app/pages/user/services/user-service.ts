@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, first, map } from 'rxjs';
 import { User } from '../models/user.model';
 import { DataTablesResponse } from 'src/app/shared/models/data-tables-response.model';
+import { AccountModel } from 'src/app/modules/account/models/account.model';
 
 const API_USERS_URL = `${environment.apiUrl}/users`;
 
@@ -14,8 +15,12 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
-    createUser(user: User): Observable<User> {
-        return this.http.post<User>(`${API_USERS_URL}/create-user`, user).pipe(map(user => new User(user)));
+    createUser(user: User): Observable<AccountModel> {
+        return this.http.post<User>(`${API_USERS_URL}/create-user`, user.getPayload()).pipe(map(account => {
+            const newAccount = new AccountModel();
+            newAccount.set(account);
+            return newAccount;
+        }));
     }
 
     delete(id: string): Observable<void> {

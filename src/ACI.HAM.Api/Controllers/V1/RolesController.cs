@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace ACI.HAM.Api.V1.Controllers
 {
@@ -15,9 +16,10 @@ namespace ACI.HAM.Api.V1.Controllers
     [EnableCors("ApiCorsPolicy")]
     public class RolesController : ApiControllerBase
     {
+        private readonly IStringLocalizer<UsersController> _messages;
         private readonly IRoleService _roleService;
 
-        public RolesController(IRoleService roleService)
+        public RolesController(IRoleService roleService, IStringLocalizer<UsersController> messages)
         {
             _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
         }
@@ -130,10 +132,7 @@ namespace ACI.HAM.Api.V1.Controllers
             }
             else
             {
-
-                //ToDo: Add translations
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el rol en la base de datos.");
-
+                return StatusCode(StatusCodes.Status500InternalServerError, _messages["Error updating the role type in the database"].Value);
             }
         }
     }

@@ -5,8 +5,6 @@ namespace ACI.HAM.Core.Dtos
 {
     public class CreateUserDto
     {
-        public ICollection<int> Companies { get; set; }
-
         [Required(ErrorMessage = "Email is required")]
         [MinLength(3, ErrorMessage = "Email should have at least 3 characters")]
         [MaxLength(256, ErrorMessage = "Email should have maximum 256 characters")]
@@ -24,5 +22,7 @@ namespace ACI.HAM.Core.Dtos
 
         [MinElements(1, ErrorMessage = "Roles should have at least one element")]
         public ICollection<string> Roles { get; set; }
+
+        public ICollection<UserHotelCompanyDto> UserHotelsCompanies { get; set; }
     }
 }

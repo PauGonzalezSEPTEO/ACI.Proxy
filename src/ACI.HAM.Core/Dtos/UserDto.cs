@@ -18,7 +18,7 @@ namespace ACI.HAM.Core.Dtos
         {
             get
             {
-                return UserHotelCompany
+                return UserHotelsCompanies
                     .Select(x => x.CompanyName)
                     .Distinct()
                     .ToList();
@@ -29,7 +29,7 @@ namespace ACI.HAM.Core.Dtos
         {
             get
             {
-                return UserHotelCompany
+                return UserHotelsCompanies
                     .Where(x => x.HotelName != null)
                     .Select(x => x.HotelName)
                     .Distinct()
@@ -68,6 +68,6 @@ namespace ACI.HAM.Core.Dtos
 
         internal ICollection<RoleDto> Roles { get; set; } = new HashSet<RoleDto>();
 
-        public ICollection<UserHotelCompanyDto> UserHotelCompany { get; set; }
+        public ICollection<UserHotelCompanyDto> UserHotelsCompanies { get; set; }
     }
 }
