@@ -57,6 +57,17 @@ namespace ACI.HAM.Api.V1.Controllers
         }
 
         [HttpPost]
+        [Route("read-by-hotel-ids")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<BuildingDto>>> ReadByHotelIdsAsync([FromBody] int[] hotelIds, string languageCode = null, CancellationToken cancellationToken = default)
+        {
+            List<BuildingDto> buildingsDto = await _buildingService.ReadByHotelIdsAsync(hotelIds, languageCode, cancellationToken);
+            return Ok(buildingsDto);
+        }
+
+        [HttpPost]
         [Route("read-data-table")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]

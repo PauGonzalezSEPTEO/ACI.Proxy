@@ -53,7 +53,7 @@ export class User {
     });
   }
 
-  extractUserHotelsCompanies(): UserHotelCompany[] {
+  getUserHotelsCompanies(): UserHotelCompany[] {
     const companyHotelCollection: UserHotelCompany[] = [];
     const hotelToCompanyMap: { [key: number]: number } = {};
     if (this.hotelsList) {
@@ -84,7 +84,7 @@ export class User {
       id: this.id,
       lastname: this.lastname,
       roles: this.roles,
-      userHotelsCompanies: this.extractUserHotelsCompanies()
+      userHotelsCompanies: this.getUserHotelsCompanies()
     };
   }
 

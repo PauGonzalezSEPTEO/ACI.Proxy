@@ -65,7 +65,7 @@ export class Board extends Translatable<BoardTranslation> {
     });
   }
 
-  extractBoardHotelsCompanies(): BoardHotelCompany[] {
+  getBoardHotelsCompanies(): BoardHotelCompany[] {
     const companyHotelCollection: BoardHotelCompany[] = [];
     const hotelToCompanyMap: { [key: number]: number } = {};
     if (this.hotelsList) {
@@ -95,9 +95,44 @@ export class Board extends Translatable<BoardTranslation> {
       id: this.id,
       name: this.name,
       shortDescription: this.shortDescription,
-      boardHotelsCompanies: this.extractBoardHotelsCompanies()
+      boardHotelsCompanies: this.getBoardHotelsCompanies()
     };
   }
+
+  getRelevantHotelIds(): number[] {
+    const relevantHotelIds: number[] = [];
+    if (this.hotelsList && this.hotelsList.length > 0) {
+      const hotelToCompanyMap: { [key: number]: number } = {};
+      const companiesWithHotels = new Set<number>();
+      const companiesWithoutHotels = new Set<number>();
+      if (this.hotelsList) {
+          for (const hotel of this.hotelsList) {
+              hotelToCompanyMap[hotel.id] = hotel.companyId;
+          }
+      }
+      for (const hotelId of this.hotels) {
+          const companyId = hotelToCompanyMap[hotelId];
+          if (companyId !== undefined) {
+              companiesWithHotels.add(companyId);
+              relevantHotelIds.push(hotelId);
+          }
+      }
+      for (const hotel of this.hotelsList) {
+        if (!this.hotels.includes(hotel.id)) {
+            const companyId = hotel.companyId;
+            if (!companiesWithHotels.has(companyId)) {
+                companiesWithoutHotels.add(companyId);
+            }
+        }
+      }      
+      for (const hotel of this.hotelsList) {
+        if (companiesWithoutHotels.has(hotel.companyId)) {
+            relevantHotelIds.push(hotel.id);
+        }
+      }
+    }
+    return relevantHotelIds;
+}
 
   public get translationName(): string {
     return this.getTranslation('name');

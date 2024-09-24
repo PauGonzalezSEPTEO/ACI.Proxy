@@ -19,8 +19,7 @@ import { CompanyService } from '../../company/services/company-service';
   templateUrl: './board-listing.component.html',
   styleUrls: ['./board-listing.component.scss']
 })
-export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
-  
+export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {  
   isReadOnly = false;
   isCollapsed1 = false;
   isCollapsed2 = true;
@@ -90,6 +89,11 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
     return text;
   }
 
+  loadBuildingsForHotels() {
+    const hotelIds = this.boardModel.getRelevantHotelIds();
+    this.buildings$ = this.buildingService.getByHotelIds(hotelIds, this.translate.currentLang);
+  }
+
   loadHotelsForSelectedCompanies() {
     const selectedCompanyIds = this.boardModel.companies;
     this.hotelService.getByCompanyIds(selectedCompanyIds).subscribe(hotels => {
@@ -98,6 +102,7 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
       this.boardModel.hotels = hotels
         .filter(hotel => selectedHotelIds.includes(hotel.id))
         .map(hotel => hotel.id);
+      this.loadBuildingsForHotels();     
     });
   }
 
@@ -129,13 +134,9 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const getBuildingsFn = () => {
-      this.buildings$ = this.buildingService.search('', '', this.translate.currentLang);
-    };
     this.translate.onLangChange.subscribe((_event: LangChangeEvent) => {
-      getBuildingsFn();
+      this.loadBuildingsForHotels();
     });
-    getBuildingsFn();
     this.companyService.search('', '', this.translate.currentLang).subscribe((companies: Company[]) => {
       this.companiesList = companies;
     });    
@@ -186,6 +187,10 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onCompaniesChange() {
     this.loadHotelsForSelectedCompanies();
+  }
+
+  onHotelsChange() {
+    this.loadBuildingsForHotels();
   }
 
   onSubmit(_event: Event, myForm: NgForm) {

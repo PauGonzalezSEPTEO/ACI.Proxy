@@ -60,7 +60,6 @@ namespace ACI.HAM.Api.V1.Controllers
             return Ok(hotelsDto);
         }
 
-
         [HttpPost]
         [Route("read-data-table")]
         [MapToApiVersion("1.0")]

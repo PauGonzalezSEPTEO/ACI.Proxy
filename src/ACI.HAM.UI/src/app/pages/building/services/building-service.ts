@@ -26,6 +26,15 @@ export class BuildingService {
         return this.http.get<Building>(`${API_BUILDINGS_URL}/read-editable-by-id/${id}`).pipe(map(building => new Building(building)));
     }
 
+    getByHotelIds(hotelIds: number[], languageCode: string): Observable<Building[]> {
+        const httpParams = new HttpParams()
+        .append('languageCode', languageCode);
+        const options = {
+            params: httpParams
+        };
+        return this.http.post<Building[]>(`${API_BUILDINGS_URL}/read-by-hotel-ids`, hotelIds, options);        
+    }
+
     readDataTable(params: any, languageCode: string): Observable<DataTablesResponse> {
         const httpParams = new HttpParams()
             .append('languageCode', languageCode);

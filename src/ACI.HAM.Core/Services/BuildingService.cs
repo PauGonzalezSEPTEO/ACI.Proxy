@@ -14,6 +14,7 @@ namespace ACI.HAM.Core.Services
 {
     public interface IBuildingService : ICRUDService<BuildingDto, BuildingEditableDto, int>, ISearchService<BuildingDto>
     {
+        Task<List<BuildingDto>> ReadByHotelIdsAsync(int[] hotelIds, string languageCode = null, CancellationToken cancellationToken = default);
     }
 
     public class BuildingService : IBuildingService
@@ -47,6 +48,15 @@ namespace ACI.HAM.Core.Services
         public async Task<List<BuildingDto>> ReadAsync(string languageCode = null, CancellationToken cancellationToken = default)
         {
             var query = _baseContext.Buildings
+                .Include(x => x.Translations)
+                .AsQueryable();
+            return await query.GetResultAsync<Building, BuildingDto>(_mapper, null, null, languageCode, cancellationToken);
+        }
+
+        public async Task<List<BuildingDto>> ReadByHotelIdsAsync(int[] hotelIds, string languageCode = null, CancellationToken cancellationToken = default)
+        {
+            var query = _baseContext.Buildings
+                .Where(x => hotelIds.Contains(x.HotelId))
                 .Include(x => x.Translations)
                 .AsQueryable();
             return await query.GetResultAsync<Building, BuildingDto>(_mapper, null, null, languageCode, cancellationToken);
