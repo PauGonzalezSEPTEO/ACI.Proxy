@@ -15,7 +15,7 @@ export class RoomTypeService {
     constructor(private http: HttpClient) { }
 
     create(roomType: RoomType): Observable<RoomType> {
-        return this.http.post<RoomType>(`${API_ROOM_TYPES_URL}/create`, roomType).pipe(map(roomType => new RoomType(roomType)));
+        return this.http.post<RoomType>(`${API_ROOM_TYPES_URL}/create`, roomType.getPayload()).pipe(map(roomType => new RoomType(roomType)));
     }
 
     delete(id: number): Observable<void> {
@@ -36,6 +36,6 @@ export class RoomTypeService {
     }    
 
     update(id: number, roomType: RoomType): Observable<RoomType> {
-        return this.http.put<RoomType>(`${API_ROOM_TYPES_URL}/update-by-id/${id}`, roomType).pipe(map(roomType => new RoomType(roomType)));
+        return this.http.put<RoomType>(`${API_ROOM_TYPES_URL}/update-by-id/${id}`, roomType.getPayload()).pipe(map(roomType => new RoomType(roomType)));
     }
 }

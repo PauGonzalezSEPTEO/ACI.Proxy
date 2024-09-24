@@ -50,6 +50,8 @@ namespace ACI.HAM.Core.Services
         {
             IQueryable<RoomType> query = _baseContext.RoomTypes
                 .Include(x => x.Translations)
+                .Include(x => x.RoomTypeHotelsCompanies)
+                .ThenInclude(x => x.Company)
                 .Include(x => x.RoomTypesBuildings)
                 .AsQueryable();
             return await query.GetDataTablesResultAsync<RoomType, RoomTypeDto>(_mapper, dataTablesParameters, languageCode, cancellationToken);
@@ -59,6 +61,7 @@ namespace ACI.HAM.Core.Services
         {
             return await _baseContext.RoomTypes
                 .Include(x => x.Translations)
+                .Include(x => x.RoomTypeHotelsCompanies)
                 .Include(x => x.RoomTypesBuildings)
                 .AsNoTracking()
                 .ProjectTo<RoomTypeEditableDto>(_mapper.ConfigurationProvider)
@@ -71,6 +74,7 @@ namespace ACI.HAM.Core.Services
             var existingRoomType = _baseContext.Set<RoomType>()
                 .Include(x => x.Translations)
                 .Include(x => x.RoomTypesBuildings)
+                .Include(x => x.RoomTypeHotelsCompanies)
                 .SingleOrDefault(x => x.Id == roomType.Id);
             if (existingRoomType != null)
             {
@@ -91,6 +95,15 @@ namespace ACI.HAM.Core.Services
                     if (buildings.All(x => x.BuildingId != existingBuilding.BuildingId))
                     {
                         _baseContext.Set<RoomTypeBuilding>().Remove(existingBuilding);
+                    }
+                }
+                ICollection<RoomTypeHotelCompany> roomTypeHotelsCompanies = roomType.RoomTypeHotelsCompanies
+                    .ToList();
+                foreach (var existingRoomTypeHotelCompany in existingRoomType.RoomTypeHotelsCompanies)
+                {
+                    if (roomTypeHotelsCompanies.All(x => x.CompanyId != existingRoomTypeHotelCompany.CompanyId || x.HotelId != existingRoomTypeHotelCompany.HotelId))
+                    {
+                        _baseContext.Set<RoomTypeHotelCompany>().Remove(existingRoomTypeHotelCompany);
                     }
                 }
                 _baseContext.Entry(existingRoomType).CurrentValues.SetValues(roomType);
@@ -136,6 +149,24 @@ namespace ACI.HAM.Core.Services
                     else
                     {
                         _baseContext.Set<RoomTypeBuilding>().Add(pair.newBuilding);
+                    }
+                }
+                var roomTypeHotelCompanyPairs = roomTypeHotelsCompanies
+                    .GroupJoin(
+                        existingRoomType.RoomTypeHotelsCompanies,
+                        newRoomTypeHotelCompany => new { newRoomTypeHotelCompany.CompanyId, newRoomTypeHotelCompany.HotelId },
+                        existingRoomTypeHotelCompany => new { existingRoomTypeHotelCompany.CompanyId, existingRoomTypeHotelCompany.HotelId },
+                        (newRoomTypeHotelCompany, existingRoomTypeHotelCompany) => new { newRoomTypeHotelCompany, existingRoomTypeHotelCompany })
+                    .SelectMany(
+                        x => x.existingRoomTypeHotelCompany.DefaultIfEmpty(),
+                        (x, existingRoomTypeHotelCompany) => new { x.newRoomTypeHotelCompany, existingRoomTypeHotelCompany })
+                    .ToList();
+                foreach (var pair in roomTypeHotelCompanyPairs)
+                {
+                    pair.newRoomTypeHotelCompany.RoomTypeId = existingRoomType.Id;
+                    if (pair.existingRoomTypeHotelCompany == null)
+                    {
+                        _baseContext.Set<RoomTypeHotelCompany>().Add(pair.newRoomTypeHotelCompany);
                     }
                 }
                 await _baseContext.SaveChangesAsync(cancellationToken);

@@ -78,10 +78,15 @@ namespace ACI.HAM.Core.Profiles
                 .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations));
             CreateMap<RoomTypeTranslationDto, RoomTypeTranslation>()
                 .ReverseMap();
+            CreateMap<RoomTypeHotelCompany, RoomTypeHotelCompanyDto>()
+                .ForMember(x => x.CompanyName, opt => opt.MapFrom(x => x.Company.Name))
+                .ForMember(x => x.HotelName, opt => opt.MapFrom(x => x.Hotel != null ? x.Hotel.Name : null))
+                .ReverseMap();
             CreateMap<RoomType, RoomTypeEditableDto>()
                 .ForMember(x => x.Buildings, opt => opt.MapFrom(x => x.RoomTypesBuildings.Select(y => y.BuildingId).ToList()))
                 .ReverseMap()
-                .ForMember(x => x.RoomTypesBuildings, opt => opt.MapFrom(x => x.Buildings.Select(y => new RoomTypeBuilding() { BuildingId = y, RoomTypeId = x.Id }).ToList()));
+                .ForMember(x => x.RoomTypesBuildings, opt => opt.MapFrom(x => x.Buildings.Select(y => new RoomTypeBuilding() { BuildingId = y, RoomTypeId = x.Id }).ToList()))
+                .ForMember(x => x.RoomTypeHotelsCompanies, opt => opt.MapFrom(x => x.RoomTypeHotelsCompanies.Select(y => new RoomTypeHotelCompany() { RoomTypeId = x.Id, CompanyId = y.CompanyId, HotelId = y.HotelId }).ToList()));
             CreateMap<RoomType, RoomTypeDto>()
                 .ForCtorParam("languageCode", opt => opt.MapFrom(x => languageCode))
                 .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations));

@@ -35,16 +35,17 @@ namespace ACI.HAM.Core.Data
 
         public virtual DbSet<Company> Companies { get; set; }
 
+        public Func<ClaimsPrincipal> GetUser { get; set; }
+
         private List<int> GetUserBoards()
         {
             var userCompanies = GetUserCompanies();
             var userHotels = GetUserHotels();
-            var boards = Boards
+            return Boards
                 .IgnoreQueryFilters()
                 .Where(x => x.BoardHotelsCompanies.Any(x => userCompanies.Contains(x.CompanyId) && (!x.HotelId.HasValue || userHotels.Contains(x.HotelId.Value))))
                 .Select(x => x.Id)
                 .ToList();
-            return boards;
         }
 
         private List<int> GetUserCompanies()
@@ -98,13 +99,22 @@ namespace ACI.HAM.Core.Data
             return hotels;
         }
 
-        public Func<ClaimsPrincipal> GetUser { get; set; }
-
         public Func<string> GetUserName { get; set; }
+
+        private List<int> GetUserRoomTypes()
+        {
+            var userCompanies = GetUserCompanies();
+            var userHotels = GetUserHotels();
+            return RoomTypes
+                .IgnoreQueryFilters()
+                .Where(x => x.RoomTypeHotelsCompanies.Any(x => userCompanies.Contains(x.CompanyId) && (!x.HotelId.HasValue || userHotels.Contains(x.HotelId.Value))))
+                .Select(x => x.Id)
+                .ToList();
+        }
 
         public virtual DbSet<Hotel> Hotels { get; set; }
 
-        private bool IsFiltered()
+        private bool IsAdministrator()
         {
             var currentUser = GetUser();
             return currentUser != null && !currentUser.IsInRole("Administrator");
@@ -293,6 +303,25 @@ namespace ACI.HAM.Core.Data
                     .WithMany(e => e.Translations)
                     .HasForeignKey(e => e.BuildingId);
             });
+            modelBuilder.Entity<RoomTypeHotelCompany>(RoomTypeHotelCompany =>
+            {
+                RoomTypeHotelCompany.HasKey(e => new { e.Id });
+                RoomTypeHotelCompany.HasOne(e => e.RoomType)
+                    .WithMany(r => r.RoomTypeHotelsCompanies)
+                    .HasForeignKey(e => e.RoomTypeId)
+                    .IsRequired();
+                RoomTypeHotelCompany.HasOne(e => e.Company)
+                    .WithMany(r => r.RoomTypeHotelsCompanies)
+                    .HasForeignKey(e => e.CompanyId)
+                    .IsRequired();
+                RoomTypeHotelCompany.HasOne(e => e.Hotel)
+                    .WithMany(r => r.RoomTypeHotelsCompanies)
+                    .HasForeignKey(e => e.HotelId)
+                    .IsRequired(false);
+                RoomTypeHotelCompany.HasIndex(e => new { e.RoomTypeId, e.CompanyId, e.HotelId })
+                    .IsUnique()
+                    .HasDatabaseName("UQ_RoomTypeHotelCompany");
+            });
             modelBuilder.Entity<RoomType>(entity =>
             {
                 entity.Property(e => e.Name).IsUnicode(false);
@@ -331,10 +360,13 @@ namespace ACI.HAM.Core.Data
                     .WithMany(e => e.Translations)
                     .HasForeignKey(e => e.RoomTypeId);
             });
-            modelBuilder.Entity<Board>().HasQueryFilter(x => !IsFiltered() || GetUserBoards().Contains(x.Id));
-            modelBuilder.Entity<Company>().HasQueryFilter(x => !IsFiltered() || GetUserCompanies().Contains(x.Id));
-            modelBuilder.Entity<Hotel>().HasQueryFilter(x => !IsFiltered() || GetUserHotels().Contains(x.Id));
+            modelBuilder.Entity<Board>().HasQueryFilter(x => !IsAdministrator() || GetUserBoards().Contains(x.Id));
+            modelBuilder.Entity<Company>().HasQueryFilter(x => !IsAdministrator() || GetUserCompanies().Contains(x.Id));
+            modelBuilder.Entity<Hotel>().HasQueryFilter(x => !IsAdministrator() || GetUserHotels().Contains(x.Id));
+            modelBuilder.Entity<RoomType>().HasQueryFilter(x => !IsAdministrator() || GetUserRoomTypes().Contains(x.Id));
         }
+
+        public virtual DbSet<RoomTypeHotelCompany> RoomTypeHotelsCompanies { get; set; }
 
         public virtual DbSet<RoomType> RoomTypes { get; set; }
 

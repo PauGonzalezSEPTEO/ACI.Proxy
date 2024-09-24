@@ -327,6 +327,23 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RoomTypeHotelsCompanies]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[RoomTypeHotelsCompanies](
+  Id INT IDENTITY(1,1) PRIMARY KEY,
+	[RoomTypeId] [int] NOT NULL,
+	[CompanyId] [int] NOT NULL,
+  [HotelId] [int] NULL
+ CONSTRAINT UQ_RoomTypeHotelCompany UNIQUE ([RoomTypeId], [CompanyId], [HotelId])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON
+)) ON [PRIMARY]
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 CREATE TABLE [dbo].[RoomTypeTranslations](
 	[LanguageCode] [varchar](10) NOT NULL,
 	[RoomTypeId] [int] NOT NULL,
@@ -476,6 +493,12 @@ GO
 SET IDENTITY_INSERT [dbo].[RoomTypes] OFF
 GO
 
+INSERT [dbo].[BoardHotelsCompanies] ([BoardId], [CompanyId], [HotelId]) VALUES (1, 1, null)
+GO
+
+INSERT [dbo].[BoardHotelsCompanies] ([BoardId], [CompanyId], [HotelId]) VALUES (2, 2, 4)
+GO
+
 INSERT [dbo].[RoomTypeTranslations] ([LanguageCode], [RoomTypeId], [Name], [ShortDescription]) VALUES (N'es', 1, N'Habitación familiar', N'Ideal para parejas y familias de hasta cuatro miembros con dos camas queen size (1.35x1.90). Redecoradas en tonalidades claras entre 2019 y 2020, tienen una amplia terraza (sin vistas al mar). Baño completo con secador de pelo, TV de pantalla plana con canales extranjeros vía satélite, minibar / mantenedor de frío, room-service, aire acondicionado y calefacción independientes, terraza con mesa, sillas y tendedero, Wifi gratuito, caja de seguridad disponible (opcional con suplemento)')
 GO
 
@@ -536,6 +559,27 @@ REFERENCES [dbo].[Hotels] ([Id])
 ON DELETE NO ACTION
 GO
 ALTER TABLE [dbo].[UserHotelsCompanies] CHECK CONSTRAINT [FK_UserHotelsCompanies_Hotels]
+GO
+
+ALTER TABLE [dbo].[RoomTypeHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_RoomTypeHotelsCompanies_RoomTypes] FOREIGN KEY([RoomTypeId])
+REFERENCES [dbo].[RoomTypes] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[RoomTypeHotelsCompanies] CHECK CONSTRAINT [FK_RoomTypeHotelsCompanies_RoomTypes]
+GO
+
+ALTER TABLE [dbo].[RoomTypeHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_RoomTypeHotelsCompanies_Companies] FOREIGN KEY([CompanyId])
+REFERENCES [dbo].[Companies] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[RoomTypeHotelsCompanies] CHECK CONSTRAINT [FK_RoomTypeHotelsCompanies_Companies]
+GO
+
+ALTER TABLE [dbo].[RoomTypeHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_RoomTypeHotelsCompanies_Hotels] FOREIGN KEY([HotelId])
+REFERENCES [dbo].[Hotels] ([Id])
+ON DELETE NO ACTION
+GO
+ALTER TABLE [dbo].[RoomTypeHotelsCompanies] CHECK CONSTRAINT [FK_RoomTypeHotelsCompanies_Hotels]
 GO
 
 ALTER TABLE [dbo].[RoomTypeTranslations]  WITH CHECK ADD CONSTRAINT [FK_RoomTypeTranslations_RoomTypes] FOREIGN KEY([RoomTypeId])
@@ -633,6 +677,7 @@ CREATE USER [user] FOR LOGIN [user] WITH DEFAULT_SCHEMA=[dbo]
 GRANT ALL ON Companies TO [user];
 GRANT ALL ON Hotels TO [user];
 GRANT ALL ON RoomTypes TO [user];
+GRANT ALL ON RoomTypeHotelsCompanies TO [user];
 GRANT ALL ON RoomTypeTranslations TO [user];
 GRANT ALL ON RoomTypesBuildings TO [user];
 GRANT ALL ON Boards TO [user];

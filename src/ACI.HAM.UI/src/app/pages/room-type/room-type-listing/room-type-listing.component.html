@@ -157,6 +157,38 @@
             <!--end::Input-->
           </div>
           <!--end::Input group-->
+          <!--begin::Input group-->
+          <div class="fv-row mb-7">
+            <!--begin::Label-->
+            <label class="fw-semibold fs-6 mb-2" [translate]="'ROOM_TYPES.LIST.COMPANIES'"></label>
+            <!--end::Label-->
+            <!--begin::Select-->
+            <div class="scrollable-companies-box">
+              <div class="overflow-box">
+                <ng-select [items]="companiesList" class="form-select form-select-solid form-select-lg" name="companies"
+                  bindValue="id" bindLabel="name" [multiple]="true"
+                  appendTo=".scrollable-companies-box" id="companies" [(ngModel)]="roomTypeModel.companies" (change)="onCompaniesChange()" #companies="ngModel"></ng-select>
+              </div>
+            </div>
+            <!--end::Select-->
+          </div>
+          <!--end::Input group-->   
+          <!--begin::Input group-->
+          <div class="fv-row mb-7">
+            <!--begin::Label-->
+            <label class="fw-semibold fs-6 mb-2" [translate]="'ROOM_TYPES.LIST.HOTELS'"></label>
+            <!--end::Label-->
+            <!--begin::Select-->
+            <div class="scrollable-hotels-box">
+              <div class="overflow-box">
+                <ng-select [items]="roomTypeModel.hotelsList" class="form-select form-select-solid form-select-lg" name="hotels"
+                  bindValue="id" bindLabel="name" [multiple]="true"
+                  appendTo=".scrollable-hotels-box" id="hotels" [(ngModel)]="roomTypeModel.hotels" (change)="onHotelsChange()" #hotels="ngModel"></ng-select>
+              </div>
+            </div>
+            <!--end::Select-->
+          </div>
+          <!--end::Input group-->          
           <div class="mb-7">
             <label class="fw-semibold fs-6 mb-5" [translate]="'ROOM_TYPES.LIST.BUILDINGS'"></label>
               <div *ngFor="let building of (buildings$ | async); let last = last">

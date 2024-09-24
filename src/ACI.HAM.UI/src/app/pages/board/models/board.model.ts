@@ -25,14 +25,14 @@ export class BoardTranslation extends ITranslation {
 }
 
 export class Board extends Translatable<BoardTranslation> {  
+  boardHotelsCompanies: BoardHotelCompany[] = [];
   buildings?: number[];
   companies: number[] = [];  
   hotels: number[] = [];
+  hotelsList: Hotel[] | null = null;
   id: number;  
   name: string;
   shortDescription?: string;
-  hotelsList: Hotel[] | null = null;
-  boardHotelsCompanies: BoardHotelCompany[] = [];
 
 
   constructor(board?: Board) {
@@ -132,7 +132,7 @@ export class Board extends Translatable<BoardTranslation> {
       }
     }
     return relevantHotelIds;
-}
+  }
 
   public get translationName(): string {
     return this.getTranslation('name');

@@ -10,6 +10,9 @@ import { BuildingService } from '../../building/services/building-service';
 import { DataTablesResponse } from 'src/app/shared/models/data-tables-response.model';
 import { Building } from '../../building/models/building.model';
 import { AuthService } from 'src/app/modules/auth';
+import { CompanyService } from '../../company/services/company-service';
+import { HotelService } from '../../hotel/services/hotel-service';
+import { Company } from '../../company/models/company.model';
 
 @Component({
   selector: 'app-room-type-listing',
@@ -17,7 +20,6 @@ import { AuthService } from 'src/app/modules/auth';
   styleUrls: ['./room-type-listing.component.scss']
 })
 export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestroy {
-
   isReadOnly = false;
   isCollapsed1 = false;
   isCollapsed2 = true;
@@ -33,8 +35,16 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
   noticeSwal!: SwalComponent;
   swalOptions: SweetAlertOptions = {};
   buildings$: Observable<Building[]>;
-
-  constructor(private apiService: RoomTypeService, private buildingService: BuildingService, public authService: AuthService, private cdr: ChangeDetectorRef, private translate: TranslateService) { }
+  companiesList: Company[] | null = null;
+  
+  constructor(
+    private apiService: RoomTypeService,
+    private buildingService: BuildingService,
+    private companyService: CompanyService,        
+    private hotelService: HotelService,  
+    public authService: AuthService,
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService) { }
 
   changeLanguage(languageCode: string) {
     this.roomTypeModel.changeLanguage(languageCode);
@@ -55,7 +65,8 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
     this.isReadOnly = event.isReadOnly;
     this.aRoomType = this.apiService.get(event.id);
     this.aRoomType.subscribe((roomType: RoomType) => {
-      this.roomTypeModel = roomType;
+      this.roomTypeModel = new RoomType(roomType);
+      this.loadHotelsForSelectedCompanies();  
     });
   }
 
@@ -75,6 +86,23 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
     // Convert the uniqueTextArray to a single string with line breaks
     var text = uniqueTextArray.join('\n');
     return text;
+  }
+
+  loadBuildingsForHotels() {
+    const hotelIds = this.roomTypeModel.getRelevantHotelIds();
+    this.buildings$ = this.buildingService.getByHotelIds(hotelIds, this.translate.currentLang);
+  }
+
+  loadHotelsForSelectedCompanies() {
+    const selectedCompanyIds = this.roomTypeModel.companies;
+    this.hotelService.getByCompanyIds(selectedCompanyIds).subscribe(hotels => {
+      const selectedHotelIds = this.roomTypeModel.hotels;
+      this.roomTypeModel.hotelsList = hotels
+      this.roomTypeModel.hotels = hotels
+        .filter(hotel => selectedHotelIds.includes(hotel.id))
+        .map(hotel => hotel.id);
+      this.loadBuildingsForHotels();     
+    });
   }
 
   removeTranslations() {
@@ -105,13 +133,12 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnInit(): void {
-    const getBuildingsFn = () => {
-      this.buildings$ = this.buildingService.search('', '', this.translate.currentLang);
-    };
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
-      getBuildingsFn();
+      this.loadBuildingsForHotels();
     });
-    getBuildingsFn();    
+    this.companyService.search('', '', this.translate.currentLang).subscribe((companies: Company[]) => {
+      this.companiesList = companies;
+    });     
     this.datatableConfig = {
       serverSide: true,
       ajax: (dataTablesParameters: any, callback) => {
@@ -155,6 +182,14 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
 
   onChange($event: any, building: number) {
     this.roomTypeModel.updateBuilding(building, $event.target.checked);
+  }
+
+  onCompaniesChange() {
+    this.loadHotelsForSelectedCompanies();
+  }
+
+  onHotelsChange() {
+    this.loadBuildingsForHotels();
   }
 
   onSubmit(_event: Event, myForm: NgForm) {

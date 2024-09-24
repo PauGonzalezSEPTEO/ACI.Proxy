@@ -309,7 +309,7 @@ export const locale = {
     BUILDINGS: {
       LIST: {
         ACTIONS: 'Actions',
-        ADD_BUILDING: 'Add hotel',
+        ADD_BUILDING: 'Add building',
         BUILDING_CREATED_SUCCESSFULLY: 'Building created successfully!',
         BUILDING_DETAILS: 'Building details',
         BUILDING_INFORMATION: 'Building information',
@@ -754,8 +754,10 @@ export const locale = {
         ADD_ROOM_TYPE: 'Add room type',
         BUILDINGS: 'Buildings',
         CLOSE: 'Close',
+        COMPANIES: 'Companies',
         DISCARD: 'Discard',
         ERROR: 'Error!',
+        HOTELS: 'Hotels',
         ID: 'Id',
         LANGUAGE: 'Language',
         NAME: 'Name',

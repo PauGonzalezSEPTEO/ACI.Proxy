@@ -8,6 +8,7 @@ namespace ACI.HAM.Core.Dtos
 
         public RoomTypeEditableDto(RoomTypeEditableDto source)
         {
+            RoomTypeHotelsCompanies = source.RoomTypeHotelsCompanies;
             Buildings = source.Buildings;
             Id = source.Id;
             Name = source.Name;
@@ -23,6 +24,8 @@ namespace ACI.HAM.Core.Dtos
         [MinLength(4, ErrorMessage = "Name should have at least 4 characters")]
         [MaxLength(256, ErrorMessage = "Name should have maximum 256 characters")]
         public string Name { get; set; }
+
+        public ICollection<RoomTypeHotelCompanyDto> RoomTypeHotelsCompanies { get; set; }
 
         [MaxLength(500, ErrorMessage = "Short description should have maximum 500 characters")]
         public string ShortDescription { get; set; }
