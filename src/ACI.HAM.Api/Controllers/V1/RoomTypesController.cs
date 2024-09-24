@@ -21,14 +21,12 @@ namespace ACI.HAM.Api.V1.Controllers
     [EnableCors("ApiCorsPolicy")]
     public class RoomTypesController : ApiControllerBase
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<UsersController> _messages;
         private readonly IRoomTypeService _roomTypeService;
 
-        public RoomTypesController(IRoomTypeService roomTypeService, IHttpContextAccessor httpContextAccessor, IStringLocalizer<UsersController> messages)
+        public RoomTypesController(IRoomTypeService roomTypeService, IStringLocalizer<UsersController> messages)
         {
             _roomTypeService = roomTypeService ?? throw new ArgumentNullException(nameof(roomTypeService));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         [HttpPost]
@@ -61,8 +59,7 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<DataTablesResult<RoomTypeDto>>> ReadDataTableAsync([FromBody] DataTablesParameters dataTablesParameters, [FromQuery] string languageCode = null, CancellationToken cancellationToken = default)
         {
-            var claimsPrincipal = _httpContextAccessor.HttpContext.User;
-            DataTablesResult<RoomTypeDto> roomTypesDto = await _roomTypeService.ReadDataTableAsync(dataTablesParameters, claimsPrincipal, languageCode, cancellationToken);
+            DataTablesResult<RoomTypeDto> roomTypesDto = await _roomTypeService.ReadDataTableAsync(dataTablesParameters, languageCode, cancellationToken);
             return Ok(roomTypesDto);
         }
 

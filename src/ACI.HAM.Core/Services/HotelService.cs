@@ -9,19 +9,18 @@ using ACI.HAM.Core.Dtos;
 using ACI.HAM.Core.Extensions;
 using ACI.HAM.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ACI.HAM.Core.Services
 {
     public interface IHotelService : ICRUDService<HotelDto, HotelEditableDto, int>, ISearchService<HotelDto>
     {
-        Task<List<HotelDto>> ReadByCompanyIdsAsync(int[] companyIds, ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken = default);
+        Task<List<HotelDto>> ReadByCompanyIdsAsync(int[] companyIds, CancellationToken cancellationToken = default);
     }
 
     public class HotelService : IHotelService
     {
-        private readonly IMapper _mapper;
         private readonly BaseContext _baseContext;
+        private readonly IMapper _mapper;
 
         public HotelService(BaseContext baseContext, IMapper mapper)
         {
@@ -52,39 +51,19 @@ namespace ACI.HAM.Core.Services
             return await query.GetResultAsync<Hotel, HotelDto>(_mapper, null, null, languageCode, cancellationToken);
         }
 
-        public async Task<List<HotelDto>> ReadByCompanyIdsAsync(int[] companyIds, ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken = default)
+        public async Task<List<HotelDto>> ReadByCompanyIdsAsync(int[] companyIds, CancellationToken cancellationToken = default)
         {
-            List<int> commonCompanies;
-            if (claimsPrincipal.IsInRole("Administrator"))
-            {
-                commonCompanies = companyIds.ToList();
-            }
-            else
-            {
-                List<int> companies = await _baseContext.GetUserCompaniesAsync(claimsPrincipal);
-                commonCompanies = companyIds.Intersect(companies).ToList();
-            }
             return await _baseContext.Hotels
-                .Where(x => commonCompanies.Contains(x.CompanyId))
+                .Where(x => companyIds.Contains(x.CompanyId))
                 .ProjectTo<HotelDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<DataTablesResult<HotelDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, ClaimsPrincipal claimsPrincipal, string languageCode = null, CancellationToken cancellationToken = default)
+        public async Task<DataTablesResult<HotelDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default)
         {
-            IQueryable<Hotel> query;
-            if (claimsPrincipal.IsInRole("Administrator"))
-            {
-                query = _baseContext.Hotels
+            IQueryable<Hotel> query =
+                _baseContext.Hotels
                     .AsQueryable();
-            }
-            else
-            {
-                List<int> companies = await _baseContext.GetUserCompaniesAsync(claimsPrincipal);
-                query = _baseContext.Hotels
-                    .Where(x => companies.Contains(x.CompanyId))
-                    .AsQueryable();
-            }
             return await query.GetDataTablesResultAsync<Hotel, HotelDto>(_mapper, dataTablesParameters, languageCode, cancellationToken);
         }
 

@@ -282,23 +282,6 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UserHotelsCompanies]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[UserHotelsCompanies](
-  Id INT IDENTITY(1,1) PRIMARY KEY,
-	[UserId] [nvarchar](450) NOT NULL,
-	[CompanyId] [int] NOT NULL,
-  [HotelId] [int] NULL
- CONSTRAINT UQ_UserCompanyHotel UNIQUE ([UserId], [CompanyId], [HotelId])
-WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON
-)) ON [PRIMARY]
-END
-GO
-
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
 CREATE TABLE [dbo].[Hotels](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](256) NOT NULL,
@@ -307,6 +290,23 @@ CREATE TABLE [dbo].[Hotels](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UserHotelsCompanies]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[UserHotelsCompanies](
+  Id INT IDENTITY(1,1) PRIMARY KEY,
+	[UserId] [nvarchar](450) NOT NULL,
+	[CompanyId] [int] NOT NULL,
+  [HotelId] [int] NULL
+ CONSTRAINT UQ_UserHotelCompany UNIQUE ([UserId], [CompanyId], [HotelId])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON
+)) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
@@ -351,6 +351,23 @@ CREATE TABLE [dbo].[Boards](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[BoardHotelsCompanies]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[BoardHotelsCompanies](
+  Id INT IDENTITY(1,1) PRIMARY KEY,
+	[BoardId] [int] NOT NULL,
+	[CompanyId] [int] NOT NULL,
+  [HotelId] [int] NULL
+ CONSTRAINT UQ_BoardHotelCompany UNIQUE ([BoardId], [CompanyId], [HotelId])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON
+)) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
@@ -471,6 +488,12 @@ GO
 SET IDENTITY_INSERT [dbo].[Boards] OFF
 GO
 
+INSERT [dbo].[BoardHotelsCompanies] ([BoardId], [CompanyId], [HotelId]) VALUES (1, 1, null)
+GO
+
+INSERT [dbo].[BoardHotelsCompanies] ([BoardId], [CompanyId], [HotelId]) VALUES (2, 2, 4)
+GO
+
 INSERT [dbo].[BoardTranslations] ([LanguageCode], [BoardId], [Name]) VALUES (N'es', 1, N'Media pensión')
 GO
 
@@ -520,6 +543,27 @@ REFERENCES [dbo].[RoomTypes] ([Id])
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[RoomTypeTranslations] CHECK CONSTRAINT [FK_RoomTypeTranslations_RoomTypes]
+GO
+
+ALTER TABLE [dbo].[BoardHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_BoardHotelsCompanies_Boards] FOREIGN KEY([BoardId])
+REFERENCES [dbo].[Boards] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[BoardHotelsCompanies] CHECK CONSTRAINT [FK_BoardHotelsCompanies_Boards]
+GO
+
+ALTER TABLE [dbo].[BoardHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_BoardHotelsCompanies_Companies] FOREIGN KEY([CompanyId])
+REFERENCES [dbo].[Companies] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[BoardHotelsCompanies] CHECK CONSTRAINT [FK_BoardHotelsCompanies_Companies]
+GO
+
+ALTER TABLE [dbo].[BoardHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_BoardHotelsCompanies_Hotels] FOREIGN KEY([HotelId])
+REFERENCES [dbo].[Hotels] ([Id])
+ON DELETE NO ACTION
+GO
+ALTER TABLE [dbo].[BoardHotelsCompanies] CHECK CONSTRAINT [FK_BoardHotelsCompanies_Hotels]
 GO
 
 ALTER TABLE [dbo].[BoardTranslations]  WITH CHECK ADD CONSTRAINT [FK_BoardTranslations_Boards] FOREIGN KEY([BoardId])
@@ -592,6 +636,7 @@ GRANT ALL ON RoomTypes TO [user];
 GRANT ALL ON RoomTypeTranslations TO [user];
 GRANT ALL ON RoomTypesBuildings TO [user];
 GRANT ALL ON Boards TO [user];
+GRANT ALL ON BoardHotelsCompanies TO [user];
 GRANT ALL ON BoardTranslations TO [user];
 GRANT ALL ON BoardsBuildings TO [user];
 GRANT ALL ON Buildings TO [user];

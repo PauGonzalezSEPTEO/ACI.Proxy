@@ -78,7 +78,7 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<DataTablesResult<RoleDto>>> ReadDataTableAsync([FromBody] DataTablesParameters dataTablesParameters, [FromQuery] string languageCode = null, CancellationToken cancellationToken = default)
         {
-            DataTablesResult<RoleDto> rolesDto = await _roleService.ReadDataTableAsync(dataTablesParameters, null, languageCode, cancellationToken);
+            DataTablesResult<RoleDto> rolesDto = await _roleService.ReadDataTableAsync(dataTablesParameters, languageCode, cancellationToken);
             return Ok(rolesDto);
         }
 

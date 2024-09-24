@@ -1,7 +1,6 @@
 using ACI.HAM.Core.Dtos;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Security.Claims;
 
 namespace ACI.HAM.Core.Services
 {
@@ -11,7 +10,7 @@ namespace ACI.HAM.Core.Services
 
         Task<U> DeleteByIdAsync(V id, CancellationToken cancellationToken = default);
 
-        Task<DataTablesResult<T>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, ClaimsPrincipal claimsPrincipal, string languageCode = null, CancellationToken cancellationToken = default);
+        Task<DataTablesResult<T>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default);
 
         Task<U> ReadEditableByIdAsync(V id, CancellationToken cancellationToken = default);
 

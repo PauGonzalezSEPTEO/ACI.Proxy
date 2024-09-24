@@ -9,7 +9,6 @@ using ACI.HAM.Core.Dtos;
 using ACI.HAM.Core.Extensions;
 using ACI.HAM.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ACI.HAM.Core.Services
 {
@@ -19,8 +18,8 @@ namespace ACI.HAM.Core.Services
 
     public class BoardService : IBoardService
     {
-        private readonly IMapper _mapper;
         private readonly BaseContext _baseContext;
+        private readonly IMapper _mapper;
 
         public BoardService(BaseContext baseContext, IMapper mapper)
         {
@@ -47,23 +46,14 @@ namespace ACI.HAM.Core.Services
             return _mapper.Map<BoardEditableDto>(board);
         }
 
-        public async Task<DataTablesResult<BoardDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, ClaimsPrincipal claimsPrincipal, string languageCode = null, CancellationToken cancellationToken = default)
+        public async Task<DataTablesResult<BoardDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default)
         {
-            IQueryable<Board> query;
-            if (claimsPrincipal.IsInRole("Administrator"))
-            {
-                query = _baseContext.Boards
+            IQueryable<Board> query =
+                _baseContext.Boards
                     .Include(x => x.Translations)
+                    .Include(x => x.BoardHotelsCompanies)
+                    .ThenInclude(x => x.Company)
                     .AsQueryable();
-            }
-            else
-            {
-                List<int> companies = await _baseContext.GetUserCompaniesAsync(claimsPrincipal);
-                query = _baseContext.Boards
-                    .Include(x => x.Translations)
-                    .Where(x => x.BoardsBuildings.Any(y => companies.Contains(y.Building.Hotel.CompanyId)))
-                    .AsQueryable();
-            }
             return await query.GetDataTablesResultAsync<Board, BoardDto>(_mapper, dataTablesParameters, languageCode, cancellationToken);
         }
 
@@ -71,6 +61,7 @@ namespace ACI.HAM.Core.Services
         {
             return await _baseContext.Boards
                 .Include(x => x.Translations)
+                .Include(x => x.BoardHotelsCompanies)
                 .Include(x => x.BoardsBuildings)
                 .AsNoTracking()
                 .ProjectTo<BoardEditableDto>(_mapper.ConfigurationProvider)
@@ -83,6 +74,7 @@ namespace ACI.HAM.Core.Services
             var existingBoard = _baseContext.Set<Board>()
                 .Include(x => x.Translations)
                 .Include(x => x.BoardsBuildings)
+                .Include(x => x.BoardHotelsCompanies)
                 .SingleOrDefault(x => x.Id == board.Id);
             if (existingBoard != null)
             {
@@ -103,6 +95,15 @@ namespace ACI.HAM.Core.Services
                     if (buildings.All(x => x.BuildingId != existingBuilding.BuildingId))
                     {
                         _baseContext.Set<BoardBuilding>().Remove(existingBuilding);
+                    }
+                }
+                ICollection<BoardHotelCompany> boardHotelsCompanies = board.BoardHotelsCompanies
+                    .ToList();
+                foreach (var existingBoardHotelCompany in existingBoard.BoardHotelsCompanies)
+                {
+                    if (boardHotelsCompanies.All(x => x.CompanyId != existingBoardHotelCompany.CompanyId || x.HotelId != existingBoardHotelCompany.HotelId))
+                    {
+                        _baseContext.Set<BoardHotelCompany>().Remove(existingBoardHotelCompany);
                     }
                 }
                 _baseContext.Entry(existingBoard).CurrentValues.SetValues(board);
@@ -148,6 +149,24 @@ namespace ACI.HAM.Core.Services
                     else
                     {
                         _baseContext.Set<BoardBuilding>().Add(pair.newBuilding);
+                    }
+                }
+                var boardHotelCompanyPairs = boardHotelsCompanies
+                    .GroupJoin(
+                        existingBoard.BoardHotelsCompanies,
+                        newBoardHotelCompany => new { newBoardHotelCompany.CompanyId, newBoardHotelCompany.HotelId },
+                        existingBoardHotelCompany => new { existingBoardHotelCompany.CompanyId, existingBoardHotelCompany.HotelId },
+                        (newBoardHotelCompany, existingBoardHotelCompany) => new { newBoardHotelCompany, existingBoardHotelCompany })
+                    .SelectMany(
+                        x => x.existingBoardHotelCompany.DefaultIfEmpty(),
+                        (x, existingBoardHotelCompany) => new { x.newBoardHotelCompany, existingBoardHotelCompany })
+                    .ToList();
+                foreach (var pair in boardHotelCompanyPairs)
+                {
+                    pair.newBoardHotelCompany.BoardId = existingBoard.Id;
+                    if (pair.existingBoardHotelCompany == null)
+                    {
+                        _baseContext.Set<BoardHotelCompany>().Add(pair.newBoardHotelCompany);
                     }
                 }
                 await _baseContext.SaveChangesAsync(cancellationToken);

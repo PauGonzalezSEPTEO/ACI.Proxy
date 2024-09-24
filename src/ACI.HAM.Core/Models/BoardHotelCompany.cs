@@ -5,17 +5,17 @@ using Microsoft.EntityFrameworkCore;
 namespace ACI.HAM.Core.Models
 {
     [PrimaryKey(nameof(Id))]
-    [Index(nameof(UserId), nameof(CompanyId), nameof(HotelId), IsUnique = true, Name = "UQ_UserHotelCompany")]
-    public class UserHotelCompany : IAuditable
+    [Index(nameof(BoardId), nameof(CompanyId), nameof(HotelId), IsUnique = true, Name = "UQ_BoardHotelCompany")]
+    public class BoardHotelCompany : IAuditable
     {
-        [InverseProperty("UserHotelsCompanies")]
+        [InverseProperty("BoardHotelsCompanies")]
         public virtual Company Company { get; set; }
 
         [Required]
         [ForeignKey("Company")]
         public int CompanyId { get; set; }
 
-        [InverseProperty("UserHotelsCompanies")]
+        [InverseProperty("BoardHotelsCompanies")]
         public virtual Hotel Hotel { get; set; }
 
         [ForeignKey("Hotel")]
@@ -25,12 +25,11 @@ namespace ACI.HAM.Core.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [InverseProperty("UserHotelsCompanies")]
-        public virtual User User { get; set; }
+        [InverseProperty("BoardHotelsCompanies")]
+        public virtual Board Board { get; set; }
 
         [Required]
-        [StringLength(450)]
-        [ForeignKey("User")]
-        public string UserId { get; set; }
+        [ForeignKey("Board")]
+        public int BoardId { get; set; }
     }
 }

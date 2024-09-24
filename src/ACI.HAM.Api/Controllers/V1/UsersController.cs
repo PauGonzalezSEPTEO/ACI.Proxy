@@ -1,7 +1,6 @@
 using ACI.HAM.Api.Controllers;
 using ACI.HAM.Api.Controllers.V1;
 using ACI.HAM.Core.Dtos;
-using ACI.HAM.Core.Localization;
 using ACI.HAM.Core.Services;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
@@ -76,7 +75,7 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<DataTablesResult<UserDto>>> ReadDataTableAsync([FromBody] DataTablesParameters dataTablesParameters, [FromQuery] string languageCode = null, CancellationToken cancellationToken = default)
         {
-            DataTablesResult<UserDto> usersDto = await _userService.ReadDataTableAsync(dataTablesParameters, null, languageCode, cancellationToken);
+            DataTablesResult<UserDto> usersDto = await _userService.ReadDataTableAsync(dataTablesParameters, languageCode, cancellationToken);
             return Ok(usersDto);
         }
 

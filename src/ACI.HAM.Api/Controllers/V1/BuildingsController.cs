@@ -15,13 +15,11 @@ namespace ACI.HAM.Api.V1.Controllers
     public class BuildingsController : ApiControllerBase
     {
         private readonly IBuildingService _buildingService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<UsersController> _messages;
 
-        public BuildingsController(IBuildingService buildingService, IHttpContextAccessor httpContextAccessor, IStringLocalizer<UsersController> messages)
+        public BuildingsController(IBuildingService buildingService, IStringLocalizer<UsersController> messages)
         {
             _buildingService = buildingService ?? throw new ArgumentNullException(nameof(buildingService));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         [HttpPost]
@@ -65,8 +63,7 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<DataTablesResult<BuildingDto>>> ReadDataTableAsync([FromBody] DataTablesParameters dataTablesParameters, [FromQuery] string languageCode = null, CancellationToken cancellationToken = default)
         {
-            var claimsPrincipal = _httpContextAccessor.HttpContext.User;
-            DataTablesResult<BuildingDto> buildingsDto = await _buildingService.ReadDataTableAsync(dataTablesParameters, claimsPrincipal, languageCode, cancellationToken);
+            DataTablesResult<BuildingDto> buildingsDto = await _buildingService.ReadDataTableAsync(dataTablesParameters, languageCode, cancellationToken);
             return Ok(buildingsDto);
         }
 

@@ -12,9 +12,8 @@ namespace ACI.HAM.Core.Models
     [PrimaryKey(nameof(Id))]
     public class Company : IFilterDto<Company, CompanyDto>, IAuditable
     {
-        [Required]
-        [StringLength(256)]
-        public string Name { get; set; }
+        [InverseProperty("Company")]
+        public virtual ICollection<BoardHotelCompany> BoardHotelsCompanies { get; } = new List<BoardHotelCompany>();
 
         [InverseProperty("Company")]
         public virtual ICollection<Hotel> Hotels { get; set; } = new HashSet<Hotel>();
@@ -33,6 +32,10 @@ namespace ACI.HAM.Core.Models
                 .Where(x => string.IsNullOrEmpty(search) || (!string.IsNullOrEmpty(x.Name) && x.Name.Contains(search)))
                 .OrderBy(ordering);
         }
+
+        [Required]
+        [StringLength(256)]
+        public string Name { get; set; }
 
         [InverseProperty("Company")]
         public virtual ICollection<UserHotelCompany> UserHotelsCompanies { get; } = new List<UserHotelCompany>();

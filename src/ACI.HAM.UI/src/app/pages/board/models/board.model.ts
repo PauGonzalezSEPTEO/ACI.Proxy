@@ -1,4 +1,15 @@
 import { ITranslation, Translatable } from "src/app/modules/language/models/translatable.model";
+import { Hotel } from "../../hotel/models/hotel.model";
+
+export class BoardHotelCompany {
+  companyId: number;
+  hotelId: number | null;
+
+  constructor(companyId: number, hotelId: number | null) {
+      this.companyId = companyId;
+      this.hotelId = hotelId;
+  }
+}
 
 export class BoardTranslation extends ITranslation {
   name?: string;
@@ -13,11 +24,16 @@ export class BoardTranslation extends ITranslation {
   }
 }
 
-export class Board extends Translatable<BoardTranslation> {
+export class Board extends Translatable<BoardTranslation> {  
   buildings?: number[];
+  companies: number[] = [];  
+  hotels: number[] = [];
   id: number;  
   name: string;
   shortDescription?: string;
+  hotelsList: Hotel[] | null = null;
+  boardHotelsCompanies: BoardHotelCompany[] = [];
+
 
   constructor(board?: Board) {
     super(board);
@@ -26,11 +42,61 @@ export class Board extends Translatable<BoardTranslation> {
       this.id = board.id;
       this.name = board.name;
       this.shortDescription = board.shortDescription;
+      this.hotelsList = board.hotelsList;
+      this.boardHotelsCompanies = board.boardHotelsCompanies;
+      this.extractCompaniesAndHotels();
     }
   }
 
   changeLanguage(languageCode: string) {
     this.updateLanguage(languageCode);
+  }
+
+  extractCompaniesAndHotels() {
+    this.companies = [];
+    this.hotels = [];
+    this.boardHotelsCompanies.forEach((item: any) => {
+      if (item.companyId) {
+        this.companies.push(item.companyId);
+      }
+      if (item.hotelId) {
+        this.hotels.push(item.hotelId);
+      }
+    });
+  }
+
+  extractBoardHotelsCompanies(): BoardHotelCompany[] {
+    const companyHotelCollection: BoardHotelCompany[] = [];
+    const hotelToCompanyMap: { [key: number]: number } = {};
+    if (this.hotelsList) {
+      for (const hotel of this.hotelsList) {
+        hotelToCompanyMap[hotel.id] = hotel.companyId;
+      }
+    }
+    const companiesWithHotels = new Set<number>();
+    for (const hotelId of this.hotels) {
+      const companyId = hotelToCompanyMap[hotelId];
+      if (companyId !== undefined) {
+        companiesWithHotels.add(companyId);
+        companyHotelCollection.push(new BoardHotelCompany(companyId, hotelId));
+      }
+    }
+    for (const companyId of this.companies) {
+      if (!companiesWithHotels.has(companyId)) {
+        companyHotelCollection.push(new BoardHotelCompany(companyId, null));
+      }
+    }
+    return companyHotelCollection;
+  }
+
+  getPayload(): any {
+    return {
+      buildings: this.buildings,
+      id: this.id,
+      name: this.name,
+      shortDescription: this.shortDescription,
+      boardHotelsCompanies: this.extractBoardHotelsCompanies()
+    };
   }
 
   public get translationName(): string {

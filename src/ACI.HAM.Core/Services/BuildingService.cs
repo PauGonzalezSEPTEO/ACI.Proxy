@@ -9,7 +9,6 @@ using ACI.HAM.Core.Dtos;
 using ACI.HAM.Core.Extensions;
 using ACI.HAM.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ACI.HAM.Core.Services
 {
@@ -19,8 +18,8 @@ namespace ACI.HAM.Core.Services
 
     public class BuildingService : IBuildingService
     {
-        private readonly IMapper _mapper;
         private readonly BaseContext _baseContext;
+        private readonly IMapper _mapper;
 
         public BuildingService(BaseContext baseContext, IMapper mapper)
         {
@@ -53,23 +52,12 @@ namespace ACI.HAM.Core.Services
             return await query.GetResultAsync<Building, BuildingDto>(_mapper, null, null, languageCode, cancellationToken);
         }
 
-        public async Task<DataTablesResult<BuildingDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, ClaimsPrincipal claimsPrincipal, string languageCode = null, CancellationToken cancellationToken = default)
+        public async Task<DataTablesResult<BuildingDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default)
         {
-            IQueryable<Building> query;
-            if (claimsPrincipal.IsInRole("Administrator"))
-            {
-                query = _baseContext.Buildings
-                    .Include(x => x.Translations)
-                    .AsQueryable();
-            }
-            else
-            {
-                List<int> companies = await _baseContext.GetUserCompaniesAsync(claimsPrincipal);
-                query = _baseContext.Buildings
-                    .Include(x => x.Translations)
-                    .Where(x => companies.Contains(x.Hotel.CompanyId))
-                    .AsQueryable();
-            }
+            IQueryable<Building> query = _baseContext.Buildings
+                .Include(x => x.Translations)
+                .Include(x => x.Hotel)
+                .AsQueryable();
             return await query.GetDataTablesResultAsync<Building, BuildingDto>(_mapper, dataTablesParameters, languageCode, cancellationToken);
         }
 

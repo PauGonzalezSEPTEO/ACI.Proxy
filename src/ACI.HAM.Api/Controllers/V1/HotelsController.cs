@@ -17,13 +17,11 @@ namespace ACI.HAM.Api.V1.Controllers
     public class HotelsController : ApiControllerBase
     {
         private readonly IHotelService _hotelService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<UsersController> _messages;
 
-        public HotelsController(IHotelService hotelService, IHttpContextAccessor httpContextAccessor, IStringLocalizer<UsersController> messages)
+        public HotelsController(IHotelService hotelService, IStringLocalizer<UsersController> messages)
         {
             _hotelService = hotelService ?? throw new ArgumentNullException(nameof(hotelService));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         [HttpPost]
@@ -58,8 +56,7 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<HotelDto>>> ReadByCompanyIdsAsync([FromBody] int[] companyIds, CancellationToken cancellationToken = default)
         {
-            var claimsPrincipal = _httpContextAccessor.HttpContext.User;
-            List<HotelDto> hotelsDto = await _hotelService.ReadByCompanyIdsAsync(companyIds, claimsPrincipal, cancellationToken);
+            List<HotelDto> hotelsDto = await _hotelService.ReadByCompanyIdsAsync(companyIds, cancellationToken);
             return Ok(hotelsDto);
         }
 
@@ -71,8 +68,7 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<DataTablesResult<HotelDto>>> ReadDataTableAsync([FromBody] DataTablesParameters dataTablesParameters, [FromQuery] string languageCode = null, CancellationToken cancellationToken = default)
         {
-            var claimsPrincipal = _httpContextAccessor.HttpContext.User;
-            DataTablesResult<HotelDto> hotelsDto = await _hotelService.ReadDataTableAsync(dataTablesParameters, claimsPrincipal, languageCode, cancellationToken);
+            DataTablesResult<HotelDto> hotelsDto = await _hotelService.ReadDataTableAsync(dataTablesParameters, languageCode, cancellationToken);
             return Ok(hotelsDto);
         }
 

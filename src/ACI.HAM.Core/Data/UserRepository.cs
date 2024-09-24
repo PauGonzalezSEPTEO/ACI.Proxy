@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
 namespace ACI.HAM.Api.Services
@@ -9,6 +10,11 @@ namespace ACI.HAM.Api.Services
         public UserRepository(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
+        }
+
+        public ClaimsPrincipal GetUser()
+        {
+            return _httpContextAccessor.HttpContext?.User;
         }
 
         public string GetUserName()

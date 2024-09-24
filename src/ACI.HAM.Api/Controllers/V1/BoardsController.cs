@@ -17,13 +17,11 @@ namespace ACI.HAM.Api.V1.Controllers
     public class BoardsController : ApiControllerBase
     {
         private readonly IBoardService _boardService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<UsersController> _messages;
 
-        public BoardsController(IBoardService boardService, IHttpContextAccessor httpContextAccessor, IStringLocalizer<UsersController> messages)
+        public BoardsController(IBoardService boardService, IStringLocalizer<UsersController> messages)
         {
             _boardService = boardService ?? throw new ArgumentNullException(nameof(boardService));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         [HttpPost]
@@ -56,8 +54,7 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<DataTablesResult<BoardDto>>> ReadDataTableAsync([FromBody] DataTablesParameters dataTablesParameters, [FromQuery] string languageCode = null, CancellationToken cancellationToken = default)
         {
-            var claimsPrincipal = _httpContextAccessor.HttpContext.User;
-            DataTablesResult<BoardDto> boardsDto = await _boardService.ReadDataTableAsync(dataTablesParameters, claimsPrincipal, languageCode, cancellationToken);
+            DataTablesResult<BoardDto> boardsDto = await _boardService.ReadDataTableAsync(dataTablesParameters, languageCode, cancellationToken);
             return Ok(boardsDto);
         }
 

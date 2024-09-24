@@ -8,7 +8,6 @@ using ACI.HAM.Core.Dtos;
 using ACI.HAM.Core.Extensions;
 using ACI.HAM.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ACI.HAM.Core.Services
 {
@@ -18,8 +17,8 @@ namespace ACI.HAM.Core.Services
 
     public class UserService : IUserService
     {
-        private readonly IMapper _mapper;
         private readonly BaseContext _baseContext;
+        private readonly IMapper _mapper;
 
         public UserService(BaseContext baseContext, IMapper mapper)
         {
@@ -54,7 +53,7 @@ namespace ACI.HAM.Core.Services
             return await query.GetResultAsync<User, UserDto>(_mapper, null, null, languageCode, cancellationToken);
         }
 
-        public async Task<DataTablesResult<UserDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, ClaimsPrincipal claimsPrincipal, string languageCode = null, CancellationToken cancellationToken = default)
+        public async Task<DataTablesResult<UserDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default)
         {
             var query = _baseContext.Users
                 .Include(x => x.UserRoles)
@@ -72,7 +71,6 @@ namespace ACI.HAM.Core.Services
                 .Include(x => x.UserRoles)
                 .ThenInclude(x => x.Role)
                 .Include(x => x.UserHotelsCompanies)
-                .ThenInclude(x => x.Company)
                 .AsNoTracking()
                 .ProjectTo<UserEditableDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -109,11 +107,11 @@ namespace ACI.HAM.Core.Services
                 }
                 ICollection<UserHotelCompany> userHotelsCompanies = user.UserHotelsCompanies
                     .ToList();
-                foreach (var existingCompany in existingUser.UserHotelsCompanies)
+                foreach (var existingUserHotelCompany in existingUser.UserHotelsCompanies)
                 {
-                    if (userHotelsCompanies.All(x => x.CompanyId != existingCompany.CompanyId || x.HotelId != existingCompany.HotelId))
+                    if (userHotelsCompanies.All(x => x.CompanyId != existingUserHotelCompany.CompanyId || x.HotelId != existingUserHotelCompany.HotelId))
                     {
-                        _baseContext.Set<UserHotelCompany>().Remove(existingCompany);
+                        _baseContext.Set<UserHotelCompany>().Remove(existingUserHotelCompany);
                     }
                 }
                 _baseContext.Entry(existingUser).CurrentValues.SetValues(user);

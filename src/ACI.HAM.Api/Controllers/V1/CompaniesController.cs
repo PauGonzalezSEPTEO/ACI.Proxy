@@ -17,13 +17,11 @@ namespace ACI.HAM.Api.V1.Controllers
     public class CompaniesController : ApiControllerBase
     {
         private readonly ICompanyService _companyService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<UsersController> _messages;
 
-        public CompaniesController(ICompanyService companyService, IHttpContextAccessor httpContextAccessor, IStringLocalizer<UsersController> messages)
+        public CompaniesController(ICompanyService companyService, IStringLocalizer<UsersController> messages)
         {
             _companyService = companyService ?? throw new ArgumentNullException(nameof(companyService));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         [HttpPost]
@@ -69,8 +67,7 @@ namespace ACI.HAM.Api.V1.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<DataTablesResult<CompanyDto>>> ReadDataTableAsync([FromBody] DataTablesParameters dataTablesParameters, [FromQuery] string languageCode = null, CancellationToken cancellationToken = default)
         {
-            var claimsPrincipal = _httpContextAccessor.HttpContext.User;
-            DataTablesResult<CompanyDto> companiesDto = await _companyService.ReadDataTableAsync(dataTablesParameters, claimsPrincipal, languageCode, cancellationToken);
+            DataTablesResult<CompanyDto> companiesDto = await _companyService.ReadDataTableAsync(dataTablesParameters, languageCode, cancellationToken);
             return Ok(companiesDto);
         }
 

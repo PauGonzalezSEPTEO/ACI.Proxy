@@ -24,6 +24,9 @@ namespace ACI.HAM.Core.Models
         public int Id { get; set; }
 
         [InverseProperty("Board")]
+        public virtual ICollection<BoardHotelCompany> BoardHotelsCompanies { get; } = new List<BoardHotelCompany>();
+
+        [InverseProperty("Board")]
         public virtual ICollection<BoardBuilding> BoardsBuildings { get; set; } = new HashSet<BoardBuilding>();
 
         [InverseProperty("Board")]

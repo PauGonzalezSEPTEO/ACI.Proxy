@@ -54,10 +54,15 @@ namespace ACI.HAM.Core.Profiles
                 .ForMember(x => x.CompanyName, opt => opt.MapFrom(x => x.Company.Name));
             CreateMap<BoardTranslationDto, BoardTranslation>()
                 .ReverseMap();
+            CreateMap<BoardHotelCompany, BoardHotelCompanyDto>()
+                .ForMember(x => x.CompanyName, opt => opt.MapFrom(x => x.Company.Name))
+                .ForMember(x => x.HotelName, opt => opt.MapFrom(x => x.Hotel != null ? x.Hotel.Name : null))
+                .ReverseMap();
             CreateMap<Board, BoardEditableDto>()
                 .ForMember(x => x.Buildings, opt => opt.MapFrom(x => x.BoardsBuildings.Select(y => y.BuildingId).ToList()))
                 .ReverseMap()
-                .ForMember(x => x.BoardsBuildings, opt => opt.MapFrom(x => x.Buildings.Select(y => new BoardBuilding() { BuildingId = y, BoardId = x.Id }).ToList()));
+                .ForMember(x => x.BoardsBuildings, opt => opt.MapFrom(x => x.Buildings.Select(y => new BoardBuilding() { BuildingId = y, BoardId = x.Id }).ToList()))
+                .ForMember(x => x.BoardHotelsCompanies, opt => opt.MapFrom(x => x.BoardHotelsCompanies.Select(y => new BoardHotelCompany() { BoardId = x.Id, CompanyId = y.CompanyId, HotelId = y.HotelId }).ToList()));
             CreateMap<Board, BoardDto>()
                 .ForCtorParam("languageCode", opt => opt.MapFrom(x => languageCode))
                 .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations));

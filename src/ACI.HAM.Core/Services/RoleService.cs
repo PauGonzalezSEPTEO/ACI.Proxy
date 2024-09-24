@@ -8,7 +8,6 @@ using ACI.HAM.Core.Dtos;
 using ACI.HAM.Core.Extensions;
 using ACI.HAM.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ACI.HAM.Core.Services
 {
@@ -21,8 +20,8 @@ namespace ACI.HAM.Core.Services
 
     public class RoleService : IRoleService
     {
-        private readonly IMapper _mapper;
         private readonly BaseContext _baseContext;
+        private readonly IMapper _mapper;
 
         public RoleService(BaseContext baseContext, IMapper mapper)
         {
@@ -66,7 +65,7 @@ namespace ACI.HAM.Core.Services
             return await query.GetResultAsync<Role, RoleDto>(_mapper, null, null, languageCode, cancellationToken);
         }
 
-        public async Task<DataTablesResult<RoleDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, ClaimsPrincipal claimsPrincipal, string languageCode = null, CancellationToken cancellationToken = default)
+        public async Task<DataTablesResult<RoleDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default)
         {
             var query = _baseContext.Roles.AsQueryable();
             return await query.GetDataTablesResultAsync<Role, RoleDto>(_mapper, dataTablesParameters, languageCode, cancellationToken);

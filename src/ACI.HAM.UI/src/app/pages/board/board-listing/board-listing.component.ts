@@ -10,6 +10,9 @@ import { BuildingService } from '../../building/services/building-service';
 import { DataTablesResponse } from 'src/app/shared/models/data-tables-response.model';
 import { Building } from '../../building/models/building.model';
 import { AuthService } from 'src/app/modules/auth';
+import { Company } from '../../company/models/company.model';
+import { HotelService } from '../../hotel/services/hotel-service';
+import { CompanyService } from '../../company/services/company-service';
 
 @Component({
   selector: 'app-board-listing',
@@ -33,8 +36,17 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
   noticeSwal!: SwalComponent;
   swalOptions: SweetAlertOptions = {};
   buildings$: Observable<Building[]>;
+  companiesList: Company[] | null = null;
 
-  constructor(private apiService: BoardService, private buildingService: BuildingService, public authService: AuthService, private cdr: ChangeDetectorRef, private translate: TranslateService) { }
+  constructor(
+    private apiService: BoardService,
+    private buildingService: BuildingService,
+    public authService: AuthService,
+    private companyService: CompanyService,        
+    private hotelService: HotelService,    
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
+  ) { }
 
   changeLanguage(languageCode: string) {
     this.boardModel.changeLanguage(languageCode);
@@ -55,7 +67,8 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isReadOnly = event.isReadOnly;
     this.aBoard = this.apiService.get(event.id);
     this.aBoard.subscribe((board: Board) => {
-      this.boardModel = board;
+      this.boardModel = new Board(board);
+      this.loadHotelsForSelectedCompanies();      
     });
   }
 
@@ -75,6 +88,17 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
     // Convert the uniqueTextArray to a single string with line breaks
     var text = uniqueTextArray.join('\n');
     return text;
+  }
+
+  loadHotelsForSelectedCompanies() {
+    const selectedCompanyIds = this.boardModel.companies;
+    this.hotelService.getByCompanyIds(selectedCompanyIds).subscribe(hotels => {
+      const selectedHotelIds = this.boardModel.hotels;
+      this.boardModel.hotelsList = hotels
+      this.boardModel.hotels = hotels
+        .filter(hotel => selectedHotelIds.includes(hotel.id))
+        .map(hotel => hotel.id);
+    });
   }
 
   removeTranslations() {
@@ -111,7 +135,10 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
     this.translate.onLangChange.subscribe((_event: LangChangeEvent) => {
       getBuildingsFn();
     });
-    getBuildingsFn();     
+    getBuildingsFn();
+    this.companyService.search('', '', this.translate.currentLang).subscribe((companies: Company[]) => {
+      this.companiesList = companies;
+    });    
     this.datatableConfig = {
       serverSide: true,
       ajax: (dataTablesParameters: any, callback) => {
@@ -155,6 +182,10 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onChange($event: any, building: number) {
     this.boardModel.updateBuilding(building, $event.target.checked);
+  }
+
+  onCompaniesChange() {
+    this.loadHotelsForSelectedCompanies();
   }
 
   onSubmit(_event: Event, myForm: NgForm) {

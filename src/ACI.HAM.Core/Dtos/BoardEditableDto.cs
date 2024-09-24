@@ -8,12 +8,15 @@ namespace ACI.HAM.Core.Dtos
 
         public BoardEditableDto(BoardEditableDto source)
         {
+            BoardHotelsCompanies = source.BoardHotelsCompanies;
             Buildings = source.Buildings;
             Id = source.Id;
             Name = source.Name;
             ShortDescription = source.ShortDescription;
             Translations = source.Translations;
         }
+
+        public ICollection<BoardHotelCompanyDto> BoardHotelsCompanies { get; set; }
 
         public ICollection<int> Buildings { get; set; } = new HashSet<int>();
 

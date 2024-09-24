@@ -15,7 +15,7 @@ export class BoardService {
     constructor(private http: HttpClient) { }
 
     create(roomType: Board): Observable<Board> {
-        return this.http.post<Board>(`${API_BOARDS_URL}/create`, roomType).pipe(map(roomType => new Board(roomType)));
+        return this.http.post<Board>(`${API_BOARDS_URL}/create`, roomType.getPayload()).pipe(map(roomType => new Board(roomType)));
     }
 
     delete(id: number): Observable<void> {
@@ -36,6 +36,6 @@ export class BoardService {
     }    
 
     update(id: number, roomType: Board): Observable<Board> {
-        return this.http.put<Board>(`${API_BOARDS_URL}/update-by-id/${id}`, roomType).pipe(map(roomType => new Board(roomType)));
+        return this.http.put<Board>(`${API_BOARDS_URL}/update-by-id/${id}`, roomType.getPayload()).pipe(map(roomType => new Board(roomType)));
     }
 }

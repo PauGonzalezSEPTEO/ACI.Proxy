@@ -9,7 +9,6 @@ using ACI.HAM.Core.Dtos;
 using ACI.HAM.Core.Extensions;
 using ACI.HAM.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ACI.HAM.Core.Services
 {
@@ -19,8 +18,8 @@ namespace ACI.HAM.Core.Services
 
     public class RoomTypeService : IRoomTypeService
     {
-        private readonly IMapper _mapper;
         private readonly BaseContext _baseContext;
+        private readonly IMapper _mapper;
 
         public RoomTypeService(BaseContext baseContext, IMapper mapper)
         {
@@ -47,25 +46,12 @@ namespace ACI.HAM.Core.Services
             return _mapper.Map<RoomTypeEditableDto>(roomType);
         }
 
-        public async Task<DataTablesResult<RoomTypeDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, ClaimsPrincipal claimsPrincipal, string languageCode = null, CancellationToken cancellationToken = default)
+        public async Task<DataTablesResult<RoomTypeDto>> ReadDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default)
         {
-            IQueryable<RoomType> query;
-            if (claimsPrincipal.IsInRole("Administrator"))
-            {
-                query = _baseContext.RoomTypes
-                    .Include(x => x.Translations)
-                    .Include(x => x.RoomTypesBuildings)
-                    .AsQueryable();
-            }
-            else
-            {
-                List<int> companies = await _baseContext.GetUserCompaniesAsync(claimsPrincipal);
-                query = _baseContext.RoomTypes
-                    .Include(x => x.Translations)
-                    .Include(x => x.RoomTypesBuildings)
-                    .Where(x => x.RoomTypesBuildings.Any(y => companies.Contains(y.Building.Hotel.CompanyId)))
-                    .AsQueryable();
-            }
+            IQueryable<RoomType> query = _baseContext.RoomTypes
+                .Include(x => x.Translations)
+                .Include(x => x.RoomTypesBuildings)
+                .AsQueryable();
             return await query.GetDataTablesResultAsync<RoomType, RoomTypeDto>(_mapper, dataTablesParameters, languageCode, cancellationToken);
         }
 

@@ -2,9 +2,11 @@ using ACI.HAM.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace ACI.HAM.Core.Data
 {
@@ -19,6 +21,8 @@ namespace ACI.HAM.Core.Data
 
         public virtual DbSet<AuditEntry> AuditEntries { get; set; }
 
+        public virtual DbSet<BoardHotelCompany> BoardHotelsCompanies { get; set; }
+
         public virtual DbSet<Board> Boards { get; set; }
 
         public virtual DbSet<BoardBuilding> BoardsBuildings { get; set; }
@@ -31,9 +35,80 @@ namespace ACI.HAM.Core.Data
 
         public virtual DbSet<Company> Companies { get; set; }
 
+        private List<int> GetUserBoards()
+        {
+            var userCompanies = GetUserCompanies();
+            var userHotels = GetUserHotels();
+            var boards = Boards
+                .IgnoreQueryFilters()
+                .Where(x => x.BoardHotelsCompanies.Any(x => userCompanies.Contains(x.CompanyId) && (!x.HotelId.HasValue || userHotels.Contains(x.HotelId.Value))))
+                .Select(x => x.Id)
+                .ToList();
+            return boards;
+        }
+
+        private List<int> GetUserCompanies()
+        {
+            List<int> companies = new List<int>();
+            var currentUser = GetUser();
+            if (currentUser != null)
+            {
+                var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
+                User user = Users
+                    .IgnoreQueryFilters()
+                    .Include(x => x.UserHotelsCompanies)
+                    .FirstOrDefault(x => x.Id == userId);
+                if (user != null)
+                {
+                    companies = user.UserHotelsCompanies.Select(x => x.CompanyId).Distinct().ToList();
+                }
+            }
+            return companies;
+        }
+
+        private List<int> GetUserHotels()
+        {
+            List<int> hotels = new List<int>();
+            var currentUser = GetUser();
+            if (currentUser != null)
+            {
+                var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
+                User user = Users
+                    .IgnoreQueryFilters()
+                    .Include(x => x.UserHotelsCompanies)
+                    .ThenInclude(x => x.Company)
+                    .ThenInclude(x => x.Hotels)
+                    .FirstOrDefault(x => x.Id == userId);
+                if (user != null)
+                {
+                    var userHotelsCompanies = user.UserHotelsCompanies;
+                    var allHotels = userHotelsCompanies
+                        .Where(x => x.HotelId == null)
+                        .SelectMany(x => x.Company.Hotels.Select(x => x.Id))
+                        .Distinct()
+                        .ToList();
+                    var specificHotels = userHotelsCompanies
+                        .Where(x => x.HotelId != null)
+                        .Select(x => x.HotelId.Value)
+                        .Distinct()
+                        .ToList();
+                    hotels = allHotels.Union(specificHotels).ToList();
+                }
+            }
+            return hotels;
+        }
+
+        public Func<ClaimsPrincipal> GetUser { get; set; }
+
         public Func<string> GetUserName { get; set; }
 
         public virtual DbSet<Hotel> Hotels { get; set; }
+
+        private bool IsFiltered()
+        {
+            var currentUser = GetUser();
+            return currentUser != null && !currentUser.IsInRole("Administrator");
+        }
 
         private async Task OnBeforeSaveChangesAsync()
         {
@@ -115,7 +190,7 @@ namespace ACI.HAM.Core.Data
                     .IsRequired(false);
                 userHotelCompany.HasIndex(e => new { e.UserId, e.CompanyId, e.HotelId })
                     .IsUnique()
-                    .HasDatabaseName("UQ_UserCompanyHotel");
+                    .HasDatabaseName("UQ_UserHotelCompany");
             });
             modelBuilder.Entity<UserRole>(userRole =>
             {
@@ -150,6 +225,25 @@ namespace ACI.HAM.Core.Data
                 entity.HasOne(e => e.Role)
                     .WithMany(e => e.Translations)
                     .HasForeignKey(e => e.RoleId);
+            });
+            modelBuilder.Entity<BoardHotelCompany>(boardHotelCompany =>
+            {
+                boardHotelCompany.HasKey(e => new { e.Id });
+                boardHotelCompany.HasOne(e => e.Board)
+                    .WithMany(r => r.BoardHotelsCompanies)
+                    .HasForeignKey(e => e.BoardId)
+                    .IsRequired();
+                boardHotelCompany.HasOne(e => e.Company)
+                    .WithMany(r => r.BoardHotelsCompanies)
+                    .HasForeignKey(e => e.CompanyId)
+                    .IsRequired();
+                boardHotelCompany.HasOne(e => e.Hotel)
+                    .WithMany(r => r.BoardHotelsCompanies)
+                    .HasForeignKey(e => e.HotelId)
+                    .IsRequired(false);
+                boardHotelCompany.HasIndex(e => new { e.BoardId, e.CompanyId, e.HotelId })
+                    .IsUnique()
+                    .HasDatabaseName("UQ_BoardHotelCompany");
             });
             modelBuilder.Entity<Board>(entity =>
             {
@@ -237,6 +331,9 @@ namespace ACI.HAM.Core.Data
                     .WithMany(e => e.Translations)
                     .HasForeignKey(e => e.RoomTypeId);
             });
+            modelBuilder.Entity<Board>().HasQueryFilter(x => !IsFiltered() || GetUserBoards().Contains(x.Id));
+            modelBuilder.Entity<Company>().HasQueryFilter(x => !IsFiltered() || GetUserCompanies().Contains(x.Id));
+            modelBuilder.Entity<Hotel>().HasQueryFilter(x => !IsFiltered() || GetUserHotels().Contains(x.Id));
         }
 
         public virtual DbSet<RoomType> RoomTypes { get; set; }
