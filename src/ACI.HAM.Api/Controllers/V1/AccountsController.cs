@@ -20,6 +20,18 @@ namespace ACI.HAM.Api.Controllers.V1
         }
 
         [HttpGet]
+        [Route("generate-api-key")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<string>> GenerateApiKeyAsync(CancellationToken cancellationToken = default)
+        {
+            string name = User.Identity.Name;
+            string apiKey = await _accountService.GenerateApiKeyAsync(name);
+            return Ok(apiKey);
+        }
+
+        [HttpGet]
         [Route("me")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]

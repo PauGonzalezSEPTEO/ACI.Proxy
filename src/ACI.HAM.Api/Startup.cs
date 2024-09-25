@@ -34,6 +34,9 @@ using ACI.HAM.Api.Services;
 using ACI.HAM.Settings;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using System.IO;
+using Microsoft.AspNetCore.DataProtection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ACI.HAM.Api
 {
@@ -48,6 +51,16 @@ namespace ACI.HAM.Api
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            var certificate = new X509Certificate2(_configuration["AppSettings:CertificateFile"], @_configuration["AppSettings:CertificatePassword"]);
+            services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(_configuration["AppSettings:PersistKeysDirectory"]))
+                .ProtectKeysWithCertificate(certificate);
+#if DEBUG && ENCRYPT
+            var provider = services.BuildServiceProvider();
+            var dataProtector = provider.GetRequiredService<IDataProtectionProvider>().CreateProtector("AppSettings.ApiKeyProtector");
+            string encryptionKey = "clave-api-secreta";
+            string encryptedEncryptionKey = dataProtector.Protect(encryptionKey);
+#endif
             services.AddRouting(options => options.LowercaseUrls = true)
             .AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {                    
@@ -171,7 +184,6 @@ namespace ACI.HAM.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
             _ = app.SeedDatabaseAsync();
             app.UseSwagger();
             app.UseSwaggerUI(options =>

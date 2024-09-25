@@ -37,6 +37,8 @@ services:
         condition: service_healthy
     expose:
       - "5000"
+    volumes:
+      - ./certificate.pfx:/app/certificates/certificate.pfx
 
 volumes:
   dbdata:
