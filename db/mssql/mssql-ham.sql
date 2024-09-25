@@ -493,10 +493,10 @@ GO
 SET IDENTITY_INSERT [dbo].[RoomTypes] OFF
 GO
 
-INSERT [dbo].[BoardHotelsCompanies] ([BoardId], [CompanyId], [HotelId]) VALUES (1, 1, null)
+INSERT [dbo].[RoomTypeHotelsCompanies] ([RoomTypeId], [CompanyId], [HotelId]) VALUES (1, 1, null)
 GO
 
-INSERT [dbo].[BoardHotelsCompanies] ([BoardId], [CompanyId], [HotelId]) VALUES (2, 2, 4)
+INSERT [dbo].[RoomTypeHotelsCompanies] ([RoomTypeId], [CompanyId], [HotelId]) VALUES (2, 2, 4)
 GO
 
 INSERT [dbo].[RoomTypeTranslations] ([LanguageCode], [RoomTypeId], [Name], [ShortDescription]) VALUES (N'es', 1, N'Habitación familiar', N'Ideal para parejas y familias de hasta cuatro miembros con dos camas queen size (1.35x1.90). Redecoradas en tonalidades claras entre 2019 y 2020, tienen una amplia terraza (sin vistas al mar). Baño completo con secador de pelo, TV de pantalla plana con canales extranjeros vía satélite, minibar / mantenedor de frío, room-service, aire acondicionado y calefacción independientes, terraza con mesa, sillas y tendedero, Wifi gratuito, caja de seguridad disponible (opcional con suplemento)')

@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { RoomTypeService } from '../services/room-type-service';
 import { SweetAlertOptions } from 'sweetalert2';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
@@ -35,11 +35,12 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
   noticeSwal!: SwalComponent;
   swalOptions: SweetAlertOptions = {};
   buildings$: Observable<Building[]>;
+  buildingsSubscription: Subscription;
   companiesList: Company[] | null = null;
   
   constructor(
     private apiService: RoomTypeService,
-    private buildingService: BuildingService,
+    private buildingService: BuildingService,    
     private companyService: CompanyService,        
     private hotelService: HotelService,  
     public authService: AuthService,
@@ -91,6 +92,15 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
   loadBuildingsForHotels() {
     const hotelIds = this.roomTypeModel.getRelevantHotelIds();
     this.buildings$ = this.buildingService.getByHotelIds(hotelIds, this.translate.currentLang);
+    if (this.buildingsSubscription) {
+      this.buildingsSubscription.unsubscribe();
+    }
+    this.buildingsSubscription = this.buildings$.subscribe(newBuildings => {
+      const newBuildingIds = newBuildings.map(building => building.id);
+      if (this.roomTypeModel.buildings) {
+        this.roomTypeModel.buildings = this.roomTypeModel.buildings.filter(buildingId => newBuildingIds.includes(buildingId));
+      }
+    });
   }
 
   loadHotelsForSelectedCompanies() {
@@ -130,6 +140,9 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnDestroy(): void {
     this.reloadEvent.unsubscribe();
+    if (this.buildingsSubscription) {
+      this.buildingsSubscription.unsubscribe();
+    }
   }
 
   ngOnInit(): void {
@@ -138,7 +151,7 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
     });
     this.companyService.search('', '', this.translate.currentLang).subscribe((companies: Company[]) => {
       this.companiesList = companies;
-    });     
+    });
     this.datatableConfig = {
       serverSide: true,
       ajax: (dataTablesParameters: any, callback) => {

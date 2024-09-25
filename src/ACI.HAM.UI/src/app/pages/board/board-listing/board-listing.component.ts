@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { BoardService } from '../services/board-service';
 import { SweetAlertOptions } from 'sweetalert2';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
@@ -35,6 +35,7 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
   noticeSwal!: SwalComponent;
   swalOptions: SweetAlertOptions = {};
   buildings$: Observable<Building[]>;
+  buildingsSubscription: Subscription;
   companiesList: Company[] | null = null;
 
   constructor(
@@ -92,6 +93,15 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
   loadBuildingsForHotels() {
     const hotelIds = this.boardModel.getRelevantHotelIds();
     this.buildings$ = this.buildingService.getByHotelIds(hotelIds, this.translate.currentLang);
+    if (this.buildingsSubscription) {
+      this.buildingsSubscription.unsubscribe();
+    }
+    this.buildingsSubscription = this.buildings$.subscribe(newBuildings => {
+      const newBuildingIds = newBuildings.map(building => building.id);
+      if (this.boardModel.buildings) {
+        this.boardModel.buildings = this.boardModel.buildings.filter(buildingId => newBuildingIds.includes(buildingId));
+      }
+    });
   }
 
   loadHotelsForSelectedCompanies() {
@@ -131,6 +141,9 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.reloadEvent.unsubscribe();
+    if (this.buildingsSubscription) {
+      this.buildingsSubscription.unsubscribe();
+    }
   }
 
   ngOnInit(): void {
