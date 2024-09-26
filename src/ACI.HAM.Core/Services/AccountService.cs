@@ -6,15 +6,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using AutoMapper;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using ACI.HAM.Core.Extensions;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace ACI.HAM.Core.Services
 {
     public interface IAccountService
     {
-        Task<string> GenerateApiKeyAsync(string id);
+        Task<GenerateApiKeyResultDto> GenerateApiKeyAsync(string id, CancellationToken cancellationToken = default);
 
         Task<AccountResultDto> GetAccountAsync(string id, CancellationToken cancellationToken = default);
 
@@ -38,12 +38,43 @@ namespace ACI.HAM.Core.Services
             _configuration = configuration;
         }
 
-        public async Task<string> GenerateApiKeyAsync(string id)
+        public async Task<GenerateApiKeyResultDto> GenerateApiKeyAsync(string id, CancellationToken cancellationToken = default)
         {
-            string encryptedApiKey = _configuration["AppSettings:EncryptedApiKey"];
-            string decryptedApiKey = _dataProtector.Unprotect(encryptedApiKey);
-            string apiKey = ApiKeyExtension.GenerateApiKey();
-            return apiKey;
+            GenerateApiKeyResultDto generateApiKeyResultDto = new GenerateApiKeyResultDto();
+            User user = await _userManager.FindByNameAsync(id);
+            if (user == null)
+            {
+                generateApiKeyResultDto.HasErrors = true;
+                generateApiKeyResultDto.Errors = new List<IdentityError>()
+                {
+                    new IdentityError()
+                    {
+                        Description = _localizer["User does not exist"]
+                    }
+                };
+            }
+            else
+            {
+                string encryptedEncryptionKey = _configuration["AppSettings:EncryptedApiKey"];
+                string encryptionKey = _dataProtector.Unprotect(encryptedEncryptionKey);
+                string apiKey = ApiKeyExtension.GenerateApiKey();
+                var (hashedApiKey, salt) = ApiKeyExtension.HashApiKey(apiKey);
+                string encryptedApiKey = ApiKeyExtension.EncryptApiKey(apiKey, encryptionKey);
+                user.EncryptedApiKey = encryptedApiKey;
+                user.HashedApiKey = hashedApiKey;
+                user.Salt = salt;
+                IdentityResult identityResult = await _userManager.UpdateAsync(user);
+                if (!identityResult.Succeeded)
+                {
+                    generateApiKeyResultDto.HasErrors = true;
+                    generateApiKeyResultDto.Errors = identityResult.Errors;
+                }
+                else
+                {
+                    generateApiKeyResultDto.ApiKey = apiKey;
+                }
+            }
+            return generateApiKeyResultDto;
         }
 
         private AccountResultDto GetProfileDetails(User user, CancellationToken cancellationToken = default)

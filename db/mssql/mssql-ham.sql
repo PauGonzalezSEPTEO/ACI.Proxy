@@ -161,6 +161,9 @@ CREATE TABLE [dbo].[AspNetUsers](
   [CountryAlpha2Code] [nvarchar](2) NULL,
   [LanguageAlpha2Code] [nvarchar](2) NULL,
   [LastLoginDate] [datetimeoffset](7) NULL,
+  [EncryptedApiKey] NVARCHAR(MAX),
+  [HashedApiKey] NVARCHAR(MAX),
+  [Salt] NVARCHAR(100)
  CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

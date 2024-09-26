@@ -55,11 +55,11 @@ namespace ACI.HAM.Api
             services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(_configuration["AppSettings:PersistKeysDirectory"]))
                 .ProtectKeysWithCertificate(certificate);
-#if DEBUG && ENCRYPT
-            var provider = services.BuildServiceProvider();
-            var dataProtector = provider.GetRequiredService<IDataProtectionProvider>().CreateProtector("AppSettings.ApiKeyProtector");
-            string encryptionKey = "clave-api-secreta";
-            string encryptedEncryptionKey = dataProtector.Protect(encryptionKey);
+#if DEBUG
+            //var provider = services.BuildServiceProvider();
+            //var dataProtector = provider.GetRequiredService<IDataProtectionProvider>().CreateProtector("AppSettings.ApiKeyProtector");
+            //string encryptionKey = "AbC123XyZ456Def789GhI0KlMnOpQrsTuVwXyZ01";
+            //string encryptedEncryptionKey = dataProtector.Protect(encryptionKey);
 #endif
             services.AddRouting(options => options.LowercaseUrls = true)
             .AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>

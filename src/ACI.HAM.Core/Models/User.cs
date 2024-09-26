@@ -32,6 +32,8 @@ namespace ACI.HAM.Core.Models
         [StringLength(3)]
         public string CurrencyCode { get; set; }
 
+        public string EncryptedApiKey { get; set; }
+
         public static IQueryable<UserDto> FilterAndOrder(IQueryable<User> query, IMapper mapper, string search, string ordering, string languageCode)
         {
             if (string.IsNullOrEmpty(ordering))
@@ -49,6 +51,8 @@ namespace ACI.HAM.Core.Models
         [MaxLength(256)]
         public string Firstname { get; set; }
 
+        public string HashedApiKey { get; set; }
+
         [StringLength(2)]
         public string LanguageAlpha2Code { get; set; }
 
@@ -63,6 +67,9 @@ namespace ACI.HAM.Core.Models
         public string RefreshToken { get; set; }
 
         public DateTimeOffset RefreshTokenExpiryTime { get; set; }
+
+        [MaxLength(100)]
+        public string Salt { get; set; }
 
         [InverseProperty("User")]
         public virtual ICollection<UserHotelCompany> UserHotelsCompanies { get; } = new List<UserHotelCompany>();

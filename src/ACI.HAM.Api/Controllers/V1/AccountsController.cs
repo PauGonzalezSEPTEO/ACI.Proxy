@@ -23,12 +23,20 @@ namespace ACI.HAM.Api.Controllers.V1
         [Route("generate-api-key")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<string>> GenerateApiKeyAsync(CancellationToken cancellationToken = default)
+        public async Task<ActionResult<GenerateApiKeyResultDto>> GenerateApiKeyAsync(CancellationToken cancellationToken = default)
         {
             string name = User.Identity.Name;
-            string apiKey = await _accountService.GenerateApiKeyAsync(name);
-            return Ok(apiKey);
+            GenerateApiKeyResultDto generateApiKeyResultDto = await _accountService.GenerateApiKeyAsync(name, cancellationToken);
+            if (!generateApiKeyResultDto.HasErrors)
+            {
+                return Ok(generateApiKeyResultDto.ApiKey);
+            }
+            else
+            {
+                return BadRequest(generateApiKeyResultDto.Errors);
+            }
         }
 
         [HttpGet]

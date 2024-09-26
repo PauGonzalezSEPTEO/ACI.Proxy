@@ -8,7 +8,7 @@ using System.Diagnostics;
 #endif
 
 #if DEBUG
-//while (!Debugger.IsAttached) { Thread.Sleep(100); }
+while (!Debugger.IsAttached) { Thread.Sleep(100); }
 #endif
 
 try
