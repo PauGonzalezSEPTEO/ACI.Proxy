@@ -19,7 +19,7 @@ namespace ACI.HAM.Api.Controllers.V1
             _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("generate-api-key")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]

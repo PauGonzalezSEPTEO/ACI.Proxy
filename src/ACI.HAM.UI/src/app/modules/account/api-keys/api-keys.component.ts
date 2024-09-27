@@ -8,6 +8,7 @@ import { AccountService } from '../services/account.service';
 })
 export class ApiKeysComponent implements OnInit {
   account: AccountModel | null = null;
+  apiKey?: string;
   errorMessage?: string;
   hasError: boolean;  
 
@@ -18,11 +19,8 @@ export class ApiKeysComponent implements OnInit {
 
   generateApiKey(): void {
     this.accountService.generateApiKey().subscribe((apiKey: string) => {
-
-      //ToDo Pau
-      console.log(apiKey);
-      //
-
+      this.apiKey = apiKey;
+      this.changeDetectorRef.detectChanges();
     });
   }
 

@@ -1,12 +1,18 @@
-<div class="card mb-5 mb-xl-10">
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
     <div class="card-header cursor-pointer">
         <div class="card-title m-0">
             <h3 class="fw-bolder m-0" [translate]="'ACCOUNT.API_KEYS.API_KEYS'"></h3>
         </div>
-        <a routerLink="/crafted/account/settings" class="btn btn-primary align-self-center"
-            [translate]="'ACCOUNT.API_KEYS.NEW_API_KEY'" (click)="generateApiKey()">
+        <a class="btn btn-primary align-self-center" [translate]="'ACCOUNT.API_KEYS.NEW_API_KEY'"
+            (click)="generateApiKey()">
         </a>
     </div>
     <div class="card-body p-9">
+        <div *ngIf="apiKey" class="row mb-7">
+            <label class="col-lg-4 fw-bold text-muted" [translate]="'ACCOUNT.API_KEYS.API_KEY'"></label>
+            <div class="col-lg-8">
+                <span class="fw-bolder fs-6 text-gray-900">{{ apiKey }}</span>
+            </div>
+        </div>
     </div>
 </div>

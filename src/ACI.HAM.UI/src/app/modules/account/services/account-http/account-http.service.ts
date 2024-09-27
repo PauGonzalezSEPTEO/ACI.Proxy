@@ -14,7 +14,7 @@ export class AccountHTTPService {
 
   // public methods
   generateApiKey(): Observable<string> {
-    return this.http.get<string>(`${API_ACCOUNTS_URL}/generate-api-key`);
+    return this.http.post<string>(`${API_ACCOUNTS_URL}/generate-api-key`, {});
   }
 
   getAccount(): Observable<AccountModel> {

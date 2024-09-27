@@ -6,6 +6,7 @@ export const locale = {
   data: {
     ACCOUNT: {
       API_KEYS: {
+        API_KEY: 'Clave API',
         API_KEYS: 'Claves API',
         NEW_API_KEY: 'Nueva clave API'
       },      
@@ -673,6 +674,7 @@ export const locale = {
       ACCOUNT_SETTINGS: 'Configuración de la cuenta',
       ACCOUNTS: 'Cuentas',
       API: 'API',
+      API_KEYS: 'Claves API',
       AVATAR: 'Avatar',
       BOARDS: 'Pensiones',
       BUILDINGS: 'Edificios',
