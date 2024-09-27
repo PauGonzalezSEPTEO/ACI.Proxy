@@ -5,7 +5,12 @@ export const locale = {
   lang: 'en',
   data: {
     ACCOUNT: {
+      API_KEYS: {
+        API_KEYS: 'API keys',
+        NEW_API_KEY: 'New API key'
+      },
       OVERVIEW: {
+        API_KEYS: 'API keys',
         AVATAR: 'Avatar',
         COMMUNICATION: 'Communication',        
         COMPANY: 'Company',

@@ -39,6 +39,7 @@ services:
       - "5000"
     volumes:
       - ./certificate.pfx:/app/certificates/certificate.pfx
+      - ./key-d8c85530-0254-4bbb-b5f2-f88cca4ce76a.xml:/app/certificates/key-d8c85530-0254-4bbb-b5f2-f88cca4ce76a.xml 
 
 volumes:
   dbdata:

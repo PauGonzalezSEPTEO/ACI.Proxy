@@ -55,7 +55,7 @@ namespace ACI.HAM.Core.Services
             }
             else
             {
-                string encryptedEncryptionKey = _configuration["AppSettings:EncryptedApiKey"];
+                string encryptedEncryptionKey = _configuration["AppSettings:EncryptionKey"];
                 string encryptionKey = _dataProtector.Unprotect(encryptedEncryptionKey);
                 string apiKey = ApiKeyExtension.GenerateApiKey();
                 var (hashedApiKey, salt) = ApiKeyExtension.HashApiKey(apiKey);

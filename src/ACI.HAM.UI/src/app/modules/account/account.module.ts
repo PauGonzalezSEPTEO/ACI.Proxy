@@ -6,6 +6,7 @@ import { AccountRoutingModule } from './account-routing.module';
 import { AccountComponent } from './account.component';
 import { OverviewComponent } from './overview/overview.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ApiKeysComponent } from './api-keys/api-keys.component';
 import { ProfileDetailsComponent } from './settings/forms/profile-details/profile-details.component';
 import { DeactivateAccountComponent } from './settings/forms/deactivate-account/deactivate-account.component';
 import { SignInMethodComponent } from './settings/forms/sign-in-method/sign-in-method.component';
@@ -19,6 +20,7 @@ import { AvatarModule } from '../../modules/avatar/avatar.module';
     AccountComponent,
     OverviewComponent,
     SettingsComponent,
+    ApiKeysComponent,
     ProfileDetailsComponent,    
     DeactivateAccountComponent,
     SignInMethodComponent

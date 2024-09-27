@@ -13,6 +13,10 @@ export class AccountHTTPService {
   constructor(private http: HttpClient) {}
 
   // public methods
+  generateApiKey(): Observable<string> {
+    return this.http.get<string>(`${API_ACCOUNTS_URL}/generate-api-key`);
+  }
+
   getAccount(): Observable<AccountModel> {
     return this.http.get<AccountModel>(`${API_ACCOUNTS_URL}/me`);
   }

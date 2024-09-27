@@ -58,8 +58,9 @@ namespace ACI.HAM.Api
 #if DEBUG
             //var provider = services.BuildServiceProvider();
             //var dataProtector = provider.GetRequiredService<IDataProtectionProvider>().CreateProtector("AppSettings.ApiKeyProtector");
-            //string encryptionKey = "AbC123XyZ456Def789GhI0KlMnOpQrsTuVwXyZ01";
+            //string encryptionKey = "w7G5v8J9k3L6m2N1p4Q7r8T5v2W9x1Y3";
             //string encryptedEncryptionKey = dataProtector.Protect(encryptionKey);
+            //string encryptionKey2 = dataProtector.Unprotect(encryptedEncryptionKey);
 #endif
             services.AddRouting(options => options.LowercaseUrls = true)
             .AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>

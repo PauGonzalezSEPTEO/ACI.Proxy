@@ -23,6 +23,15 @@ export class AccountService implements OnDestroy {
     this.isLoading$ = this.isLoadingSubject.asObservable();
   }
 
+  generateApiKey(): Observable<string> {
+    return this.accountHttpService.generateApiKey().pipe(
+      catchError((err) => {
+        console.error('err', err);
+        return of(err);
+      })
+    );
+  }
+
   getAccount(): Observable<AccountModel> {
     if (this.account.value) {
       return of(this.account.value);

@@ -13,7 +13,6 @@ namespace ACI.HAM.Core.Extensions
                 aes.Key = Encoding.UTF8.GetBytes(encryptionKey);
                 aes.GenerateIV();
                 ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-
                 using (MemoryStream ms = new MemoryStream())
                 {
                     ms.Write(aes.IV, 0, aes.IV.Length);
