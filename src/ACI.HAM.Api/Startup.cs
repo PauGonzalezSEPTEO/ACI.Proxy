@@ -199,9 +199,9 @@ namespace ACI.HAM.Api
             app.UseRequestLocalization();
             app.UseRouting();
             app.UseCors("ApiCorsPolicy");
+            app.UseMiddleware<ApiKeyMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseMiddleware<ApiKeyMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

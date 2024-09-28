@@ -426,20 +426,27 @@ namespace ACI.HAM.Core.Services
             {
                 refreshResultDto.IsInvalidToken = true;
             }
-            string email = tokenValidationResult.ClaimsIdentity.Name;
-            User user = await _userManager.FindByEmailAsync(email);
-            if ((user == null) || (user.RefreshToken != tokenRefreshDto.RefreshToken) || (user.RefreshTokenExpiryTime <= DateTime.Now))
+            string email = tokenValidationResult.ClaimsIdentity?.Name;
+            if (string.IsNullOrEmpty(email))
             {
                 refreshResultDto.IsInvalidToken = true;
             }
             else
             {
-                refreshResultDto.AccessToken = await GenerateAccessTokenAsync(user);
-                refreshResultDto.RefreshToken = GenerateRefreshToken();
-                refreshResultDto.RefreshTokenExpiryTime = GetRefreshTokenExpiryTime();
-                user.RefreshToken = refreshResultDto.RefreshToken;
-                user.RefreshTokenExpiryTime = refreshResultDto.RefreshTokenExpiryTime;
-                await _baseContext.SaveChangesAsync(cancellationToken);
+                User user = await _userManager.FindByEmailAsync(email);
+                if ((user == null) || (user.RefreshToken != tokenRefreshDto.RefreshToken) || (user.RefreshTokenExpiryTime <= DateTime.Now))
+                {
+                    refreshResultDto.IsInvalidToken = true;
+                }
+                else
+                {
+                    refreshResultDto.AccessToken = await GenerateAccessTokenAsync(user);
+                    refreshResultDto.RefreshToken = GenerateRefreshToken();
+                    refreshResultDto.RefreshTokenExpiryTime = GetRefreshTokenExpiryTime();
+                    user.RefreshToken = refreshResultDto.RefreshToken;
+                    user.RefreshTokenExpiryTime = refreshResultDto.RefreshTokenExpiryTime;
+                    await _baseContext.SaveChangesAsync(cancellationToken);
+                }
             }
             return refreshResultDto;
         }
