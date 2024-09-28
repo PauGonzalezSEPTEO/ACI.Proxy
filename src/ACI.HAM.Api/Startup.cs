@@ -37,6 +37,7 @@ using Asp.Versioning.ApiExplorer;
 using System.IO;
 using Microsoft.AspNetCore.DataProtection;
 using System.Security.Cryptography.X509Certificates;
+using ACI.HAM.Core.Infrastructure.Middlewares;
 
 namespace ACI.HAM.Api
 {
@@ -200,6 +201,7 @@ namespace ACI.HAM.Api
             app.UseCors("ApiCorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<ApiKeyMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

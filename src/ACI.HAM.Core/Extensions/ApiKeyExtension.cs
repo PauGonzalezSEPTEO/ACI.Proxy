@@ -6,6 +6,31 @@ namespace ACI.HAM.Core.Extensions
 {
     public static class ApiKeyExtension
     {
+        public static string DecryptApiKey(string encryptedApiKey, string encryptionKey)
+        {
+            byte[] fullCipher = Convert.FromBase64String(encryptedApiKey);
+            using (Aes aes = Aes.Create())
+            {
+                byte[] iv = new byte[aes.BlockSize / 8];
+                byte[] cipherText = new byte[fullCipher.Length - iv.Length];
+                Array.Copy(fullCipher, iv, iv.Length);
+                Array.Copy(fullCipher, iv.Length, cipherText, 0, cipherText.Length);
+                aes.Key = Encoding.UTF8.GetBytes(encryptionKey);
+                aes.IV = iv;
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                using (MemoryStream ms = new MemoryStream(cipherText))
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader sr = new StreamReader(cs))
+                        {
+                            return sr.ReadToEnd();
+                        }
+                    }
+                }
+            }
+        }
+
         public static string EncryptApiKey(string apiKey, string encryptionKey)
         {
             using (Aes aes = Aes.Create())
@@ -56,6 +81,17 @@ namespace ACI.HAM.Core.Extensions
                 var apiKeyBytes = Encoding.UTF8.GetBytes(apiKey + salt);
                 var hashedApiKey = hmac.ComputeHash(apiKeyBytes);
                 return (Convert.ToBase64String(hashedApiKey), salt);
+            }
+        }
+
+        public static bool ValidateApiKey(string apiKey, string storedHashedApiKey, string salt)
+        {
+            using (var hmac = new HMACSHA256())
+            {
+                var apiKeyBytes = Encoding.UTF8.GetBytes(apiKey + salt);
+                var hashedKey = hmac.ComputeHash(apiKeyBytes);
+                var computedHashedApiKey = Convert.ToBase64String(hashedKey);
+                return storedHashedApiKey == computedHashedApiKey;
             }
         }
     }
