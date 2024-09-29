@@ -13,10 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		ACI.HAM.ruleset = ACI.HAM.ruleset
-		certificate.pfx = certificate.pfx
+		certificates\certificate.pfx = certificates\certificate.pfx
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
-		key-d8c85530-0254-4bbb-b5f2-f88cca4ce76a.xml = key-d8c85530-0254-4bbb-b5f2-f88cca4ce76a.xml
+		certificates\key-3a196e31-a3fb-45bd-bee1-851ae2a082bb.xml = certificates\key-3a196e31-a3fb-45bd-bee1-851ae2a082bb.xml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACI.HAM.Database", "src\ACI.HAM.Database\ACI.HAM.Database.csproj", "{5F40590F-FAC3-4022-B78B-20AFD8A95C6B}"

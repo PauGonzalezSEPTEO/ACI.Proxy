@@ -1,35 +1,14 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Configuration;
 
 namespace ACI.HAM.Core.Extensions
 {
     public static class ApiKeyExtension
     {
-        public static string DecryptApiKey(string encryptedApiKey, string encryptionKey)
-        {
-            byte[] fullCipher = Convert.FromBase64String(encryptedApiKey);
-            using (Aes aes = Aes.Create())
-            {
-                byte[] iv = new byte[aes.BlockSize / 8];
-                byte[] cipherText = new byte[fullCipher.Length - iv.Length];
-                Array.Copy(fullCipher, iv, iv.Length);
-                Array.Copy(fullCipher, iv.Length, cipherText, 0, cipherText.Length);
-                aes.Key = Encoding.UTF8.GetBytes(encryptionKey);
-                aes.IV = iv;
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                using (MemoryStream ms = new MemoryStream(cipherText))
-                {
-                    using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (StreamReader sr = new StreamReader(cs))
-                        {
-                            return sr.ReadToEnd();
-                        }
-                    }
-                }
-            }
-        }
+        private static string _hMACKey;
 
         public static string EncryptApiKey(string apiKey, string encryptionKey)
         {
@@ -73,9 +52,9 @@ namespace ACI.HAM.Core.Extensions
             return Convert.ToBase64String(salt);
         }
 
-        public static (string HashedApiKey, string Salt) HashApiKey(string apiKey)
+        public static (string hashedApiKey, string salt) HashApiKey(string apiKey)
         {
-            using (var hmac = new HMACSHA256())
+            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_hMACKey)))
             {
                 var salt = GenerateSalt();
                 var apiKeyBytes = Encoding.UTF8.GetBytes(apiKey + salt);
@@ -84,9 +63,16 @@ namespace ACI.HAM.Core.Extensions
             }
         }
 
+        public static void Initialize(IDataProtectionProvider provider, IConfiguration configuration)
+        {
+            var protector = provider.CreateProtector("ApiKey.ApiKeyProtector");
+            var encryptedHmacKey = configuration["ApiKey:HMACKey"];
+            _hMACKey = protector.Unprotect(encryptedHmacKey);
+        }
+
         public static bool ValidateApiKey(string apiKey, string storedHashedApiKey, string salt)
         {
-            using (var hmac = new HMACSHA256())
+            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_hMACKey)))
             {
                 var apiKeyBytes = Encoding.UTF8.GetBytes(apiKey + salt);
                 var hashedKey = hmac.ComputeHash(apiKeyBytes);

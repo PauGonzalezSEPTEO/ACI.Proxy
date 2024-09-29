@@ -34,7 +34,7 @@ namespace ACI.HAM.Core.Services
             _userManager = userManager;
             _mapper = mapper;
             _localizer = localizer;
-            _dataProtector = dataProtectionProvider.CreateProtector("AppSettings.ApiKeyProtector");
+            _dataProtector = dataProtectionProvider.CreateProtector("ApiKey.ApiKeyProtector");
             _configuration = configuration;
         }
 
@@ -55,7 +55,7 @@ namespace ACI.HAM.Core.Services
             }
             else
             {
-                string encryptedEncryptionKey = _configuration["AppSettings:EncryptionKey"];
+                string encryptedEncryptionKey = _configuration["ApiKey:EncryptionKey"];
                 string encryptionKey = _dataProtector.Unprotect(encryptedEncryptionKey);
                 string apiKey = ApiKeyExtension.GenerateApiKey();
                 var (hashedApiKey, salt) = ApiKeyExtension.HashApiKey(apiKey);

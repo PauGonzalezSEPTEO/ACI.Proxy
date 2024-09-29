@@ -38,8 +38,8 @@ services:
     expose:
       - "5000"
     volumes:
-      - ./certificate.pfx:/app/certificates/certificate.pfx
-      - ./key-d8c85530-0254-4bbb-b5f2-f88cca4ce76a.xml:/app/certificates/key-d8c85530-0254-4bbb-b5f2-f88cca4ce76a.xml 
+      - ./certificates/certificate.pfx:/app/certificates/certificate.pfx
+      - ./certificates/key-3a196e31-a3fb-45bd-bee1-851ae2a082bb.xml:/app/certificates/key-3a196e31-a3fb-45bd-bee1-851ae2a082bb.xml 
 
 volumes:
   dbdata:

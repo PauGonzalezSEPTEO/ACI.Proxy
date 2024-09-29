@@ -38,6 +38,8 @@ using System.IO;
 using Microsoft.AspNetCore.DataProtection;
 using System.Security.Cryptography.X509Certificates;
 using ACI.HAM.Core.Infrastructure.Middlewares;
+using ACI.HAM.Api.Infrastructure;
+using System;
 
 namespace ACI.HAM.Api
 {
@@ -52,17 +54,17 @@ namespace ACI.HAM.Api
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            var certificate = new X509Certificate2(_configuration["AppSettings:CertificateFile"], @_configuration["AppSettings:CertificatePassword"]);
+            var certificate = new X509Certificate2(_configuration["ApiKey:CertificateFile"], @_configuration["ApiKey:CertificatePassword"]);
             services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(_configuration["AppSettings:PersistKeysDirectory"]))
+                .PersistKeysToFileSystem(new DirectoryInfo(_configuration["ApiKey:PersistKeysDirectory"]))
                 .ProtectKeysWithCertificate(certificate);
-#if DEBUG
-            //var provider = services.BuildServiceProvider();
-            //var dataProtector = provider.GetRequiredService<IDataProtectionProvider>().CreateProtector("AppSettings.ApiKeyProtector");
-            //string encryptionKey = "w7G5v8J9k3L6m2N1p4Q7r8T5v2W9x1Y3";
-            //string encryptedEncryptionKey = dataProtector.Protect(encryptionKey);
-            //string encryptionKey2 = dataProtector.Unprotect(encryptedEncryptionKey);
-#endif
+            services.AddSingleton<DataProtectorFactory>();
+            services.AddSingleton(serviceProvider =>
+            {
+                var dataProtectionProvider = serviceProvider.GetRequiredService<IDataProtectionProvider>();
+                var dataProtectorFactory = new DataProtectorFactory(dataProtectionProvider);
+                return dataProtectorFactory.CreateProtector("ApiKey.ApiKeyProtector");
+            });
             services.AddRouting(options => options.LowercaseUrls = true)
             .AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {                    
@@ -81,7 +83,12 @@ namespace ACI.HAM.Api
                 o.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(coreLocalization.DataAnnotations));
                 o.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(mailLocalization.DataAnnotations));
             });
-            services.AddPooledDbContextFactory<BaseContext>(options => options.UseSqlServer(_configuration.GetConnectionString("MsSqlDb")), poolSize: 10);
+            services.AddPooledDbContextFactory<BaseContext>((serviceProvider, options) =>
+            {
+                var dataProtector = serviceProvider.GetRequiredService<IDataProtector>();
+                string msSqlDb = dataProtector.Unprotect(_configuration.GetConnectionString("MsSqlDb"));
+                options.UseSqlServer(msSqlDb);
+            }, poolSize: 10);
             services.AddScoped<UserRepository>();
             services.AddScoped<BaseContextFactory>();
             services.AddScoped(serviceProvider =>
@@ -119,7 +126,12 @@ namespace ACI.HAM.Api
             services.AddCoreComponents();
             services.AddMailComponents();
             services.AddFeatureManagement().AddFeatureFilter<TimeWindowFilter>();
-            services.AddHealthChecks().AddSqlServer(_configuration.GetConnectionString("MsSqlDb"));
+            services.AddHealthChecks().AddSqlServer(serviceProvider =>
+            {
+                var dataProtector = serviceProvider.GetRequiredService<IDataProtector>();
+                string msSqlDb = dataProtector.Unprotect(_configuration.GetConnectionString("MsSqlDb"));
+                return msSqlDb;
+            });
             services.AddApiVersioning(options =>
             {
                 options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -180,12 +192,29 @@ namespace ACI.HAM.Api
                 });
         }
 
-        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider, IDataProtectionProvider dataProtectionProvider, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            ApiKeyExtension.Initialize(dataProtectionProvider, _configuration);
+#if DEBUG
+            //var dataProtector = serviceProvider.GetRequiredService<IDataProtector>();
+            //string hMACKey = "TEZNK3Ii7U0Gw0RkNxR/fUnfkS3oUZaEVL6cxdQLegI=";
+            //string encryptedHMACKey = dataProtector.Protect(hMACKey);
+            //string hMACKey2 = dataProtector.Unprotect(encryptedHMACKey);
+            //string encryptionKey = "w7G5v8J9k3L6m2N1p4Q7r8T5v2W9x1Y3";
+            //string encryptedEncryptionKey = dataProtector.Protect(encryptionKey);
+            //string encryptionKey2 = dataProtector.Unprotect(encryptedEncryptionKey);
+            //string msSqlDb = "Data Source=mssql,1433;Initial Catalog=HAM;User ID=sa;Password=.acisa159753;MultipleActiveResultSets=true;TrustServerCertificate=true;";
+            //string encryptedMsSqlDb = dataProtector.Protect(msSqlDb);
+            //string msSqlDb2 = dataProtector.Unprotect(encryptedMsSqlDb);
+            //string securityKey = "ASDFGHJKLqtfaaftfztfzljkjmkjhugyftyftdxrfxxthdtryjtrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrcccccccccccdxdd";
+            //string encryptedSecurityKey = dataProtector.Protect(securityKey);
+            //string securityKey2 = dataProtector.Unprotect(encryptedSecurityKey);
+#endif
+
             _ = app.SeedDatabaseAsync();
             app.UseSwagger();
             app.UseSwaggerUI(options =>

@@ -118,9 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="API Key not provided" xml:space="preserve">
-    <value>API Key not provided.</value>
+    <value>API Key no proporcionada.</value>
   </data>
   <data name="Invalid API Key" xml:space="preserve">
-    <value>Invalid API Key.</value>
+    <value>API Key inválida.</value>
+  </data>
+  <data name="User id not provided" xml:space="preserve">
+    <value>Identificador de usuario no proporcionado.</value>
   </data>
 </root>
