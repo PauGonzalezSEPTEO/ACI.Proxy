@@ -7,10 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ACI.HAM.Api.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
-    public class AccountsController : ApiControllerBase
+    public class AccountsController : JwtControllerBase
     {
         private readonly IAccountService _accountService;
 

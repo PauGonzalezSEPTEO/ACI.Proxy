@@ -12,6 +12,8 @@ namespace ACI.HAM.Core.Infrastructure.Middlewares
 {
     public class ApiKeyMiddleware
     {
+        public const string X_API_KEY = "x-api-key";
+
         private readonly IDataProtector _dataProtector;
         private readonly List<string> _excludedRoutes = new List<string>
         {
@@ -57,7 +59,7 @@ namespace ACI.HAM.Core.Infrastructure.Middlewares
                 await _next(context);
                 return;
             }
-            if (!context.Request.Headers.TryGetValue("x-api-key", out var apiKey))
+            if (!context.Request.Headers.TryGetValue(X_API_KEY, out var apiKey))
             {
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsync(_messages["API Key not provided"].Value);

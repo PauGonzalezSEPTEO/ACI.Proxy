@@ -39,7 +39,6 @@ using Microsoft.AspNetCore.DataProtection;
 using System.Security.Cryptography.X509Certificates;
 using ACI.HAM.Core.Infrastructure.Middlewares;
 using ACI.HAM.Api.Infrastructure;
-using System;
 
 namespace ACI.HAM.Api
 {
@@ -137,7 +136,6 @@ namespace ACI.HAM.Api
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.ReportApiVersions = true;
-
                 options.ApiVersionReader = ApiVersionReader.Combine(
                     new UrlSegmentApiVersionReader(),
                     new HeaderApiVersionReader("x-api-version"),
@@ -172,24 +170,24 @@ namespace ACI.HAM.Api
                 options.SupportedCultures = new List<CultureInfo> { new("en"), new("es") };
                 options.SupportedUICultures = new List<CultureInfo> { new("en"), new("es") };
             });
-            services.AddAuthorization();
             services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                }).AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = _configuration["JwtSettings:ValidIssuer"],
-                        ValidAudience = _configuration["JwtSettings:ValidAudience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecurityKey"]))
-                    };
-                });
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _configuration["JwtSettings:ValidIssuer"],
+                    ValidAudience = _configuration["JwtSettings:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecurityKey"]))
+                };
+            });
+            services.AddAuthorization();
         }
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider, IDataProtectionProvider dataProtectionProvider, IServiceProvider serviceProvider)
@@ -199,22 +197,21 @@ namespace ACI.HAM.Api
                 app.UseDeveloperExceptionPage();
             }
             ApiKeyExtension.Initialize(dataProtectionProvider, _configuration);
-#if DEBUG
-            //var dataProtector = serviceProvider.GetRequiredService<IDataProtector>();
-            //string hMACKey = "TEZNK3Ii7U0Gw0RkNxR/fUnfkS3oUZaEVL6cxdQLegI=";
-            //string encryptedHMACKey = dataProtector.Protect(hMACKey);
-            //string hMACKey2 = dataProtector.Unprotect(encryptedHMACKey);
-            //string encryptionKey = "w7G5v8J9k3L6m2N1p4Q7r8T5v2W9x1Y3";
-            //string encryptedEncryptionKey = dataProtector.Protect(encryptionKey);
-            //string encryptionKey2 = dataProtector.Unprotect(encryptedEncryptionKey);
-            //string msSqlDb = "Data Source=mssql,1433;Initial Catalog=HAM;User ID=sa;Password=.acisa159753;MultipleActiveResultSets=true;TrustServerCertificate=true;";
-            //string encryptedMsSqlDb = dataProtector.Protect(msSqlDb);
-            //string msSqlDb2 = dataProtector.Unprotect(encryptedMsSqlDb);
-            //string securityKey = "ASDFGHJKLqtfaaftfztfzljkjmkjhugyftyftdxrfxxthdtryjtrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrcccccccccccdxdd";
-            //string encryptedSecurityKey = dataProtector.Protect(securityKey);
-            //string securityKey2 = dataProtector.Unprotect(encryptedSecurityKey);
+#if DEBUG && ENCRYPT
+            var dataProtector = serviceProvider.GetRequiredService<IDataProtector>();
+            string hMACKey = "TEZNK3Ii7U0Gw0RkNxR/fUnfkS3oUZaEVL6cxdQLegI=";
+            string encryptedHMACKey = dataProtector.Protect(hMACKey);
+            string hMACKey2 = dataProtector.Unprotect(encryptedHMACKey);
+            string encryptionKey = "w7G5v8J9k3L6m2N1p4Q7r8T5v2W9x1Y3";
+            string encryptedEncryptionKey = dataProtector.Protect(encryptionKey);
+            string encryptionKey2 = dataProtector.Unprotect(encryptedEncryptionKey);
+            string msSqlDb = "Data Source=mssql,1433;Initial Catalog=HAM;User ID=sa;Password=.acisa159753;MultipleActiveResultSets=true;TrustServerCertificate=true;";
+            string encryptedMsSqlDb = dataProtector.Protect(msSqlDb);
+            string msSqlDb2 = dataProtector.Unprotect(encryptedMsSqlDb);
+            string securityKey = "ASDFGHJKLqtfaaftfztfzljkjmkjhugyftyftdxrfxxthdtryjtrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrcccccccccccdxdd";
+            string encryptedSecurityKey = dataProtector.Protect(securityKey);
+            string securityKey2 = dataProtector.Unprotect(encryptedSecurityKey);
 #endif
-
             _ = app.SeedDatabaseAsync();
             app.UseSwagger();
             app.UseSwaggerUI(options =>

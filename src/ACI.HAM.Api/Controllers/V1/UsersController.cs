@@ -11,11 +11,10 @@ using Microsoft.Extensions.Localization;
 
 namespace ACI.HAM.Api.V1.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/v{version:apiVersion}/users")]
     [ApiVersion("1.0")]
     [EnableCors("ApiCorsPolicy")]
-    public class UsersController : ApiControllerBase
+    public class UsersController : JwtControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly IStringLocalizer<UsersController> _messages;

@@ -8,10 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ACI.HAM.Api.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
-    public class MailController : ApiControllerBase
+    public class MailController : JwtControllerBase
     {
         private readonly IMailService _mailService;
 

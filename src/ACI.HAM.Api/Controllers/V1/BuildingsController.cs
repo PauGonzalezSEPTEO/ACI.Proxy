@@ -9,10 +9,9 @@ using Microsoft.Extensions.Localization;
 
 namespace ACI.HAM.Api.V1.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
-    public class BuildingsController : ApiControllerBase
+    public class BuildingsController : JwtControllerBase
     {
         private readonly IBuildingService _buildingService;
         private readonly IStringLocalizer<UsersController> _messages;

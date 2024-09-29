@@ -29,37 +29,61 @@ namespace ACI.HAM.Api.Infrastructure.Configurations
             foreach (var description in _provider.ApiVersionDescriptions)
             {
                 options.SwaggerDoc(description.GroupName, CreateVersionInfo(description));
-                options.OrderActionsBy(x => x.RelativePath);
-                options.IncludeXmlComments(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ACI.HAM.Api.xml"));
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = @"JWT Authorization header using the Bearer scheme. <br/><br/> 
-                      Enter 'Bearer' [space] and then your access token in the text input below.
-                      <br/><br/>Example: 'Bearer 12345abcdef'",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Name = HeaderNames.Authorization,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme,
-                    BearerFormat = "JWT",
-                });
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Name = "Bearer",
-                            Type = SecuritySchemeType.ApiKey,
-                            In = ParameterLocation.Header,
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
             }
+            options.OrderActionsBy(x => x.RelativePath);
+            options.IncludeXmlComments(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ACI.HAM.Api.xml"));
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = @"JWT Authorization header using the Bearer scheme. <br/><br/> 
+                Enter 'Bearer' [space] and then your access token in the text input below.
+                <br/><br/>Example: 'Bearer 12345abcdef'",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Name = HeaderNames.Authorization,
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                BearerFormat = "JWT",
+            });
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Name = "Bearer",
+                        Type = SecuritySchemeType.ApiKey,
+                        In = ParameterLocation.Header,
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+            options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+            {
+                Description = "API Key needed to access the endpoints. Example: \"x-api-key: {api_key}\"",
+                Name = "ApiKey",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey
+            });
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Name = "ApiKey",
+                        Type = SecuritySchemeType.ApiKey,
+                        In = ParameterLocation.Header,
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "ApiKey"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
         }
 
         /// <summary>

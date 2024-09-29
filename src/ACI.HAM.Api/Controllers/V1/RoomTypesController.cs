@@ -15,11 +15,10 @@ using Microsoft.FeatureManagement.Mvc;
 
 namespace ACI.HAM.Api.V1.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/v{version:apiVersion}/room-types")]
     [ApiVersion("1.0")]
     [EnableCors("ApiCorsPolicy")]
-    public class RoomTypesController : ApiControllerBase
+    public class RoomTypesController : JwtControllerBase
     {
         private readonly IStringLocalizer<UsersController> _messages;
         private readonly IRoomTypeService _roomTypeService;

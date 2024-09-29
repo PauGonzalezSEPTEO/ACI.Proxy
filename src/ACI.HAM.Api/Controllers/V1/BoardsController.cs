@@ -10,11 +10,10 @@ using Microsoft.Extensions.Localization;
 
 namespace ACI.HAM.Api.V1.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/v{version:apiVersion}/boards")]
     [ApiVersion("1.0")]
     [EnableCors("ApiCorsPolicy")]
-    public class BoardsController : ApiControllerBase
+    public class BoardsController : JwtControllerBase
     {
         private readonly IBoardService _boardService;
         private readonly IStringLocalizer<UsersController> _messages;

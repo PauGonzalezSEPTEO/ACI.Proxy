@@ -10,11 +10,10 @@ using Microsoft.Extensions.Localization;
 
 namespace ACI.HAM.Api.V1.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/v{version:apiVersion}/hotels")]
     [ApiVersion("1.0")]
     [EnableCors("ApiCorsPolicy")]
-    public class HotelsController : ApiControllerBase
+    public class HotelsController : JwtControllerBase
     {
         private readonly IHotelService _hotelService;
         private readonly IStringLocalizer<UsersController> _messages;
