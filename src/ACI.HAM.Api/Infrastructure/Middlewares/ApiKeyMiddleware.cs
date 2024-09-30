@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using ACI.HAM.Core.Extensions;
 using ACI.HAM.Core.Models;
@@ -81,6 +82,22 @@ namespace ACI.HAM.Core.Infrastructure.Middlewares
                     await context.Response.WriteAsync(_messages["Invalid API Key"].Value);
                     return;
                 }
+                var roles = await userManager.GetRolesAsync(user);
+                List<Claim> claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.Email),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                };
+                if (roles != null)
+                {
+                    foreach (var role in roles)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, role));
+                    }
+                }
+                var identity = new ClaimsIdentity(claims, "ApiKey");
+                var principal = new ClaimsPrincipal(identity);
+                context.User = principal;
             }
             await _next(context);
         }

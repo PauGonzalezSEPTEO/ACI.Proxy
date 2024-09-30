@@ -1,14 +1,75 @@
 using Asp.Versioning.ApiExplorer;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO;
+using System.Linq;
 
 namespace ACI.HAM.Api.Infrastructure.Configurations
 {
+    public class AuthorizationParameters : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            var hasAllowAnonymous = context.MethodInfo
+                .GetCustomAttributes(true)
+                .OfType<AllowAnonymousAttribute>()
+                .Any();
+            if (hasAllowAnonymous)
+            {
+                return;
+            }
+            var apiDescription = context.ApiDescription;
+            var groupName = apiDescription.GroupName;
+            var parameters = operation.Parameters ?? new List<OpenApiParameter>();
+            switch (groupName)
+            {
+                case "Public Api":
+                    parameters.Add(new OpenApiParameter
+                    {
+                        Name = "x-api-key",
+                        In = ParameterLocation.Header,
+                        Description = "API key needed to access the endpoints.",
+                        Required = true,
+                        Schema = new OpenApiSchema
+                        {
+                            Type = "string"
+                        }
+                    });
+                    parameters.Add(new OpenApiParameter
+                    {
+                        Name = "email",
+                        In = ParameterLocation.Header,
+                        Description = "Email header for authentication.",
+                        Required = true,
+                        Schema = new OpenApiSchema
+                        {
+                            Type = "string"
+                        }
+                    });
+                    break;
+                case "Private Api":
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            }, new string[0]
+                        }
+                    });
+                    break;
+            }
+            operation.Parameters = parameters;
+        }
+    }
+
     public class ConfigureSwaggerOptions
         : IConfigureNamedOptions<SwaggerGenOptions>
     {
@@ -25,64 +86,19 @@ namespace ACI.HAM.Api.Infrastructure.Configurations
         /// <param name="options"></param>
         public void Configure(SwaggerGenOptions options)
         {
-            // add swagger document for every API version discovered
             foreach (var description in _provider.ApiVersionDescriptions)
             {
                 options.SwaggerDoc(description.GroupName, CreateVersionInfo(description));
             }
             options.OrderActionsBy(x => x.RelativePath);
             options.IncludeXmlComments(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ACI.HAM.Api.xml"));
+            options.OperationFilter<AuthorizationParameters>();
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Description = @"JWT Authorization header using the Bearer scheme. <br/><br/> 
-                Enter 'Bearer' [space] and then your access token in the text input below.
-                <br/><br/>Example: 'Bearer 12345abcdef'",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Name = HeaderNames.Authorization,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                BearerFormat = "JWT",
-            });
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Name = "Bearer",
-                        Type = SecuritySchemeType.ApiKey,
-                        In = ParameterLocation.Header,
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
-            options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
-            {
-                Description = "API Key needed to access the endpoints. Example: \"x-api-key: {api_key}\"",
-                Name = "ApiKey",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey
-            });
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Name = "ApiKey",
-                        Type = SecuritySchemeType.ApiKey,
-                        In = ParameterLocation.Header,
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "ApiKey"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
+                Description = "Use bearer token to authorize",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT"
             });
         }
 
@@ -105,7 +121,7 @@ namespace ACI.HAM.Api.Infrastructure.Configurations
         {
             var info = new OpenApiInfo()
             {
-                Title = string.Format("ACI.HAM.Api.{0} Api", desc.ApiVersion),
+                Title = string.Format("ACI.HAM.Api", desc.ApiVersion),
                 Version = desc.ApiVersion.ToString(),
                 Contact = new OpenApiContact
                 {
