@@ -138,7 +138,7 @@ CREATE TABLE [dbo].[AspNetUsers](
 	[Email] [nvarchar](256) NULL,
 	[EmailConfirmed] [bit] NOT NULL,
 	[LockoutEnabled] [bit] NOT NULL,
-	[LockoutEnd] [datetimeoffset](7) NULL,
+	[LockoutEnd] [DATETIMEOFFSET](7) NULL,
 	[NormalizedEmail] [nvarchar](256) NULL,
 	[NormalizedUserName] [nvarchar](256) NULL,
 	[PasswordHash] [nvarchar](max) NULL,
@@ -150,20 +150,17 @@ CREATE TABLE [dbo].[AspNetUsers](
   [Firstname] [nvarchar](256) NOT NULL,
   [Lastname] [nvarchar](256) NOT NULL,
   [RefreshToken] [nvarchar](450) NULL,
-  [RefreshTokenExpiryTime] [datetimeoffset](7) NULL,
+  [RefreshTokenExpiryTime] [DATETIMEOFFSET](7) NULL,
   [AllowCommercialMail] [bit] NULL,
   [Avatar] [nvarchar](max) NULL,
   [CommunicationByMail] [bit] NULL,
   [CommunicationByPhone] [bit] NULL,
   [CompanyName] [nvarchar](256) NULL,
-  [CreateDate] [datetimeoffset](7) NULL,
+  [CreateDate] [DATETIMEOFFSET](7) NULL,
   [CurrencyCode] [nvarchar](3) NULL,
   [CountryAlpha2Code] [nvarchar](2) NULL,
   [LanguageAlpha2Code] [nvarchar](2) NULL,
-  [LastLoginDate] [datetimeoffset](7) NULL,
-  [EncryptedApiKey] NVARCHAR(MAX),
-  [HashedApiKey] NVARCHAR(MAX),
-  [Salt] NVARCHAR(100)
+  [LastLoginDate] [DATETIMEOFFSET](7) NULL
  CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -260,7 +257,7 @@ CREATE TABLE [dbo].[AuditEntries](
   [KeyValues][nvarchar](MAX) NOT NULL,
   [NewValues][nvarchar](MAX) NULL,
   [OldValues][nvarchar](MAX) NULL,
-  [Timestamp] [datetimeoffset](7) NOT NULL,
+  [Timestamp] [DATETIMEOFFSET](7) NOT NULL,
   [UserName] [nvarchar](256) NULL,
  CONSTRAINT [PK_AuditEntries] PRIMARY KEY CLUSTERED
 (
@@ -293,6 +290,28 @@ CREATE TABLE [dbo].[Hotels](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UserApiKeys]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[UserApiKeys](
+  Id INT IDENTITY(1,1) NOT NULL,
+	[UserId] [nvarchar](450) NOT NULL,
+  [EncryptedApiKey] NVARCHAR(512),
+  [HashedApiKey] NVARCHAR(64),
+  [Salt] NVARCHAR(32),
+  [CreatedAt] [DATETIMEOFFSET] (7) NOT NULL,
+  [Expiration] [DATETIMEOFFSET] (7) NOT NULL,
+  [IsActive] BIT NOT NULL
+ CONSTRAINT [PK_UserApiKeys] PRIMARY KEY CLUSTERED
+(
+	[Id] ASC
+)) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
@@ -543,6 +562,13 @@ GO
 ALTER TABLE [dbo].[Hotels] CHECK CONSTRAINT [FK_Hotels_Companies]
 GO
 
+ALTER TABLE [dbo].[UserApiKeys]  WITH CHECK ADD CONSTRAINT [FK_UserApiKeys_AspNetUsers] FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[UserApiKeys] CHECK CONSTRAINT [FK_UserApiKeys_AspNetUsers]
+GO
+
 ALTER TABLE [dbo].[UserHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_UserHotelsCompanies_AspNetUsers] FOREIGN KEY([UserId])
 REFERENCES [dbo].[AspNetUsers] ([Id])
 ON DELETE CASCADE
@@ -689,6 +715,7 @@ GRANT ALL ON BoardTranslations TO [user];
 GRANT ALL ON BoardsBuildings TO [user];
 GRANT ALL ON Buildings TO [user];
 GRANT ALL ON BuildingTranslations TO [user];
+GRANT ALL ON UserApiKeys TO [user];
 GRANT ALL ON UserHotelsCompanies TO [user];
 
 END

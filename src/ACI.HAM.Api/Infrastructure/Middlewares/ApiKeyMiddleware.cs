@@ -1,11 +1,13 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using ACI.HAM.Core.Data;
 using ACI.HAM.Core.Extensions;
 using ACI.HAM.Core.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 
@@ -74,25 +76,29 @@ namespace ACI.HAM.Core.Infrastructure.Middlewares
             }
             using (var scope = _serviceProvider.CreateScope())
             {
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                var user = await userManager.FindByEmailAsync(email);
-                if ((user == null) || !ApiKeyExtension.ValidateApiKey(apiKey, user.HashedApiKey, user.Salt))
+                var baseContext = scope.ServiceProvider.GetRequiredService<BaseContext>();
+                UserApiKey userApiKey = null;
+                userApiKey = await baseContext.UserApiKeys
+                    .Include(x => x.User)
+                    .ThenInclude(x => x.UserRoles)
+                    .FirstOrDefaultAsync(x => (x.User.Email == email.ToString()) && x.IsActive);
+                if ((userApiKey != null) && !ApiKeyExtension.ValidateApiKey(apiKey.ToString(), userApiKey.HashedApiKey, userApiKey.Salt))
                 {
                     context.Response.StatusCode = 401;
                     await context.Response.WriteAsync(_messages["Invalid API Key"].Value);
                     return;
                 }
-                var roles = await userManager.GetRolesAsync(user);
                 List<Claim> claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.Email),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, userApiKey.User.Email),
+                    new Claim(ClaimTypes.NameIdentifier, userApiKey.UserId.ToString())
                 };
+                var roles = userApiKey.User.UserRoles.ToList();
                 if (roles != null)
                 {
                     foreach (var role in roles)
                     {
-                        claims.Add(new Claim(ClaimTypes.Role, role));
+                        claims.Add(new Claim(ClaimTypes.Role, role.RoleId));
                     }
                 }
                 var identity = new ClaimsIdentity(claims, "ApiKey");

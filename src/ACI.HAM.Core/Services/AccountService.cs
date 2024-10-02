@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.DataProtection;
 using ACI.HAM.Core.Extensions;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using ACI.HAM.Core.Data;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ACI.HAM.Core.Services
 {
@@ -23,15 +27,17 @@ namespace ACI.HAM.Core.Services
 
     public class AccountService : IAccountService
     {
+        private readonly BaseContext _baseContext;
         private readonly IConfiguration _configuration;
         private readonly IDataProtector _dataProtector;
         private readonly IStringLocalizer<AccountService> _localizer;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
 
-        public AccountService(UserManager<User> userManager, IMapper mapper, IStringLocalizer<AccountService> localizer, IDataProtectionProvider dataProtectionProvider, IConfiguration configuration)
+        public AccountService(UserManager<User> userManager, BaseContext baseContext, IMapper mapper, IStringLocalizer<AccountService> localizer, IDataProtectionProvider dataProtectionProvider, IConfiguration configuration)
         {
             _userManager = userManager;
+            _baseContext = baseContext;
             _mapper = mapper;
             _localizer = localizer;
             _dataProtector = dataProtectionProvider.CreateProtector("ApiKey.ApiKeyProtector");
@@ -60,19 +66,26 @@ namespace ACI.HAM.Core.Services
                 string apiKey = ApiKeyExtension.GenerateApiKey();
                 var (hashedApiKey, salt) = ApiKeyExtension.HashApiKey(apiKey);
                 string encryptedApiKey = ApiKeyExtension.EncryptApiKey(apiKey, encryptionKey);
-                user.EncryptedApiKey = encryptedApiKey;
-                user.HashedApiKey = hashedApiKey;
-                user.Salt = salt;
-                IdentityResult identityResult = await _userManager.UpdateAsync(user);
-                if (!identityResult.Succeeded)
+                var userApiKey = new UserApiKey
                 {
-                    generateApiKeyResultDto.HasErrors = true;
-                    generateApiKeyResultDto.Errors = identityResult.Errors;
-                }
-                else
+                    EncryptedApiKey = encryptedApiKey,
+                    HashedApiKey = hashedApiKey,
+                    Salt = salt,
+                    CreatedAt = DateTime.UtcNow,
+                    Expiration = DateTime.UtcNow.AddMonths(1),
+                    IsActive = true,
+                    UserId = user.Id
+                };
+                var currentApiKeys = await _baseContext.UserApiKeys
+                    .Where(x => (x.UserId == user.Id) && x.IsActive)
+                    .ToListAsync();
+                foreach (var oldKey in currentApiKeys)
                 {
-                    generateApiKeyResultDto.ApiKey = apiKey;
+                    oldKey.IsActive = false;
                 }
+                _baseContext.UserApiKeys.Add(userApiKey);
+                await _baseContext.SaveChangesAsync();
+                generateApiKeyResultDto.ApiKey = apiKey;
             }
             return generateApiKeyResultDto;
         }

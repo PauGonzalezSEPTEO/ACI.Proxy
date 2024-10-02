@@ -9,7 +9,18 @@ using System.Linq;
 
 namespace ACI.HAM.Api.Infrastructure.Configurations
 {
-    public class AuthorizationParameters : IOperationFilter
+    public class SwaggerDocumentFilter : IDocumentFilter
+    {
+        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+        {
+            if (context.DocumentName == "Public Api")
+            {
+                swaggerDoc.Components.SecuritySchemes.Remove("Bearer");
+            }
+        }
+    }
+
+    public class SwaggerOperationFilter : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
@@ -92,7 +103,8 @@ namespace ACI.HAM.Api.Infrastructure.Configurations
             }
             options.OrderActionsBy(x => x.RelativePath);
             options.IncludeXmlComments(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ACI.HAM.Api.xml"));
-            options.OperationFilter<AuthorizationParameters>();
+            options.OperationFilter<SwaggerOperationFilter>();
+            options.DocumentFilter<SwaggerDocumentFilter>();
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description = "Use bearer token to authorize",

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ACI.HAM.Api.Controllers.V1
 {
-    [Route("api/v{version:apiVersion}/public")]
+    [Route("publicapi/v{version:apiVersion}")]
     [ApiVersion("1.0")]
     [EnableCors("ApiCorsPolicy")]
     public class ApiKeyController : ApiKeyControllerBase

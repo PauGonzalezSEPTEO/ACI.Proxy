@@ -380,6 +380,8 @@ namespace ACI.HAM.Core.Data
             return await base.SaveChangesAsync(cancellationToken);
         }
 
+        public virtual DbSet<UserApiKey> UserApiKeys { get; set; }
+
         public virtual DbSet<UserHotelCompany> UserHotelsCompanies { get; set; }
     }
 }

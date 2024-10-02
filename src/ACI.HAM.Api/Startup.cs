@@ -39,6 +39,7 @@ using Microsoft.AspNetCore.DataProtection;
 using System.Security.Cryptography.X509Certificates;
 using ACI.HAM.Core.Infrastructure.Middlewares;
 using ACI.HAM.Api.Infrastructure;
+using AspNetCoreRateLimit;
 
 namespace ACI.HAM.Api
 {
@@ -64,6 +65,9 @@ namespace ACI.HAM.Api
                 var dataProtectorFactory = new DataProtectorFactory(dataProtectionProvider);
                 return dataProtectorFactory.CreateProtector("ApiKey.ApiKeyProtector");
             });
+            services.Configure<ClientRateLimitOptions>(_configuration.GetSection("RateLimiting"));
+            services.AddInMemoryRateLimiting();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
             services.AddRouting(options => options.LowercaseUrls = true)
             .AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {                    
@@ -223,6 +227,7 @@ namespace ACI.HAM.Api
                 }
             });
             app.UseRequestLocalization();
+            app.UseClientRateLimiting();
             app.UseRouting();
             app.UseCors("ApiCorsPolicy");
             app.UseMiddleware<ApiKeyMiddleware>();
