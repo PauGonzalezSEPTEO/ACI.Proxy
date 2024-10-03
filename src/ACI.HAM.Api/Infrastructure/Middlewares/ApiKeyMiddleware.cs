@@ -81,6 +81,7 @@ namespace ACI.HAM.Core.Infrastructure.Middlewares
                 userApiKey = await baseContext.UserApiKeys
                     .Include(x => x.User)
                     .ThenInclude(x => x.UserRoles)
+                    .ThenInclude(x => x.Role)
                     .FirstOrDefaultAsync(x => (x.User.Email == email.ToString()) && x.IsActive);
                 if ((userApiKey != null) && !ApiKeyExtension.ValidateApiKey(apiKey.ToString(), userApiKey.HashedApiKey, userApiKey.Salt))
                 {
@@ -98,7 +99,7 @@ namespace ACI.HAM.Core.Infrastructure.Middlewares
                 {
                     foreach (var role in roles)
                     {
-                        claims.Add(new Claim(ClaimTypes.Role, role.RoleId));
+                        claims.Add(new Claim(ClaimTypes.Role, role.Role.Name));
                     }
                 }
                 var identity = new ClaimsIdentity(claims, "ApiKey");

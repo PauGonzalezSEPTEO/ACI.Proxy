@@ -20,7 +20,7 @@ namespace ACI.HAM.Api.Controllers.V1
         }
 
         [HttpGet]
-        [Route("/boards/read-by-id/{id}")]
+        [Route("boards/read-by-id/{id}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
