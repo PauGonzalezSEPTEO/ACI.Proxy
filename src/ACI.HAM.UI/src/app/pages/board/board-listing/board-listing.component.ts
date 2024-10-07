@@ -190,7 +190,7 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
       ],
       createdRow: function (row, _data, _dataIndex) {
         $('td:eq(0)', row).addClass('d-flex align-items-center');
-      },
+      }
     };   
   }
 

@@ -111,7 +111,7 @@ export class RoleDetailsComponent implements OnInit {
         ],
         createdRow: function (row, data, dataIndex) {
           $('td:eq(0)', row).addClass('d-flex align-items-center');
-        },
+        }
       };
     });
   }

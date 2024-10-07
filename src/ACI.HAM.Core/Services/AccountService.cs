@@ -11,8 +11,6 @@ using Microsoft.Extensions.Configuration;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ACI.HAM.Core.Data;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ACI.HAM.Core.Services
 {
@@ -21,6 +19,8 @@ namespace ACI.HAM.Core.Services
         Task<GenerateApiKeyResultDto> GenerateApiKeyAsync(string id, CancellationToken cancellationToken = default);
 
         Task<AccountResultDto> GetAccountAsync(string id, CancellationToken cancellationToken = default);
+
+        Task<DataTablesResult<UserApiKeyDto>> ReadUserApiKeysDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default);
 
         Task<UpdateProfileDetailsResultDto> UpdateProfileDetailsAsync(string id, ProfileDetailsDto profileDetailsDto, CancellationToken cancellationToken = default);
     }
@@ -116,6 +116,14 @@ namespace ACI.HAM.Core.Services
             AccountResultDto readEditableResultDto = new AccountResultDto();
             User user = await _userManager.FindByNameAsync(id);
             return GetProfileDetails(user);
+        }
+
+        public async Task<DataTablesResult<UserApiKeyDto>> ReadUserApiKeysDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default)
+        {
+            IQueryable<UserApiKey> query =
+                _baseContext.UserApiKeys
+                    .AsQueryable();
+            return await query.GetDataTablesResultAsync<UserApiKey, UserApiKeyDto>(_mapper, dataTablesParameters, languageCode, cancellationToken);
         }
 
         public async Task<UpdateProfileDetailsResultDto> UpdateProfileDetailsAsync(string id, ProfileDetailsDto profileDetailsDto, CancellationToken cancellationToken = default)

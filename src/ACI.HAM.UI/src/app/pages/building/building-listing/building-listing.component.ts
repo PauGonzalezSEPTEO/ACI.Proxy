@@ -149,7 +149,7 @@ export class BuildingListingComponent implements OnInit, AfterViewInit, OnDestro
       ],
       createdRow: function (row, _data) {
         $('td:eq(0)', row).addClass('d-flex align-items-center');
-      },
+      }
     };
   }
 

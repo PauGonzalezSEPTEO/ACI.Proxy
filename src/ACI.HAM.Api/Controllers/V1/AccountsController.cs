@@ -58,6 +58,17 @@ namespace ACI.HAM.Api.Controllers.V1
             }
         }
 
+        [HttpPost]
+        [Route("read-user-api-keys-data-table")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<DataTablesResult<UserApiKeyDto>>> ReadUserApiKeysDataTableAsync([FromBody] DataTablesParameters dataTablesParameters, [FromQuery] string languageCode = null, CancellationToken cancellationToken = default)
+        {
+            DataTablesResult<UserApiKeyDto> userApiKeysDto = await _accountService.ReadUserApiKeysDataTableAsync(dataTablesParameters, languageCode, cancellationToken);
+            return Ok(userApiKeysDto);
+        }
+
         [HttpGet]
         [Route("read-by-id/{id}")]
         [MapToApiVersion("1.0")]

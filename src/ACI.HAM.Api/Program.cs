@@ -12,7 +12,7 @@ public class Program
     public static async Task Main(string[] args)
     {
 #if DEBUG
-        while (!Debugger.IsAttached) { Thread.Sleep(100); }
+        //while (!Debugger.IsAttached) { Thread.Sleep(100); }
 #endif
         try
         {

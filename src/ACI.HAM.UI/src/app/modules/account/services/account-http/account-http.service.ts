@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { Observable } from 'rxjs';
 import { AccountModel } from '../../models/account.model';
+import { DataTablesResponse } from 'src/app/shared/models/data-tables-response.model';
 
 const API_ACCOUNTS_URL = `${environment.apiUrl}/${environment.apiAccountsRelativeUrl}`;
 
@@ -20,6 +21,16 @@ export class AccountHTTPService {
   getAccount(): Observable<AccountModel> {
     return this.http.get<AccountModel>(`${API_ACCOUNTS_URL}/me`);
   }
+
+  
+  readUserApiKeysDataTable(params: any, languageCode: string): Observable<DataTablesResponse> {
+    const httpParams = new HttpParams()
+        .append('languageCode', languageCode);
+    const options = {
+        params: httpParams
+    };
+    return this.http.post<DataTablesResponse>(`${API_ACCOUNTS_URL}/read-user-api-keys-data-table`, params, options);
+  }  
 
   updateProfileDetails(data: AccountModel): Observable<AccountModel> {
     return this.http.put<AccountModel>(`${API_ACCOUNTS_URL}/update-profile-details`, data);

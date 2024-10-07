@@ -12,6 +12,7 @@ import { DeactivateAccountComponent } from './settings/forms/deactivate-account/
 import { SignInMethodComponent } from './settings/forms/sign-in-method/sign-in-method.component';
 import { TranslationModule } from '../i18n/translation.module';
 import { DropdownMenusModule, WidgetsModule } from '../../_metronic/partials';
+import { CrudModule } from 'src/app/modules/crud/crud.module';
 import { SharedModule } from "../../_metronic/shared/shared.module";
 import { AvatarModule } from '../../modules/avatar/avatar.module';
 
@@ -35,6 +36,7 @@ import { AvatarModule } from '../../modules/avatar/avatar.module';
     DropdownMenusModule,
     WidgetsModule,
     AvatarModule,
+    CrudModule,
     SharedModule
   ],
 })

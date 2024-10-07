@@ -3,6 +3,7 @@ import { Observable, BehaviorSubject, Subscription, of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { AccountHTTPService } from './account-http';
 import { AccountModel } from '../models/account.model';
+import { DataTablesResponse } from 'src/app/shared/models/data-tables-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +47,15 @@ export class AccountService implements OnDestroy {
         return of(err);
       }),
       finalize(() => this.isLoadingSubject.next(false))
+    );
+  }
+
+  readUserApiKeysDataTable(params: any, languageCode: string): Observable<DataTablesResponse> {
+    return this.accountHttpService.readUserApiKeysDataTable(params, languageCode).pipe(
+      catchError((err) => {
+        console.error('err', err);
+        return of(err);
+      })
     );
   }
 

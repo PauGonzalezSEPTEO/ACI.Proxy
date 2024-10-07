@@ -130,7 +130,7 @@ export class CompanyListingComponent implements OnInit, AfterViewInit, OnDestroy
       ],
       createdRow: function (row, _data) {
         $('td:eq(0)', row).addClass('d-flex align-items-center');
-      },
+      }
     };
   }
   onSubmit(_event: Event, myForm: NgForm) {

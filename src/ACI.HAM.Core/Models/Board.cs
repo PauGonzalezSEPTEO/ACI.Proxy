@@ -29,9 +29,6 @@ namespace ACI.HAM.Core.Models
         [InverseProperty("Board")]
         public virtual ICollection<BoardBuilding> BoardsBuildings { get; set; } = new HashSet<BoardBuilding>();
 
-        [InverseProperty("Board")]
-        public virtual ICollection<BoardTranslation> Translations { get; set; } = new HashSet<BoardTranslation>();
-
         public static IQueryable<BoardDto> FilterAndOrder(IQueryable<Board> query, IMapper mapper, string search, string ordering, string languageCode = null)
         {
             if (string.IsNullOrEmpty(ordering))
@@ -43,5 +40,8 @@ namespace ACI.HAM.Core.Models
                 .Where(x => string.IsNullOrEmpty(search) || (!string.IsNullOrEmpty(x.Name) && x.Name.Contains(search)))
                 .OrderBy(ordering);
         }
+
+        [InverseProperty("Board")]
+        public virtual ICollection<BoardTranslation> Translations { get; set; } = new HashSet<BoardTranslation>();
     }
 }

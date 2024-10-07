@@ -27,6 +27,8 @@ namespace ACI.HAM.Core.Profiles
                 .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email));
             CreateMap<User, AccountDto>().ReverseMap();
             CreateMap<ProfileDetailsDto, User>();
+            CreateMap<UserApiKey, UserApiKeyDto>()
+                .ReverseMap();
             CreateMap<UserHotelCompany, UserHotelCompanyDto>()
                 .ForMember(x => x.CompanyName, opt => opt.MapFrom(x => x.Company.Name))
                 .ForMember(x => x.HotelName, opt => opt.MapFrom(x => x.Hotel != null ? x.Hotel.Name : null))

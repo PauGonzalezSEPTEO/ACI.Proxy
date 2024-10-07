@@ -189,7 +189,7 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
       ],
       createdRow: function (row, _data, _dataIndex) {
         $('td:eq(0)', row).addClass('d-flex align-items-center');
-      },
+      }
     };
   }
 

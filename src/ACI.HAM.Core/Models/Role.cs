@@ -15,14 +15,6 @@ namespace ACI.HAM.Core.Models
 
         public Role(string name) : base(name) { }
 
-        [StringLength(500)]
-        public string ShortDescription { get; set; }
-
-        [InverseProperty("Role")]
-        public virtual ICollection<RoleTranslation> Translations { get; set; } = new HashSet<RoleTranslation>();
-
-        public virtual ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
-
         public static IQueryable<RoleDto> FilterAndOrder(IQueryable<Role> query, IMapper mapper, string search, string ordering, string languageCode = null)
         {
             if (string.IsNullOrEmpty(ordering))
@@ -34,5 +26,13 @@ namespace ACI.HAM.Core.Models
                 .Where(x => string.IsNullOrEmpty(search) || (!string.IsNullOrEmpty(x.Name) && x.Name.Contains(search)))
                 .OrderBy(ordering);
         }
+
+        [StringLength(500)]
+        public string ShortDescription { get; set; }
+
+        [InverseProperty("Role")]
+        public virtual ICollection<RoleTranslation> Translations { get; set; } = new HashSet<RoleTranslation>();
+
+        public virtual ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
     }
 }
