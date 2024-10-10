@@ -23,7 +23,16 @@ export class AccountService implements OnDestroy {
     this.isLoadingSubject = new BehaviorSubject<boolean>(false);
     this.isLoading$ = this.isLoadingSubject.asObservable();
   }
-
+  
+  delete(id: number): Observable<void> {
+    return this.accountHttpService.delete(id).pipe(
+      catchError((err) => {
+        console.error('err', err);
+        return of(err);
+      })
+    );
+  }
+  
   generateApiKey(): Observable<string> {
     return this.accountHttpService.generateApiKey().pipe(
       catchError((err) => {

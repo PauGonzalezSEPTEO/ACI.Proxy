@@ -6,9 +6,15 @@ export const locale = {
   data: {
     ACCOUNT: {
       API_KEYS: {
+        ACTIVE: 'Active',
         API_KEY: 'API key',
         API_KEYS: 'API keys',
-        NEW_API_KEY: 'New API key'
+        EXPIRATION: 'Expiration',
+        IMPORTANT_THIS_KEY_WILL_ONLY_BE_SHOWN_ONCE_MAKE_SURE_TO_COPY_AND_STORE_IT_IN_A_SAFE_PLACE_AS_YOU_WONT_BE_ABLE_TO_RETRIEVE_IT_LATER_IF_YOU_LOSE_THIS_KEY_YOU_WILL_NEED_TO_GENERATE_A_NEW_ONE: 'IMPORTANT: This key will only be shown once. Make sure to copy and store it in a safe place, as you won’t be able to retrieve it later. If you lose this key, you will need to generate a new one.',
+        INACTIVE: 'Inactive',
+        IS_ACTIVE: 'Is active',
+        NEW_API_KEY: 'New API key',
+        SEARCH_BY_API_KEY: 'Search by API key',
       },
       OVERVIEW: {
         API_KEYS: 'API keys',

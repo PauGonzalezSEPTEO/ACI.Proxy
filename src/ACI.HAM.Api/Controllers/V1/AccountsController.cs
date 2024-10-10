@@ -18,6 +18,17 @@ namespace ACI.HAM.Api.Controllers.V1
             _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
         }
 
+        [HttpDelete]
+        [Route("delete-by-id/{id}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<UserApiKeyDto>> DeleteByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            UserApiKeyDto userApiKeyDto = await _accountService.DeleteByIdAsync(id, cancellationToken);
+            return Ok(userApiKeyDto);
+        }
+
         [HttpPost]
         [Route("generate-api-key")]
         [MapToApiVersion("1.0")]

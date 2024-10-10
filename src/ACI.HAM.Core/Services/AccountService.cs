@@ -16,6 +16,8 @@ namespace ACI.HAM.Core.Services
 {
     public interface IAccountService
     {
+        Task<UserApiKeyDto> DeleteByIdAsync(int id, CancellationToken cancellationToken = default);
+
         Task<GenerateApiKeyResultDto> GenerateApiKeyAsync(string id, CancellationToken cancellationToken = default);
 
         Task<AccountResultDto> GetAccountAsync(string id, CancellationToken cancellationToken = default);
@@ -44,6 +46,15 @@ namespace ACI.HAM.Core.Services
             _configuration = configuration;
         }
 
+        public async Task<UserApiKeyDto> DeleteByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            UserApiKey userApiKey = await _baseContext.UserApiKeys
+                .SingleOrDefaultAsync(x => x.Id == id);
+            _baseContext.Remove(userApiKey);
+            await _baseContext.SaveChangesAsync(cancellationToken);
+            return _mapper.Map<UserApiKeyDto>(userApiKey);
+        }
+
         public async Task<GenerateApiKeyResultDto> GenerateApiKeyAsync(string id, CancellationToken cancellationToken = default)
         {
             GenerateApiKeyResultDto generateApiKeyResultDto = new GenerateApiKeyResultDto();
@@ -64,10 +75,12 @@ namespace ACI.HAM.Core.Services
                 string encryptedEncryptionKey = _configuration["ApiKey:EncryptionKey"];
                 string encryptionKey = _dataProtector.Unprotect(encryptedEncryptionKey);
                 string apiKey = ApiKeyExtension.GenerateApiKey();
+                string apiKeyLast6 = apiKey.Length >= 6 ? apiKey[^6..] : apiKey;
                 var (hashedApiKey, salt) = ApiKeyExtension.HashApiKey(apiKey);
                 string encryptedApiKey = ApiKeyExtension.EncryptApiKey(apiKey, encryptionKey);
                 var userApiKey = new UserApiKey
                 {
+                    ApiKeyLast6 = apiKeyLast6,
                     EncryptedApiKey = encryptedApiKey,
                     HashedApiKey = hashedApiKey,
                     Salt = salt,

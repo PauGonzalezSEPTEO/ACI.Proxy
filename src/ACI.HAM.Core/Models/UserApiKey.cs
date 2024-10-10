@@ -13,6 +13,10 @@ namespace ACI.HAM.Core.Models
     public class UserApiKey : IFilterDto<UserApiKey, UserApiKeyDto>, IAuditable
     {
         [Required]
+        [MaxLength(6)]
+        public string ApiKeyLast6 { get; set; }
+
+        [Required]
         public DateTimeOffset CreatedAt { get; set; }
 
         [Required]
@@ -22,7 +26,7 @@ namespace ACI.HAM.Core.Models
         [Required]
         public DateTimeOffset Expiration { get; set; }
 
-        public static IQueryable<UserApiKeyDto> FilterAndOrder(IQueryable<Board> query, IMapper mapper, string search, string ordering, string languageCode = null)
+        public static IQueryable<UserApiKeyDto> FilterAndOrder(IQueryable<UserApiKey> query, IMapper mapper, string search, string ordering, string languageCode = null)
         {
             if (string.IsNullOrEmpty(ordering))
             {
@@ -30,7 +34,7 @@ namespace ACI.HAM.Core.Models
             }
             return query
                 .ProjectTo<UserApiKeyDto>(mapper.ConfigurationProvider, new { languageCode })
-                .Where(x => string.IsNullOrEmpty(search) || x.Expiration.ToString().Contains(search))
+                .Where(x => string.IsNullOrEmpty(search) || x.ApiKeyLast6.ToString().Contains(search))
                 .OrderBy(ordering);
         }
 
@@ -45,6 +49,7 @@ namespace ACI.HAM.Core.Models
         [Required]
         public bool IsActive { get; set; }
 
+        [Required]
         [MaxLength(32)]
         public string Salt { get; set; }
 

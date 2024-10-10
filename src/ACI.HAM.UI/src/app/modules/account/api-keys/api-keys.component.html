@@ -1,17 +1,10 @@
 <div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
-    <div class="card-header cursor-pointer">
-        <div class="card-title m-0">
-            <h3 class="fw-bolder m-0" [translate]="'ACCOUNT.API_KEYS.API_KEYS'"></h3>
-        </div>
-        <a class="btn btn-primary align-self-center" [translate]="'ACCOUNT.API_KEYS.NEW_API_KEY'"
-            (click)="generateApiKey()">
-        </a>
-    </div>
     <div class="card-body p-9">
         <div *ngIf="apiKey" class="row mb-7">
-            <label class="col-lg-4 fw-bold text-muted" [translate]="'ACCOUNT.API_KEYS.API_KEY'"></label>
+            <label class="col-lg-4 fw-bold text-muted" [translate]="'ACCOUNT.API_KEYS.NEW_API_KEY'"></label>
             <div class="col-lg-8">
                 <span class="fw-bolder fs-6 text-gray-900">{{ apiKey }}</span>
+                <div class="fs-6 text-gray-600" [translate]="'ACCOUNT.API_KEYS.IMPORTANT_THIS_KEY_WILL_ONLY_BE_SHOWN_ONCE_MAKE_SURE_TO_COPY_AND_STORE_IT_IN_A_SAFE_PLACE_AS_YOU_WONT_BE_ABLE_TO_RETRIEVE_IT_LATER_IF_YOU_LOSE_THIS_KEY_YOU_WILL_NEED_TO_GENERATE_A_NEW_ONE'"></div>
             </div>
         </div>
     </div>
@@ -24,7 +17,7 @@
         <div class="d-flex align-items-center position-relative my-1">
           <app-keenicon name="magnifier" class="fs-3 position-absolute ms-5"></app-keenicon>
           <input type="text" data-action="filter" class="form-control form-control-solid w-250px ps-12"
-            placeholder="{{ 'ACCOUNT.API_KEYS.SEARCH_BY_NAME' | translate }}">
+            placeholder="{{ 'ACCOUNT.API_KEYS.SEARCH_BY_API_KEY' | translate }}">
         </div>
         <!--end::Search-->
       </div>
@@ -35,7 +28,7 @@
         <div class="d-flex justify-content-end">
           <!--begin::Add board-->
           <button type="button" class="btn btn-primary" data-action="create">
-            {{ 'ACCOUNT.API_KEYS.ADD_BOARD' | translate }}
+            {{ 'ACCOUNT.API_KEYS.NEW_API_KEY' | translate }}
           </button>
           <!--end::Add board-->
         </div>
@@ -43,5 +36,5 @@
       </div>
       <!--end::Card toolbar-->
     </div>
-    <app-crud [datatableConfig]="datatableConfig" route="/crafted/account/api-keys" [reload]="reloadEvent" [isReadOnly]="true"></app-crud>
+    <app-crud [datatableConfig]="datatableConfig" route="/crafted/account/api-keys" (createEvent)="create()" (deleteEvent)="delete($event)" [reload]="reloadEvent" [isReadOnly]="true"></app-crud>
   </div>

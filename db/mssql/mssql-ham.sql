@@ -301,9 +301,10 @@ BEGIN
 CREATE TABLE [dbo].[UserApiKeys](
   Id INT IDENTITY(1,1) NOT NULL,
 	[UserId] [nvarchar](450) NOT NULL,
-  [EncryptedApiKey] NVARCHAR(512),
-  [HashedApiKey] NVARCHAR(64),
-  [Salt] NVARCHAR(32),
+  [ApiKeyLast6] NVARCHAR(6) NOT NULL,
+  [EncryptedApiKey] NVARCHAR(512) NOT NULL,
+  [HashedApiKey] NVARCHAR(64) NOT NULL,
+  [Salt] NVARCHAR(32) NOT NULL,
   [CreatedAt] [DATETIMEOFFSET] (7) NOT NULL,
   [Expiration] [DATETIMEOFFSET] (7) NOT NULL,
   [IsActive] BIT NOT NULL

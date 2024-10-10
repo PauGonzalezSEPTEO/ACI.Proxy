@@ -2,6 +2,8 @@ namespace ACI.HAM.Core.Dtos
 {
     public class UserApiKeyDto
     {
+        public string ApiKeyLast6 { get; set; }
+
         public DateTimeOffset CreatedAt { get; set; }
 
         public DateTimeOffset Expiration { get; set; }

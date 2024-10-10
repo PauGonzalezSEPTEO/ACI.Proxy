@@ -6,9 +6,15 @@ export const locale = {
   data: {
     ACCOUNT: {
       API_KEYS: {
+        ACTIVE: 'Activa',
         API_KEY: 'Clave API',
         API_KEYS: 'Claves API',
-        NEW_API_KEY: 'Nueva clave API'
+        EXPIRATION: 'Caducidad',
+        IMPORTANT_THIS_KEY_WILL_ONLY_BE_SHOWN_ONCE_MAKE_SURE_TO_COPY_AND_STORE_IT_IN_A_SAFE_PLACE_AS_YOU_WONT_BE_ABLE_TO_RETRIEVE_IT_LATER_IF_YOU_LOSE_THIS_KEY_YOU_WILL_NEED_TO_GENERATE_A_NEW_ONE: 'IMPORTANTE: Esta clave solo se mostrará una vez. Asegúrate de copiarla y guardarla en un lugar seguro, ya que no podrás recuperarla más adelante. Si pierdes esta clave, deberás generar una nueva.',
+        INACTIVE: 'Inactiva',
+        IS_ACTIVE: 'Está activa',
+        NEW_API_KEY: 'Nueva clave API',
+        SEARCH_BY_API_KEY: 'Buscar por clave API',
       },      
       OVERVIEW: {
         API_KEYS: 'Claves API',
