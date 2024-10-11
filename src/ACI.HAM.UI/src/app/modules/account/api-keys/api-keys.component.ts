@@ -58,7 +58,7 @@ export class ApiKeysComponent implements OnInit {
           title: this.translate.instant('ACCOUNT.API_KEYS.API_KEY'), name: "ACCOUNT.API_KEYS.API_KEY", data: "apiKeyLast6", render: function (data, _type, full) {
             return `
               <div class="d-flex flex-column">
-                <span>${'*'.repeat(38) + full.apiKeyLast6}</span>
+                <span>${'*'.repeat(5) + full.apiKeyLast6}</span>
               </div>
             `;
           }
