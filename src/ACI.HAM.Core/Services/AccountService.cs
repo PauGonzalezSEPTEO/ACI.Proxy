@@ -16,9 +16,9 @@ namespace ACI.HAM.Core.Services
 {
     public interface IAccountService
     {
-        Task<UserApiKeyDto> DeleteByIdAsync(int id, CancellationToken cancellationToken = default);
+        Task<UserApiKeyDto> DeleteUserApiKeysByIdAsync(int id, CancellationToken cancellationToken = default);
 
-        Task<GenerateApiKeyResultDto> GenerateApiKeyAsync(string id, CancellationToken cancellationToken = default);
+        Task<GenerateUserApiKeyResultDto> GenerateUserApiKeyAsync(string id, CancellationToken cancellationToken = default);
 
         Task<AccountResultDto> GetAccountAsync(string id, CancellationToken cancellationToken = default);
 
@@ -46,7 +46,7 @@ namespace ACI.HAM.Core.Services
             _configuration = configuration;
         }
 
-        public async Task<UserApiKeyDto> DeleteByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<UserApiKeyDto> DeleteUserApiKeysByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             UserApiKey userApiKey = await _baseContext.UserApiKeys
                 .SingleOrDefaultAsync(x => x.Id == id);
@@ -55,14 +55,14 @@ namespace ACI.HAM.Core.Services
             return _mapper.Map<UserApiKeyDto>(userApiKey);
         }
 
-        public async Task<GenerateApiKeyResultDto> GenerateApiKeyAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<GenerateUserApiKeyResultDto> GenerateUserApiKeyAsync(string id, CancellationToken cancellationToken = default)
         {
-            GenerateApiKeyResultDto generateApiKeyResultDto = new GenerateApiKeyResultDto();
+            GenerateUserApiKeyResultDto generateUserApiKeyResultDto = new GenerateUserApiKeyResultDto();
             User user = await _userManager.FindByNameAsync(id);
             if (user == null)
             {
-                generateApiKeyResultDto.HasErrors = true;
-                generateApiKeyResultDto.Errors = new List<IdentityError>()
+                generateUserApiKeyResultDto.HasErrors = true;
+                generateUserApiKeyResultDto.Errors = new List<IdentityError>()
                 {
                     new IdentityError()
                     {
@@ -98,9 +98,9 @@ namespace ACI.HAM.Core.Services
                 }
                 _baseContext.UserApiKeys.Add(userApiKey);
                 await _baseContext.SaveChangesAsync();
-                generateApiKeyResultDto.ApiKey = apiKey;
+                generateUserApiKeyResultDto.ApiKey = apiKey;
             }
-            return generateApiKeyResultDto;
+            return generateUserApiKeyResultDto;
         }
 
         private AccountResultDto GetProfileDetails(User user, CancellationToken cancellationToken = default)

@@ -15,12 +15,12 @@ export class AccountHTTPService {
 
   // public methods
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${API_ACCOUNTS_URL}/delete-by-id/${id}`);
+  deleteUserApiKey(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_ACCOUNTS_URL}/delete-user-api-key-by-id/${id}`);
   }
 
-  generateApiKey(): Observable<string> {
-    return this.http.post<string>(`${API_ACCOUNTS_URL}/generate-api-key`, {});
+  generateUserApiKey(): Observable<string> {
+    return this.http.post<string>(`${API_ACCOUNTS_URL}/generate-user-api-key`, {});
   }
 
   getAccount(): Observable<AccountModel> {

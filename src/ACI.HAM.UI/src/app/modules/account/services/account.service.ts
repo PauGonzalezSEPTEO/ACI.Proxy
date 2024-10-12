@@ -24,8 +24,8 @@ export class AccountService implements OnDestroy {
     this.isLoading$ = this.isLoadingSubject.asObservable();
   }
   
-  delete(id: number): Observable<void> {
-    return this.accountHttpService.delete(id).pipe(
+  deleteUserApiKey(id: number): Observable<void> {
+    return this.accountHttpService.deleteUserApiKey(id).pipe(
       catchError((err) => {
         console.error('err', err);
         return of(err);
@@ -33,8 +33,8 @@ export class AccountService implements OnDestroy {
     );
   }
   
-  generateApiKey(): Observable<string> {
-    return this.accountHttpService.generateApiKey().pipe(
+  generateUserApiKey(): Observable<string> {
+    return this.accountHttpService.generateUserApiKey().pipe(
       catchError((err) => {
         console.error('err', err);
         return of(err);

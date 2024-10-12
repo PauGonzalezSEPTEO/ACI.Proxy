@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ACI.HAM.Core.Dtos
 {
-    public class GenerateApiKeyResultDto
+    public class GenerateUserApiKeyResultDto
     {
         public string ApiKey { get; set; }
 

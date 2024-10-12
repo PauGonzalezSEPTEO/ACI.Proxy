@@ -28,7 +28,7 @@ export class ApiKeysComponent implements OnInit {
   }
   
   create(): void {
-    this.accountService.generateApiKey().subscribe((apiKey: string) => {
+    this.accountService.generateUserApiKey().subscribe((apiKey: string) => {
       this.apiKey = apiKey;
       this.reloadEvent.emit(true);
       this.changeDetectorRef.detectChanges();
@@ -36,7 +36,7 @@ export class ApiKeysComponent implements OnInit {
   }
 
   delete(id: number) {
-    this.accountService.delete(id).subscribe(() => {
+    this.accountService.deleteUserApiKey(id).subscribe(() => {
       this.reloadEvent.emit(true);
     });
   }

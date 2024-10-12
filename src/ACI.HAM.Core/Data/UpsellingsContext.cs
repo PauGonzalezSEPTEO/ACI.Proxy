@@ -99,6 +99,16 @@ namespace ACI.HAM.Core.Data
             return hotels;
         }
 
+        private string GetUserId()
+        {
+            var currentUser = GetUser();
+            if (currentUser != null)
+            {
+                return currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            return null;
+        }
+
         public Func<string> GetUserName { get; set; }
 
         private List<int> GetUserRoomTypes()
@@ -108,6 +118,16 @@ namespace ACI.HAM.Core.Data
             return RoomTypes
                 .IgnoreQueryFilters()
                 .Where(x => x.RoomTypeHotelsCompanies.Any(x => userCompanies.Contains(x.CompanyId) && (!x.HotelId.HasValue || userHotels.Contains(x.HotelId.Value))))
+                .Select(x => x.Id)
+                .ToList();
+        }
+
+        private List<int> GetUserUserApiKeys()
+        {
+            var userId = GetUserId();
+            return UserApiKeys
+                .IgnoreQueryFilters()
+                .Where(x => x.UserId == userId)
                 .Select(x => x.Id)
                 .ToList();
         }
@@ -363,7 +383,8 @@ namespace ACI.HAM.Core.Data
             modelBuilder.Entity<Board>().HasQueryFilter(x => !IsAdministrator() || GetUserBoards().Contains(x.Id));
             modelBuilder.Entity<Company>().HasQueryFilter(x => !IsAdministrator() || GetUserCompanies().Contains(x.Id));
             modelBuilder.Entity<Hotel>().HasQueryFilter(x => !IsAdministrator() || GetUserHotels().Contains(x.Id));
-            modelBuilder.Entity<RoomType>().HasQueryFilter(x => !IsAdministrator() || GetUserRoomTypes().Contains(x.Id));
+            modelBuilder.Entity<RoomType>().HasQueryFilter(x => !IsAdministrator() || GetUserRoomTypes().Contains(x.Id));            
+            modelBuilder.Entity<UserApiKey>().HasQueryFilter(x => !IsAdministrator() || GetUserUserApiKeys().Contains(x.Id));
         }
 
         public virtual DbSet<RoomTypeHotelCompany> RoomTypeHotelsCompanies { get; set; }

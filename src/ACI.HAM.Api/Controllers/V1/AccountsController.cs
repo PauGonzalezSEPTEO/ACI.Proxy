@@ -1,7 +1,6 @@
 using ACI.HAM.Core.Dtos;
 using ACI.HAM.Core.Services;
 using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,26 +18,26 @@ namespace ACI.HAM.Api.Controllers.V1
         }
 
         [HttpDelete]
-        [Route("delete-by-id/{id}")]
+        [Route("delete-user-api-key-by-id/{id}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserApiKeyDto>> DeleteByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<UserApiKeyDto>> DeleteUserApiKeyByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            UserApiKeyDto userApiKeyDto = await _accountService.DeleteByIdAsync(id, cancellationToken);
+            UserApiKeyDto userApiKeyDto = await _accountService.DeleteUserApiKeysByIdAsync(id, cancellationToken);
             return Ok(userApiKeyDto);
         }
 
         [HttpPost]
-        [Route("generate-api-key")]
+        [Route("generate-user-api-key")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<GenerateApiKeyResultDto>> GenerateApiKeyAsync(CancellationToken cancellationToken = default)
+        public async Task<ActionResult<GenerateUserApiKeyResultDto>> GenerateUserApiKeyAsync(CancellationToken cancellationToken = default)
         {
             string name = User.Identity.Name;
-            GenerateApiKeyResultDto generateApiKeyResultDto = await _accountService.GenerateApiKeyAsync(name, cancellationToken);
+            GenerateUserApiKeyResultDto generateApiKeyResultDto = await _accountService.GenerateUserApiKeyAsync(name, cancellationToken);
             if (!generateApiKeyResultDto.HasErrors)
             {
                 return Ok(generateApiKeyResultDto.ApiKey);
