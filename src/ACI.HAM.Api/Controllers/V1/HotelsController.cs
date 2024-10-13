@@ -21,6 +21,7 @@ namespace ACI.HAM.Api.V1.Controllers
         public HotelsController(IHotelService hotelService, IStringLocalizer<UsersController> messages)
         {
             _hotelService = hotelService ?? throw new ArgumentNullException(nameof(hotelService));
+            _messages = messages ?? throw new ArgumentNullException(nameof(messages));
         }
 
         [HttpPost]

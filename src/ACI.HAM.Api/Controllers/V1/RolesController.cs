@@ -21,6 +21,7 @@ namespace ACI.HAM.Api.V1.Controllers
         public RolesController(IRoleService roleService, IStringLocalizer<UsersController> messages)
         {
             _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
+            _messages = messages ?? throw new ArgumentNullException(nameof(messages));
         }
 
         [HttpPost]

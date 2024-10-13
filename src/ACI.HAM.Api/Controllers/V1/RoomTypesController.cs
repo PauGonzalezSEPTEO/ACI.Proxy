@@ -26,6 +26,7 @@ namespace ACI.HAM.Api.V1.Controllers
         public RoomTypesController(IRoomTypeService roomTypeService, IStringLocalizer<UsersController> messages)
         {
             _roomTypeService = roomTypeService ?? throw new ArgumentNullException(nameof(roomTypeService));
+            _messages = messages ?? throw new ArgumentNullException(nameof(messages));
         }
 
         [HttpPost]

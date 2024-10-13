@@ -21,6 +21,7 @@ namespace ACI.HAM.Api.V1.Controllers
         public CompaniesController(ICompanyService companyService, IStringLocalizer<UsersController> messages)
         {
             _companyService = companyService ?? throw new ArgumentNullException(nameof(companyService));
+            _messages = messages ?? throw new ArgumentNullException(nameof(messages));
         }
 
         [HttpPost]

@@ -14,6 +14,8 @@ namespace ACI.HAM.Mail.Services
 {
     public interface IMailService
     {
+        Task<bool> SendApiKeyRotationMailAsync(SendApiKeyRotationMailDto sendApiKeyRotationMailDto, CancellationToken cancelationToken = default);
+
         Task<bool> SendChangeEmailMailAsync(SendChangeEmailMailDto sendChangeEmailMailDto, CancellationToken cancelationToken = default);
 
         Task<bool> SendLockoutMailAsync(SendLockoutMailDto sendLockoutMailDto, CancellationToken cancelationToken = default);
@@ -31,6 +33,7 @@ namespace ACI.HAM.Mail.Services
 
     public class MailService : IMailService
     {
+        const string API_KEY_ROTATION_EMAIL_TEMPLATE = "ApiKeyRotationEmail";
         const string CHANGE_EMAIL_TEMPLATE = "ChangeEmail";
         const string LOCKOUT_TEMPLATE = "Lockout";
         const string MAIL_TEMPLATE_PATH = "Files/MailTemplates";
@@ -84,6 +87,29 @@ namespace ACI.HAM.Mail.Services
             {
             }
             return null;
+        }
+
+        public async Task<bool> SendApiKeyRotationMailAsync(SendApiKeyRotationMailDto sendApiKeyRotationMailDto, CancellationToken cancelationToken = default)
+        {
+            if ((sendApiKeyRotationMailDto != null) && (sendApiKeyRotationMailDto.To != null))
+            {
+                ApiKeyRotation apiKeyRotation = new ApiKeyRotation()
+                {
+                    Url = sendApiKeyRotationMailDto.Url
+                };
+                string? template = await LoadMailTemplateAsync(API_KEY_ROTATION_EMAIL_TEMPLATE, apiKeyRotation, cancelationToken);
+                if (!string.IsNullOrEmpty(template))
+                {
+                    SendMailDto sendMailDto = new SendMailDto()
+                    {
+                        Body = template,
+                        To = new string[] { sendApiKeyRotationMailDto.To },
+                        Subject = sendApiKeyRotationMailDto.Subject
+                    };
+                    return await SendMailAsync(sendMailDto);
+                }
+            }
+            return false;
         }
 
         public async Task<bool> SendChangeEmailMailAsync(SendChangeEmailMailDto sendChangeEmailMailDto, CancellationToken cancelationToken = default)

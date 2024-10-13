@@ -21,6 +21,7 @@ namespace ACI.HAM.Api.V1.Controllers
         public BoardsController(IBoardService boardService, IStringLocalizer<UsersController> messages)
         {
             _boardService = boardService ?? throw new ArgumentNullException(nameof(boardService));
+            _messages = messages ?? throw new ArgumentNullException(nameof(messages));
         }
 
         [HttpPost]

@@ -40,6 +40,8 @@ using System.Security.Cryptography.X509Certificates;
 using ACI.HAM.Core.Infrastructure.Middlewares;
 using ACI.HAM.Api.Infrastructure;
 using AspNetCoreRateLimit;
+using ACI.HAM.Core.Services;
+using ACI.HAM.Mail.Services;
 
 namespace ACI.HAM.Api
 {
@@ -54,9 +56,10 @@ namespace ACI.HAM.Api
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            var certificate = new X509Certificate2(_configuration["ApiKey:CertificateFile"], @_configuration["ApiKey:CertificatePassword"]);
+            ApiKeySettings apiKeyConfiguration = _configuration.GetSection("ApiKey").Get<ApiKeySettings>();
+            var certificate = new X509Certificate2(apiKeyConfiguration.CertificateFile, @apiKeyConfiguration.CertificatePassword);
             services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(_configuration["ApiKey:PersistKeysDirectory"]))
+                .PersistKeysToFileSystem(new DirectoryInfo(apiKeyConfiguration.PersistKeysDirectory))
                 .ProtectKeysWithCertificate(certificate);
             services.AddSingleton<DataProtectorFactory>();
             services.AddSingleton(serviceProvider =>
@@ -71,7 +74,7 @@ namespace ACI.HAM.Api
             services.AddRouting(options => options.LowercaseUrls = true)
             .AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {                    
-                builder.WithOrigins(_configuration["UI:BaseUrl"]).AllowAnyMethod().AllowAnyHeader();
+                builder.WithOrigins(_configuration.GetValue<string>("UI:BaseUrl")).AllowAnyMethod().AllowAnyHeader();
             }))
             .AddMvcCore(options =>
             {
@@ -121,13 +124,15 @@ namespace ACI.HAM.Api
             services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromHours(1));
             services.Configure<EmailConfirmationTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromDays(3));
             services.Configure<UISettings>(_configuration.GetSection("UI"));
-            services.Configure<JwtSettings>(_configuration.GetSection("JwtSettings"));
-            services.Configure<MailSettings>(_configuration.GetSection("MailSettings"));
+            services.Configure<JwtSettings>(_configuration.GetSection("Jwt"));
+            services.Configure<MailSettings>(_configuration.GetSection("Mail"));
+            services.Configure<ApiKeySettings>(_configuration.GetSection("ApiKey"));
             services.Configure<PingWebsiteSettings>(_configuration.GetSection("PingWebsite"));
-            services.AddHostedService<PingWebsiteBackgroundService>();
-            services.AddHttpClient(nameof(PingWebsiteBackgroundService));
-            services.AddCoreComponents();
             services.AddMailComponents();
+            services.AddCoreComponents();
+            services.AddHostedService<PingWebsiteBackgroundService>();
+            services.AddHostedService<UserApiKeyRotationService>();
+            services.AddHttpClient(nameof(PingWebsiteBackgroundService));
             services.AddFeatureManagement().AddFeatureFilter<TimeWindowFilter>();
             services.AddHealthChecks().AddSqlServer(serviceProvider =>
             {
@@ -174,6 +179,7 @@ namespace ACI.HAM.Api
                 options.SupportedCultures = new List<CultureInfo> { new("en"), new("es") };
                 options.SupportedUICultures = new List<CultureInfo> { new("en"), new("es") };
             });
+            JwtSettings jwtSettingsConfiguration = _configuration.GetSection("Jwt").Get<JwtSettings>();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -186,9 +192,9 @@ namespace ACI.HAM.Api
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = _configuration["JwtSettings:ValidIssuer"],
-                    ValidAudience = _configuration["JwtSettings:ValidAudience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecurityKey"]))
+                    ValidIssuer = jwtSettingsConfiguration.ValidIssuer,
+                    ValidAudience = jwtSettingsConfiguration.ValidAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettingsConfiguration.SecurityKey))
                 };
             });
             services.AddAuthorization();
@@ -200,7 +206,8 @@ namespace ACI.HAM.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-            ApiKeyExtension.Initialize(dataProtectionProvider, _configuration);
+            string encryptedHmacKey = _configuration.GetValue<string>("ApiKey:HMACKey");
+            ApiKeyExtension.Initialize(dataProtectionProvider, encryptedHmacKey);
 #if DEBUG && ENCRYPT
             var dataProtector = serviceProvider.GetRequiredService<IDataProtector>();
             string hMACKey = "TEZNK3Ii7U0Gw0RkNxR/fUnfkS3oUZaEVL6cxdQLegI=";

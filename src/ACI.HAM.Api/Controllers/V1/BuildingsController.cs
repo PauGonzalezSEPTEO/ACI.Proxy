@@ -19,6 +19,7 @@ namespace ACI.HAM.Api.V1.Controllers
         public BuildingsController(IBuildingService buildingService, IStringLocalizer<UsersController> messages)
         {
             _buildingService = buildingService ?? throw new ArgumentNullException(nameof(buildingService));
+            _messages = messages ?? throw new ArgumentNullException(nameof(messages));
         }
 
         [HttpPost]

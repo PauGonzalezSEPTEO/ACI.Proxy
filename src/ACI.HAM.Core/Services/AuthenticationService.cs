@@ -179,7 +179,7 @@ namespace ACI.HAM.Core.Services
                     return registrationResultDto;
                 }
             }
-            catch (Exception ex)
+            catch
             {
             }
             return null;

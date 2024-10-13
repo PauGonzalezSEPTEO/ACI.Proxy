@@ -2,7 +2,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.Configuration;
 
 namespace ACI.HAM.Core.Extensions
 {
@@ -63,10 +62,9 @@ namespace ACI.HAM.Core.Extensions
             }
         }
 
-        public static void Initialize(IDataProtectionProvider provider, IConfiguration configuration)
+        public static void Initialize(IDataProtectionProvider provider, string encryptedHmacKey)
         {
-            var protector = provider.CreateProtector("ApiKey.ApiKeyProtector");
-            var encryptedHmacKey = configuration["ApiKey:HMACKey"];
+            var protector = provider.CreateProtector("ApiKey.ApiKeyProtector");            
             _hMACKey = protector.Unprotect(encryptedHmacKey);
         }
 

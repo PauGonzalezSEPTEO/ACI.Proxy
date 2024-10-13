@@ -52,6 +52,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Files\MailTemplates\ApiKeyRotation.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Files\MailTemplates\ChangeEmail.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
