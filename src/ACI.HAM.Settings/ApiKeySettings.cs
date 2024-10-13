@@ -6,6 +6,8 @@ namespace ACI.HAM.Settings
 
         public string CertificatePassword { get; set; } = "x9w\\(6<EXe1P";
 
+        public int DaysBeforeExpirationSecondWarning { get; set; } = 2;
+
         public int DaysBeforeExpirationWarning { get; set; } = 7;
 
         public string EncryptionKey { get; set; } = string.Empty;

@@ -143,16 +143,6 @@ namespace ACI.HAM.Mail.Localization {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a To avoid any disruptions in accessing our service, we recommend that you generate a new API key before the mentioned date..
-        /// </summary>
-        public static string To_avoid_any_disruptions_in_accessing_our_service__we_recommend_that_you_generate_a_new_API_key_before_the_mentioned_date_ {
-            get {
-                return ResourceManager.GetString("To avoid any disruptions in accessing our service, we recommend that you generate" +
-                        " a new API key before the mentioned date.", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Token is required.
         /// </summary>
         public static string Token_is_required {

@@ -80,7 +80,7 @@ namespace ACI.HAM.Core.Infrastructure.Middlewares
                     .Include(x => x.User)
                     .ThenInclude(x => x.UserRoles)
                     .ThenInclude(x => x.Role)
-                    .Where(x => x.User.Email == email.ToString() && x.IsActive)
+                    .Where(x => (x.User.Email == email.ToString()) && x.IsActive && (x.Expiration > DateTimeOffset.Now))
                     .ToListAsync();
                 if (userApiKeys == null || !userApiKeys.Any())
                 {

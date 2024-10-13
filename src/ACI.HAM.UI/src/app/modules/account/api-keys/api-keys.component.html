@@ -36,5 +36,5 @@
       </div>
       <!--end::Card toolbar-->
     </div>
-    <app-crud [datatableConfig]="datatableConfig" route="/crafted/account/api-keys" (createEvent)="create()" (deleteEvent)="delete($event)" [reload]="reloadEvent" [isReadOnly]="true"></app-crud>
+    <app-crud [datatableConfig]="datatableConfig" route="/crafted/account/api-keys" (createEvent)="create()" (deleteEvent)="delete($event)" (revokeEvent)="revoke($event)" [reload]="reloadEvent" [isReadOnly]="true"></app-crud>
   </div>

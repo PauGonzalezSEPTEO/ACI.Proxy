@@ -14,6 +14,8 @@ namespace ACI.HAM.Core.Dtos
 
         public bool IsActive { get; set; }
 
+        public bool IsValid => IsActive && (Expiration > DateTimeOffset.Now);
+
         public string Salt { get; set; }
     }
 }

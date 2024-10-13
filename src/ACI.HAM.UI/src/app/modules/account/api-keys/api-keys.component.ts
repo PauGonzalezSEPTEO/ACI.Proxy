@@ -81,9 +81,27 @@ export class ApiKeysComponent implements OnInit {
             }
           },
           type: 'boolean'
+        },        
+        {
+          title: this.translate.instant('ACCOUNT.API_KEYS.IS_VALID'), name: "ACCOUNT.API_KEYS.IS_VALID", data: 'isValid', 
+          render: function (_data, _type, full) {            
+            if (_data) {
+              return '<span class="badge badge-light-success fs-7 fw-semibold">' + that.translate.instant('ACCOUNT.API_KEYS.VALID') + '</span>';
+            } else {
+              return '<span class="badge badge-light-danger fs-7 fw-semibold">' + that.translate.instant('ACCOUNT.API_KEYS.INVALID') + '</span>';
+            }
+          },
+          type: 'boolean',
+          orderable: false 
         }
       ],
       order: [[2, 'desc']]
     };       
   };
+
+  revoke(id: number) {
+    this.accountService.revokeUserApiKey(id).subscribe(() => {
+      this.reloadEvent.emit(true);
+    });
+  }
 }

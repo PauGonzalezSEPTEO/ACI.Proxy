@@ -37,3 +37,12 @@
 <swal #successUnlinkSwal [swalOptions]="swalOptions" title="{{ 'CRUD.UNLINK_SUCCESSFULLY' | translate }}" text=""
   icon="success" [customClass]="{confirmButton: 'btn btn-success'}">
 </swal>
+
+<swal #revokeSwal [swalOptions]="swalOptions" title="{{ 'CRUD.ARE_YOU_SURE_YOU_WANT_TO_REVOKE_THIS_KEY' | translate }}"
+  text="{{ 'CRUD.THIS_CANNOT_BE_UNDONE' | translate }}" confirmButtonText="{{ 'CRUD.OK' | translate }}" cancelButtonText="{{ 'CRUD.CANCEL' | translate }}" icon="warning" [showCancelButton]="true" [focusCancel]="true"
+  (confirm)="triggerRevoke()" [customClass]="{confirmButton: 'btn btn-danger', cancelButton: 'btn btn-active-light'}">
+</swal>
+
+<swal #successRevokeSwal [swalOptions]="swalOptions" title="{{ 'CRUD.KEY_REVOKED_SUCCESSFULLY' | translate }}" text=""
+  icon="success" [customClass]="{confirmButton: 'btn btn-success'}">
+</swal>

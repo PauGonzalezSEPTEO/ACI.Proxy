@@ -193,6 +193,16 @@ namespace ACI.HAM.Mail.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a To avoid any disruptions in accessing our service, we recommend that you generate a new API key before the mentioned date..
+        /// </summary>
+        internal static string To_avoid_any_disruptions_in_accessing_our_service__we_recommend_that_you_generate_a_new_API_key_before_the_mentioned_date_ {
+            get {
+                return ResourceManager.GetString("To avoid any disruptions in accessing our service, we recommend that you generate" +
+                        " a new API key before the mentioned date.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a We would like to inform you that your API key is about to expire on .
         /// </summary>
         internal static string We_would_like_to_inform_you_that_your_API_key_is_about_to_expire_on_ {

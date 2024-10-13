@@ -68,6 +68,15 @@ export class AccountService implements OnDestroy {
     );
   }
 
+  revokeUserApiKey(id: number): Observable<void> {
+    return this.accountHttpService.revokeUserApiKey(id).pipe(
+      catchError((err) => {
+        console.error('err', err);
+        return of(err);
+      })
+    );
+  }
+
   updateProfileDetails(account: AccountModel): Observable<any> {
     this.isLoadingSubject.next(true);
     return this.accountHttpService.updateProfileDetails(account).pipe(

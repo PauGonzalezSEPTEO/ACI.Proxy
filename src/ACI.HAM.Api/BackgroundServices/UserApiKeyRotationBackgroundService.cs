@@ -63,35 +63,37 @@ namespace ACI.HAM.Core.Services
                     var userApiKeysToRotate = await baseContext.UserApiKeys
                         .Include(x => x.User)
                         .Where(x => (x.IsActive))
-#if !DEBUG
                         .GroupBy(x => x.UserId)
                         .Select(x => x.OrderByDescending(y => y.Expiration).FirstOrDefault())
                         .Where(x => x.Expiration <= DateTimeOffset.Now.AddDays(_configuration.Value.DaysBeforeExpirationWarning))
-#endif
                         .ToListAsync();
                     Uri baseUri = new Uri(_uiSettings.BaseUrl);
                     Uri apiKeysUrl = new Uri(baseUri, _uiSettings.ApiKeysRelativeUrl);
                     foreach (var userApiKey in userApiKeysToRotate)
                     {
-                        CultureInfo culture;
-                        if (!string.IsNullOrEmpty(userApiKey.User.LanguageAlpha2Code))
+                        var daysUntilExpiration = (userApiKey.Expiration - DateTimeOffset.Now).Days;
+                        if (daysUntilExpiration == _configuration.Value.DaysBeforeExpirationWarning || daysUntilExpiration == _configuration.Value.DaysBeforeExpirationSecondWarning || daysUntilExpiration == 0)
                         {
-                            culture = new CultureInfo(userApiKey.User.LanguageAlpha2Code);
+                            CultureInfo culture;
+                            if (!string.IsNullOrEmpty(userApiKey.User.LanguageAlpha2Code))
+                            {
+                                culture = new CultureInfo(userApiKey.User.LanguageAlpha2Code);
+                            }
+                            else
+                            {
+                                culture = originalCulture;
+                            }
+                            CultureInfo.CurrentCulture = culture;
+                            CultureInfo.CurrentUICulture = culture;
+                            SendApiKeyRotationMailDto sendApiKeyRotationMailDto = new SendApiKeyRotationMailDto()
+                            {
+                                Expiration = userApiKey.Expiration,
+                                Subject = Mail.Localization.DataAnnotations._API_Key_expiration_notice,
+                                To = userApiKey.User.Email,
+                                Url = apiKeysUrl.AbsoluteUri
+                            };
+                            await _mailService.SendApiKeyRotationMailAsync(sendApiKeyRotationMailDto);
                         }
-                        else
-                        {
-                            culture = originalCulture;
-                        }
-                        CultureInfo.CurrentCulture = culture;
-                        CultureInfo.CurrentUICulture = culture;
-                        SendApiKeyRotationMailDto sendApiKeyRotationMailDto = new SendApiKeyRotationMailDto()
-                        {
-                            Expiration = userApiKey.Expiration,
-                            Subject = Mail.Localization.DataAnnotations._API_Key_expiration_notice,
-                            To = userApiKey.User.Email,
-                            Url = apiKeysUrl.AbsoluteUri
-                        };
-                        await _mailService.SendApiKeyRotationMailAsync(sendApiKeyRotationMailDto);
                     }
                 }
             }

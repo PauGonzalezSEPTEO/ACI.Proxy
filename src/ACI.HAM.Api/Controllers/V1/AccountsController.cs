@@ -98,6 +98,17 @@ namespace ACI.HAM.Api.Controllers.V1
             }
         }
 
+        [HttpDelete]
+        [Route("revoke-user-api-key-by-id/{id}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<UserApiKeyDto>> RevokeUserApiKeyByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            UserApiKeyDto userApiKeyDto = await _accountService.RevokeUserApiKeysByIdAsync(id, cancellationToken);
+            return Ok(userApiKeyDto);
+        }
+
         [HttpPut]
         [Route("update-profile-details")]
         [MapToApiVersion("1.0")]

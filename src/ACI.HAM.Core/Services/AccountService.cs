@@ -7,7 +7,6 @@ using Microsoft.Extensions.Localization;
 using AutoMapper;
 using Microsoft.AspNetCore.DataProtection;
 using ACI.HAM.Core.Extensions;
-using Microsoft.Extensions.Configuration;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ACI.HAM.Core.Data;
@@ -25,6 +24,8 @@ namespace ACI.HAM.Core.Services
         Task<AccountResultDto> GetAccountAsync(string id, CancellationToken cancellationToken = default);
 
         Task<DataTablesResult<UserApiKeyDto>> ReadUserApiKeysDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default);
+
+        Task<UserApiKeyDto> RevokeUserApiKeysByIdAsync(int id, CancellationToken cancellationToken = default);
 
         Task<UpdateProfileDetailsResultDto> UpdateProfileDetailsAsync(string id, ProfileDetailsDto profileDetailsDto, CancellationToken cancellationToken = default);
     }
@@ -132,6 +133,18 @@ namespace ACI.HAM.Core.Services
                 _baseContext.UserApiKeys
                     .AsQueryable();
             return await query.GetDataTablesResultAsync<UserApiKey, UserApiKeyDto>(_mapper, dataTablesParameters, languageCode, cancellationToken);
+        }
+
+        public async Task<UserApiKeyDto> RevokeUserApiKeysByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            UserApiKey userApiKey = await _baseContext.UserApiKeys
+                .SingleOrDefaultAsync(x => x.Id == id);
+            if (userApiKey != null)
+            {
+                userApiKey.IsActive = false;
+                await _baseContext.SaveChangesAsync(cancellationToken);
+            }
+            return _mapper.Map<UserApiKeyDto>(userApiKey);
         }
 
         public async Task<UpdateProfileDetailsResultDto> UpdateProfileDetailsAsync(string id, ProfileDetailsDto profileDetailsDto, CancellationToken cancellationToken = default)

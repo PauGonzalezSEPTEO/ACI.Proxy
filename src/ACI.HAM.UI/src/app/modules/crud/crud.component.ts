@@ -24,6 +24,7 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() isReadOnly: boolean;
   @Output() deleteEvent = new EventEmitter<any>();
   @Output() emailEvent = new EventEmitter<any>();
+  @Output() revokeEvent = new EventEmitter<any>();
   @Output() unlinkEvent = new EventEmitter<any>();
   @Output() editEvent = new EventEmitter<any>();
   @Output() createEvent = new EventEmitter<boolean>();
@@ -43,6 +44,10 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
   public readonly successUnlinkSwal!: SwalComponent;
   @ViewChild('successEmailSwal')
   public readonly successEmailSwal!: SwalComponent;
+  @ViewChild('revokeSwal')
+  public readonly revokeSwal!: SwalComponent;
+  @ViewChild('successRevokeSwal')
+  public readonly successRevokeSwal!: SwalComponent;
   private emailInAction: any;
   private idInAction: any;
   modalConfig: NgbModalOptions = {
@@ -106,6 +111,13 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
               });
               break;            
+          case 'revoke':
+            this.revokeSwal.fire().then((clicked) => {
+              if (clicked.isConfirmed) {
+                this.successRevokeSwal.fire();
+              }
+            });
+            break;
           case 'unlink':
             this.unlinkSwal.fire().then((clicked) => {
               if (clicked.isConfirmed) {
@@ -186,6 +198,13 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
             <span class="path3"></span><span class="path4"></span><span class="path5"></span>
           </i>
         </button>`;        
+        const revokeButton = `
+          <button class="btn btn-icon btn-active-light-primary w-30px h-30px" data-action="revoke" data-id="${full.id}" title="${this.translate.instant('CRUD.REVOKE')}">
+            <i class="ki-duotone ki-lock fs-3">
+              <span class="path1"></span><span class="path2"></span>
+              <span class="path3"></span><span class="path4"></span><span class="path5"></span>
+            </i>
+          </button>`;
         const buttons = [];
         if (this.editEvent.observed) {
           buttons.push(editButton);
@@ -198,6 +217,9 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         if (this.emailEvent.observed && !full.emailConfirmed) {
           buttons.push(emailButton);
+        }
+        if (this.revokeEvent.observed) {
+          buttons.push(revokeButton);
         }
         return buttons.join('');
       },
@@ -252,6 +274,10 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
           this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => dtInstance.search(value).draw());
         }
       });
+  }
+
+  triggerRevoke() {
+    this.revokeEvent.emit(this.idInAction);
   }
 
   triggerUnlink() {

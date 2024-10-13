@@ -37,6 +37,10 @@ export class AccountHTTPService {
     return this.http.post<DataTablesResponse>(`${API_ACCOUNTS_URL}/read-user-api-keys-data-table`, params, options);
   }  
 
+  revokeUserApiKey(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_ACCOUNTS_URL}/revoke-user-api-key-by-id/${id}`);
+  }
+
   updateProfileDetails(data: AccountModel): Observable<AccountModel> {
     return this.http.put<AccountModel>(`${API_ACCOUNTS_URL}/update-profile-details`, data);
   }
