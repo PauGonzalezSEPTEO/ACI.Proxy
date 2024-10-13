@@ -131,7 +131,7 @@ namespace ACI.HAM.Api
             services.AddMailComponents();
             services.AddCoreComponents();
             services.AddHostedService<PingWebsiteBackgroundService>();
-            services.AddHostedService<UserApiKeyRotationService>();
+            services.AddHostedService<UserApiKeyRotationBackgroundService>();
             services.AddHttpClient(nameof(PingWebsiteBackgroundService));
             services.AddFeatureManagement().AddFeatureFilter<TimeWindowFilter>();
             services.AddHealthChecks().AddSqlServer(serviceProvider =>

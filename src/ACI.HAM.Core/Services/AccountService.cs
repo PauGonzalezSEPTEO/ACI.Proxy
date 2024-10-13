@@ -89,13 +89,6 @@ namespace ACI.HAM.Core.Services
                     IsActive = true,
                     UserId = user.Id
                 };
-                var currentApiKeys = await _baseContext.UserApiKeys
-                    .Where(x => (x.UserId == user.Id) && x.IsActive)
-                    .ToListAsync();
-                foreach (var oldKey in currentApiKeys)
-                {
-                    oldKey.IsActive = false;
-                }
                 _baseContext.UserApiKeys.Add(userApiKey);
                 await _baseContext.SaveChangesAsync();
                 generateUserApiKeyResultDto.ApiKey = apiKey;

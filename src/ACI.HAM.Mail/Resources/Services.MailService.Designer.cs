@@ -135,11 +135,11 @@ namespace ACI.HAM.Mail.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a The ACIGRUP team..
+        ///   Busca una cadena traducida similar a The Septeo team..
         /// </summary>
-        internal static string The_ACIGRUP_team_ {
+        internal static string The_Septeo_team_ {
             get {
-                return ResourceManager.GetString("The ACIGRUP team.", resourceCulture);
+                return ResourceManager.GetString("The Septeo team.", resourceCulture);
             }
         }
         
@@ -193,11 +193,11 @@ namespace ACI.HAM.Mail.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Welcome to Keenthemes!.
+        ///   Busca una cadena traducida similar a Welcome to Septeo!.
         /// </summary>
-        internal static string Welcome_to_Keenthemes_ {
+        internal static string Welcome_to_Septeo_ {
             get {
-                return ResourceManager.GetString("Welcome to Keenthemes!", resourceCulture);
+                return ResourceManager.GetString("Welcome to Septeo!", resourceCulture);
             }
         }
         

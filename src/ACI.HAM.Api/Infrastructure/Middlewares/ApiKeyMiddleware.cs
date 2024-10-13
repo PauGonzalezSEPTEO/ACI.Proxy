@@ -3,10 +3,8 @@ using System.Security.Claims;
 using System.Text.RegularExpressions;
 using ACI.HAM.Core.Data;
 using ACI.HAM.Core.Extensions;
-using ACI.HAM.Core.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
@@ -77,18 +75,27 @@ namespace ACI.HAM.Core.Infrastructure.Middlewares
             using (var scope = _serviceProvider.CreateScope())
             {
                 var baseContext = scope.ServiceProvider.GetRequiredService<BaseContext>();
-                UserApiKey userApiKey = null;
-                userApiKey = await baseContext.UserApiKeys
+                baseContext.IsApiKeyRequest = true;
+                var userApiKeys = await baseContext.UserApiKeys
                     .Include(x => x.User)
                     .ThenInclude(x => x.UserRoles)
                     .ThenInclude(x => x.Role)
-                    .FirstOrDefaultAsync(x => (x.User.Email == email.ToString()) && x.IsActive);
-                if ((userApiKey != null) && !ApiKeyExtension.ValidateApiKey(apiKey.ToString(), userApiKey.HashedApiKey, userApiKey.Salt))
+                    .Where(x => x.User.Email == email.ToString() && x.IsActive)
+                    .ToListAsync();
+                if (userApiKeys == null || !userApiKeys.Any())
                 {
                     context.Response.StatusCode = 401;
                     await context.Response.WriteAsync(_messages["Invalid API Key"].Value);
                     return;
                 }
+                bool isValidApiKey = userApiKeys.Any(userApiKey => ApiKeyExtension.ValidateApiKey(apiKey.ToString(), userApiKey.HashedApiKey, userApiKey.Salt));
+                if (!isValidApiKey)
+                {
+                    context.Response.StatusCode = 401;
+                    await context.Response.WriteAsync(_messages["Invalid API Key"].Value);
+                    return;
+                }
+                var userApiKey = userApiKeys.First();
                 List<Claim> claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, userApiKey.User.Email),

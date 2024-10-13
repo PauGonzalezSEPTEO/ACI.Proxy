@@ -140,6 +140,8 @@ namespace ACI.HAM.Core.Data
             return currentUser != null && !currentUser.IsInRole("Administrator");
         }
 
+        public bool IsApiKeyRequest { get; set; }
+
         private async Task OnBeforeSaveChangesAsync()
         {
             ChangeTracker.DetectChanges();
@@ -384,7 +386,7 @@ namespace ACI.HAM.Core.Data
             modelBuilder.Entity<Company>().HasQueryFilter(x => !IsAdministrator() || GetUserCompanies().Contains(x.Id));
             modelBuilder.Entity<Hotel>().HasQueryFilter(x => !IsAdministrator() || GetUserHotels().Contains(x.Id));
             modelBuilder.Entity<RoomType>().HasQueryFilter(x => !IsAdministrator() || GetUserRoomTypes().Contains(x.Id));            
-            modelBuilder.Entity<UserApiKey>().HasQueryFilter(x => !IsAdministrator() || GetUserUserApiKeys().Contains(x.Id));
+            modelBuilder.Entity<UserApiKey>().HasQueryFilter(x => IsApiKeyRequest || !IsAdministrator() || GetUserUserApiKeys().Contains(x.Id));
         }
 
         public virtual DbSet<RoomTypeHotelCompany> RoomTypeHotelsCompanies { get; set; }
