@@ -2,7 +2,6 @@ using ACI.HAM.Mail.Dtos;
 using ACI.HAM.Mail.Localization;
 using ACI.HAM.Mail.Services;
 using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

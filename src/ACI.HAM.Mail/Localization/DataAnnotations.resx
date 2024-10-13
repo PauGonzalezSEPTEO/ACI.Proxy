@@ -144,4 +144,19 @@
   <data name="You must provide at least one email address" xml:space="preserve">
     <value>You must provide at least one email address</value>
   </data>
+  <data name="If you didn't change your password, please contact our support team. Your security is very important to us!" xml:space="preserve">
+    <value>If you didn't change your password, please contact our support team. Your security is very important to us!</value>
+  </data>
+  <data name="Your Septeo password was just changed." xml:space="preserve">
+    <value>Your Septeo password was just changed.</value>
+  </data>
+  <data name=" API Key expiration notice" xml:space="preserve">
+    <value> API Key expiration notice</value>
+  </data>
+  <data name="Expiration is required" xml:space="preserve">
+    <value>Expiration is required</value>
+  </data>
+  <data name="To avoid any disruptions in accessing our service, we recommend that you generate a new API key before the mentioned date." xml:space="preserve">
+    <value>To avoid any disruptions in accessing our service, we recommend that you generate a new API key before the mentioned date.</value>
+  </data>
 </root>

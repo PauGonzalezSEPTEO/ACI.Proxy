@@ -168,7 +168,10 @@
   <data name="You are receiving this email because your account is locked out, to proceed with the password reset please click on the button below:" xml:space="preserve">
     <value>You are receiving this email because your account is locked out, to proceed with the password reset please click on the button below:</value>
   </data>
-  <data name="Your Keenthemes password was just changed." xml:space="preserve">
-    <value>Your Keenthemes password was just changed.</value>
+  <data name="Your Septeo password was just changed." xml:space="preserve">
+    <value>Your Septeo password was just changed.</value>
+  </data>
+  <data name="We would like to inform you that your API key is about to expire on " xml:space="preserve">
+    <value>We would like to inform you that your API key is about to expire on </value>
   </data>
 </root>

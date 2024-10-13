@@ -33,7 +33,7 @@ namespace ACI.HAM.Mail.Services
 
     public class MailService : IMailService
     {
-        const string API_KEY_ROTATION_EMAIL_TEMPLATE = "ApiKeyRotationEmail";
+        const string API_KEY_ROTATION_EMAIL_TEMPLATE = "ApiKeyRotation";
         const string CHANGE_EMAIL_TEMPLATE = "ChangeEmail";
         const string LOCKOUT_TEMPLATE = "Lockout";
         const string MAIL_TEMPLATE_PATH = "Files/MailTemplates";
@@ -95,6 +95,7 @@ namespace ACI.HAM.Mail.Services
             {
                 ApiKeyRotation apiKeyRotation = new ApiKeyRotation()
                 {
+                    Expiration = sendApiKeyRotationMailDto.Expiration,
                     Url = sendApiKeyRotationMailDto.Url
                 };
                 string? template = await LoadMailTemplateAsync(API_KEY_ROTATION_EMAIL_TEMPLATE, apiKeyRotation, cancelationToken);

@@ -61,6 +61,15 @@ namespace ACI.HAM.Mail.Localization {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a  API Key expiration notice.
+        /// </summary>
+        public static string _API_Key_expiration_notice {
+            get {
+                return ResourceManager.GetString(" API Key expiration notice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a An error occured. The mail could not be sent.
         /// </summary>
         public static string An_error_occured__The_mail_could_not_be_sent {
@@ -97,6 +106,25 @@ namespace ACI.HAM.Mail.Localization {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Expiration is required.
+        /// </summary>
+        public static string Expiration_is_required {
+            get {
+                return ResourceManager.GetString("Expiration is required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a If you didn&apos;t change your password, please contact our support team. Your security is very important to us!.
+        /// </summary>
+        public static string If_you_didn_t_change_your_password__please_contact_our_support_team__Your_security_is_very_important_to_us_ {
+            get {
+                return ResourceManager.GetString("If you didn\'t change your password, please contact our support team. Your securit" +
+                        "y is very important to us!", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Mail has successfully been sent.
         /// </summary>
         public static string Mail_has_successfully_been_sent {
@@ -111,6 +139,16 @@ namespace ACI.HAM.Mail.Localization {
         public static string Subject_is_required {
             get {
                 return ResourceManager.GetString("Subject is required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a To avoid any disruptions in accessing our service, we recommend that you generate a new API key before the mentioned date..
+        /// </summary>
+        public static string To_avoid_any_disruptions_in_accessing_our_service__we_recommend_that_you_generate_a_new_API_key_before_the_mentioned_date_ {
+            get {
+                return ResourceManager.GetString("To avoid any disruptions in accessing our service, we recommend that you generate" +
+                        " a new API key before the mentioned date.", resourceCulture);
             }
         }
         
@@ -138,6 +176,15 @@ namespace ACI.HAM.Mail.Localization {
         public static string You_must_provide_at_least_one_email_address {
             get {
                 return ResourceManager.GetString("You must provide at least one email address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Your Septeo password was just changed..
+        /// </summary>
+        public static string Your_Septeo_password_was_just_changed_ {
+            get {
+                return ResourceManager.GetString("Your Septeo password was just changed.", resourceCulture);
             }
         }
     }

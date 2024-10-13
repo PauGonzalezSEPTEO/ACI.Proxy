@@ -2,6 +2,8 @@ namespace ACI.HAM.Settings
 {
     public class UISettings
     {
+        public string ApiKeysRelativeUrl { get; set; } = "/crafted/account/api-keys";
+
         public string BaseUrl { get; set; } = "http://localhost:4200";
 
         public string ChangeEmailRelativeUrl { get; set; } = "/auth/change-email";

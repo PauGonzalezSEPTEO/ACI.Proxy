@@ -10,6 +10,8 @@ namespace ACI.HAM.Settings
 
         public string EncryptionKey { get; set; } = string.Empty;
 
+        public int KeyExpirationInDays { get; set; } = 30;
+
         public string HMACKey { get; set; } = string.Empty;
 
         public string PersistKeysDirectory { get; set; } = "/app/certificates";

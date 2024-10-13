@@ -129,9 +129,6 @@
   <data name="Email should have maximum 256 characters" xml:space="preserve">
     <value>El correo electrónico debe tener un máximo de 256 caracteres</value>
   </data>
-  <data name="If you didn't change your password, please contact our support team. Your security is very important to us!" xml:space="preserve">
-    <value>Si no cambió su contraseña, comuníquese con nuestro equipo de soporte. ¡Tu seguridad es muy importante para nosotros!</value>
-  </data>
   <data name="Mail has successfully been sent" xml:space="preserve">
     <value>El correo ha sido enviado con éxito</value>
   </data>
@@ -147,7 +144,19 @@
   <data name="You must provide at least one email address" xml:space="preserve">
     <value>Debe indicar al menos una dirección de correo electrónico</value>
   </data>
-  <data name="Your Keenthemes password was just changed." xml:space="preserve">
-    <value>Su contraseña de Keenthemes acaba de cambiarse.</value>
+  <data name="If you didn't change your password, please contact our support team. Your security is very important to us!" xml:space="preserve">
+    <value>Si no cambió su contraseña, comuníquese con nuestro equipo de soporte. ¡Tu seguridad es muy importante para nosotros!</value>
+  </data>
+  <data name="Your Septeo password was just changed." xml:space="preserve">
+    <value>Su contraseña de Septeo acaba de cambiarse.</value>
+  </data>
+  <data name=" API Key expiration notice" xml:space="preserve">
+    <value>Notificación de caducidad de API Key</value>
+  </data>
+  <data name="Expiration is required" xml:space="preserve">
+    <value>La caducidad es requerida</value>
+  </data>
+  <data name="To avoid any disruptions in accessing our service, we recommend that you generate a new API key before the mentioned date." xml:space="preserve">
+    <value>Para evitar interrupciones en el acceso a nuestro servicio, le recomendamos generar una nueva clave API antes de la fecha mencionada.</value>
   </data>
 </root>

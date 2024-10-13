@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Globalization;
 using System.Linq;
 
 
@@ -18,13 +19,15 @@ namespace ACI.HAM.Core.Services
         private readonly ILogger<UserApiKeyRotationBackgroundService> _logger;
         private readonly IMailService _mailService;
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly UISettings _uiSettings;
 
-        public UserApiKeyRotationBackgroundService(IServiceScopeFactory serviceScopeFactory, ILogger<UserApiKeyRotationBackgroundService> logger, IOptions<ApiKeySettings> configuration, IMailService mailService)
+        public UserApiKeyRotationBackgroundService(IServiceScopeFactory serviceScopeFactory, ILogger<UserApiKeyRotationBackgroundService> logger, IOptions<ApiKeySettings> configuration, IMailService mailService, IOptions<UISettings> uiSettings)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
             _configuration = configuration;
             _mailService = mailService;
+            _uiSettings = uiSettings.Value;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -50,6 +53,8 @@ namespace ACI.HAM.Core.Services
 
         private async Task RunScheduledTaskAsync()
         {
+            CultureInfo originalCulture = CultureInfo.CurrentCulture;
+            CultureInfo originalUICulture = CultureInfo.CurrentUICulture;
             try
             {
                 using (var scope = _serviceScopeFactory.CreateScope())
@@ -64,10 +69,27 @@ namespace ACI.HAM.Core.Services
                         .Where(x => x.Expiration <= DateTimeOffset.Now.AddDays(_configuration.Value.DaysBeforeExpirationWarning))
 #endif
                         .ToListAsync();
+                    Uri baseUri = new Uri(_uiSettings.BaseUrl);
+                    Uri apiKeysUrl = new Uri(baseUri, _uiSettings.ApiKeysRelativeUrl);
                     foreach (var userApiKey in userApiKeysToRotate)
                     {
+                        CultureInfo culture;
+                        if (!string.IsNullOrEmpty(userApiKey.User.LanguageAlpha2Code))
+                        {
+                            culture = new CultureInfo(userApiKey.User.LanguageAlpha2Code);
+                        }
+                        else
+                        {
+                            culture = originalCulture;
+                        }
+                        CultureInfo.CurrentCulture = culture;
+                        CultureInfo.CurrentUICulture = culture;
                         SendApiKeyRotationMailDto sendApiKeyRotationMailDto = new SendApiKeyRotationMailDto()
                         {
+                            Expiration = userApiKey.Expiration,
+                            Subject = Mail.Localization.DataAnnotations._API_Key_expiration_notice,
+                            To = userApiKey.User.Email,
+                            Url = apiKeysUrl.AbsoluteUri
                         };
                         await _mailService.SendApiKeyRotationMailAsync(sendApiKeyRotationMailDto);
                     }
@@ -76,6 +98,11 @@ namespace ACI.HAM.Core.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while running the scheduled api key rotation task");
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = originalCulture;
+                CultureInfo.CurrentUICulture = originalUICulture;
             }
         }
     }

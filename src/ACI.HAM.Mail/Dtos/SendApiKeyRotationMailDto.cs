@@ -6,6 +6,9 @@ namespace ACI.HAM.Mail.Dtos
 {
     public class SendApiKeyRotationMailDto
     {
+        [Required(ErrorMessage = "Expiration is required")]
+        public DateTimeOffset? Expiration { get; set; }
+
         [Required(ErrorMessage = "Subject is required")]
         public string? Subject { get; set; }
 

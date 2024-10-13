@@ -193,6 +193,15 @@ namespace ACI.HAM.Mail.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a We would like to inform you that your API key is about to expire on .
+        /// </summary>
+        internal static string We_would_like_to_inform_you_that_your_API_key_is_about_to_expire_on_ {
+            get {
+                return ResourceManager.GetString("We would like to inform you that your API key is about to expire on ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Welcome to Septeo!.
         /// </summary>
         internal static string Welcome_to_Septeo_ {
@@ -222,11 +231,11 @@ namespace ACI.HAM.Mail.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Your Keenthemes password was just changed..
+        ///   Busca una cadena traducida similar a Your Septeo password was just changed..
         /// </summary>
-        internal static string Your_Keenthemes_password_was_just_changed_ {
+        internal static string Your_Septeo_password_was_just_changed_ {
             get {
-                return ResourceManager.GetString("Your Keenthemes password was just changed.", resourceCulture);
+                return ResourceManager.GetString("Your Septeo password was just changed.", resourceCulture);
             }
         }
     }

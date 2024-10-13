@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ACI.HAM.Core.Data;
+using ACI.HAM.Settings;
+using Microsoft.Extensions.Options;
 
 namespace ACI.HAM.Core.Services
 {
@@ -29,21 +31,21 @@ namespace ACI.HAM.Core.Services
 
     public class AccountService : IAccountService
     {
+        private readonly IOptions<ApiKeySettings> _apiKeySettings;
         private readonly BaseContext _baseContext;
-        private readonly IConfiguration _configuration;
         private readonly IDataProtector _dataProtector;
         private readonly IStringLocalizer<AccountService> _localizer;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
 
-        public AccountService(UserManager<User> userManager, BaseContext baseContext, IMapper mapper, IStringLocalizer<AccountService> localizer, IDataProtectionProvider dataProtectionProvider, IConfiguration configuration)
+        public AccountService(UserManager<User> userManager, BaseContext baseContext, IMapper mapper, IStringLocalizer<AccountService> localizer, IDataProtectionProvider dataProtectionProvider, IOptions<ApiKeySettings> apiKeySettings)
         {
             _userManager = userManager;
             _baseContext = baseContext;
             _mapper = mapper;
             _localizer = localizer;
             _dataProtector = dataProtectionProvider.CreateProtector("ApiKey.ApiKeyProtector");
-            _configuration = configuration;
+            _apiKeySettings = apiKeySettings;
         }
 
         public async Task<UserApiKeyDto> DeleteUserApiKeysByIdAsync(int id, CancellationToken cancellationToken = default)
@@ -71,8 +73,8 @@ namespace ACI.HAM.Core.Services
                 };
             }
             else
-            {
-                string encryptedEncryptionKey = _configuration["ApiKey:EncryptionKey"];
+            {                
+                string encryptedEncryptionKey = _apiKeySettings.Value.EncryptionKey;
                 string encryptionKey = _dataProtector.Unprotect(encryptedEncryptionKey);
                 string apiKey = ApiKeyExtension.GenerateApiKey();
                 string apiKeyLast6 = apiKey.Length >= 6 ? apiKey[^6..] : apiKey;
@@ -85,7 +87,7 @@ namespace ACI.HAM.Core.Services
                     HashedApiKey = hashedApiKey,
                     Salt = salt,
                     CreatedAt = DateTime.UtcNow,
-                    Expiration = DateTime.UtcNow.AddMonths(1),
+                    Expiration = DateTime.UtcNow.AddDays(_apiKeySettings.Value.KeyExpirationInDays),
                     IsActive = true,
                     UserId = user.Id
                 };
