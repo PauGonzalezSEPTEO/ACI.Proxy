@@ -1,17 +1,11 @@
 using ACI.HAM.Api.Controllers;
 using ACI.HAM.Core.Dtos;
-using ACI.HAM.Core.Features;
 using ACI.HAM.Core.Services;
 using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-
-#if DEBUG
-using Microsoft.FeatureManagement.Mvc;
-#endif
 
 namespace ACI.HAM.Api.V1.Controllers
 {
@@ -74,22 +68,6 @@ namespace ACI.HAM.Api.V1.Controllers
             return Ok(roomTypeEditableDto);
         }
 
-#if DEBUG
-        [FeatureGate(FeatureFlags.Santa)]
-        [HttpGet("santa")]
-        [MapToApiVersion("1.0")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult GetSantaRoomType()
-        {
-            return Ok(new RoomTypeDto
-            {
-                Id = int.MaxValue,
-                Name = "Magic Sleigh"
-            });
-        }
-
-#endif
         [HttpPut]
         [Route("update-by-id/{id}")]
         [MapToApiVersion("1.0")]

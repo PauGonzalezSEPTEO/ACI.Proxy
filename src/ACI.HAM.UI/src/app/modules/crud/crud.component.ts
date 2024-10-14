@@ -197,7 +197,7 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
             <span class="path1"></span><span class="path2"></span>
             <span class="path3"></span><span class="path4"></span><span class="path5"></span>
           </i>
-        </button>`;        
+        </button>`;                
         const revokeButton = `
           <button class="btn btn-icon btn-active-light-primary w-30px h-30px" data-action="revoke" data-id="${full.id}" title="${this.translate.instant('CRUD.REVOKE')}">
             <i class="ki-duotone ki-lock fs-3">
@@ -218,7 +218,7 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.emailEvent.observed && !full.emailConfirmed) {
           buttons.push(emailButton);
         }
-        if (this.revokeEvent.observed) {
+        if (this.revokeEvent.observed && full.isActive) {
           buttons.push(revokeButton);
         }
         return buttons.join('');
