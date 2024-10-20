@@ -14,8 +14,8 @@ export class BoardService {
 
     constructor(private http: HttpClient) { }
 
-    create(roomType: Board): Observable<Board> {
-        return this.http.post<Board>(`${API_BOARDS_URL}/create`, roomType.getPayload()).pipe(map(roomType => new Board(roomType)));
+    create(board: Board): Observable<Board> {
+        return this.http.post<Board>(`${API_BOARDS_URL}/create`, board.getPayload()).pipe(map(roomType => new Board(roomType)));
     }
 
     delete(id: number): Observable<void> {
@@ -23,7 +23,7 @@ export class BoardService {
     }
 
     get(id: number): Observable<Board> {
-        return this.http.get<Board>(`${API_BOARDS_URL}/read-editable-by-id/${id}`).pipe(map(roomType => new Board(roomType)));
+        return this.http.get<Board>(`${API_BOARDS_URL}/read-editable-by-id/${id}`).pipe(map(board => new Board(board)));
     }
 
     readDataTable(params: any, languageCode: string): Observable<DataTablesResponse> {
@@ -35,7 +35,7 @@ export class BoardService {
         return this.http.post<DataTablesResponse>(`${API_BOARDS_URL}/read-data-table`, params, options);
     }    
 
-    update(id: number, roomType: Board): Observable<Board> {
-        return this.http.put<Board>(`${API_BOARDS_URL}/update-by-id/${id}`, roomType.getPayload()).pipe(map(roomType => new Board(roomType)));
+    update(id: number, board: Board): Observable<Board> {
+        return this.http.put<Board>(`${API_BOARDS_URL}/update-by-id/${id}`, board.getPayload()).pipe(map(board => new Board(board)));
     }
 }

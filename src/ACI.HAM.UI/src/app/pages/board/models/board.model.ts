@@ -15,11 +15,11 @@ export class BoardTranslation extends ITranslation {
   name?: string;
   shortDescription?: string;
 
-  constructor(buildingTranslation?: BoardTranslation) {
-    super(buildingTranslation);
-    if (buildingTranslation) {
-      this.name = buildingTranslation.name;
-      this.shortDescription = buildingTranslation.shortDescription;
+  constructor(boardTranslation?: BoardTranslation) {
+    super(boardTranslation);
+    if (boardTranslation) {
+      this.name = boardTranslation.name;
+      this.shortDescription = boardTranslation.shortDescription;
     }
   }
 }

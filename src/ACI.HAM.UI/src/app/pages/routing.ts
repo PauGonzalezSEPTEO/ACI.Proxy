@@ -42,6 +42,10 @@ const Routing: Routes = [
     loadChildren: () => import('./board/board.module').then((m) => m.BoardModule),
   },  
   {
+    path: 'apps/templates',
+    loadChildren: () => import('./template/template.module').then((m) => m.TemplateModule),
+  },  
+  {
     path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full',
