@@ -92,6 +92,13 @@ namespace ACI.HAM.Core.Profiles
             CreateMap<RoomType, RoomTypeDto>()
                 .ForCtorParam("languageCode", opt => opt.MapFrom(x => languageCode))
                 .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations));
+            CreateMap<TemplateTranslationDto, TemplateTranslation>()
+                .ReverseMap();
+            CreateMap<Template, TemplateEditableDto>()
+                .ReverseMap();
+            CreateMap<Template, TemplateDto>()
+                .ForCtorParam("languageCode", opt => opt.MapFrom(x => languageCode))
+                .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations));
         }
     }
 }

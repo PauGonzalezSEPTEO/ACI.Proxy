@@ -485,6 +485,36 @@ CREATE TABLE [dbo].[BoardsBuildings](
 )) ON [PRIMARY]
 GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Templates](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](256) NOT NULL,
+	[ShortDescription] [varchar](500) NULL
+ CONSTRAINT [PK_Templates] PRIMARY KEY CLUSTERED
+(
+	[Id] ASC
+)) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TemplateTranslations](
+	[LanguageCode] [varchar](10) NOT NULL,
+	[TemplateId] [int] NOT NULL,
+	[Name] [varchar](50) NULL,
+	[ShortDescription] [varchar](500) NULL,
+ CONSTRAINT [PK_TemplateTranslations] PRIMARY KEY CLUSTERED
+(
+	[LanguageCode] ASC,
+  [TemplateId] ASC
+)) ON [PRIMARY]
+GO
+
 SET IDENTITY_INSERT [dbo].[Companies] ON
 GO
 INSERT [dbo].[Companies] ([Id], [Name]) VALUES (1, N'Sun Hotels')
@@ -689,6 +719,13 @@ GO
 ALTER TABLE [dbo].[BoardsBuildings] CHECK CONSTRAINT [FK_BoardsBuildings_Buildings]
 GO
 
+ALTER TABLE [dbo].[TemplateTranslations]  WITH CHECK ADD CONSTRAINT [FK_TemplateTranslations_Templates] FOREIGN KEY([TemplateId])
+REFERENCES [dbo].[Templates] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[TemplateTranslations] CHECK CONSTRAINT [FK_TemplateTranslations_Templates]
+GO
+
 IF NOT (EXISTS (SELECT * FROM sys.sysusers WHERE name='migrator'))
 BEGIN
 CREATE LOGIN [migrator] WITH PASSWORD = '.acisa159753'
@@ -716,6 +753,8 @@ GRANT ALL ON BoardTranslations TO [user];
 GRANT ALL ON BoardsBuildings TO [user];
 GRANT ALL ON Buildings TO [user];
 GRANT ALL ON BuildingTranslations TO [user];
+GRANT ALL ON Templates TO [user];
+GRANT ALL ON TemplateTranslations TO [user];
 GRANT ALL ON UserApiKeys TO [user];
 GRANT ALL ON UserHotelsCompanies TO [user];
 

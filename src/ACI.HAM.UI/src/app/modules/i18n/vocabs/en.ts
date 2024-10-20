@@ -1,5 +1,3 @@
-import { NEVER } from "rxjs";
-
 // USA
 export const locale = {
   lang: 'en',
@@ -718,6 +716,7 @@ export const locale = {
       SAAS: 'SaaS',
       SETTINGS: 'Settings',
       SIGN_OUT: 'Sign out',
+      TEMPLATES: 'Templates',
       TOOLBARS: 'Toolbars',      
       TRY: 'Try',
       USER_MANAGEMENT: 'User management',
@@ -795,6 +794,33 @@ export const locale = {
         SHORT_DESCRIPTION_SHOULD_HAVE_MAXIMUM_500_CHARACTERS: 'Short description should have maximum 500 characters',
         SUCCESS: 'Success!',
         SUBMIT: 'Submit',
+        TRANSLATION: 'Translation'
+      }
+    },
+    TEMPLATES: {
+      LIST: {
+        ADD_TEMPLATE: 'Add template',
+        CLOSE: 'Close',
+        DISCARD: 'Discard',
+        ERROR: 'Error!',
+        ID: 'Id',
+        LANGUAGE: 'Language',
+        NAME: 'Name',
+        NAME_IS_REQUIRED: 'Name is required',
+        NAME_SHOULD_HAVE_AT_LEAST_4_CHARACTERS: 'Name should have at least 4 characters',
+        NAME_SHOULD_HAVE_MAXIMUM_256_CHARACTERS: 'Name should have maximum 256 characters',
+        OK: 'OK',
+        PLEASE_WAIT: 'Please wait...',
+        SEARCH_BY_NAME: 'Search by name',
+        SHORT_DESCRIPTION: 'Short description',
+        SHORT_DESCRIPTION_SHOULD_HAVE_MAXIMUM_500_CHARACTERS: 'Short description should have maximum 500 characters',
+        SUCCESS: 'Success!',
+        SUBMIT: 'Submit',
+        TEMPLATE_CREATED_SUCCESSFULLY: 'Template created successfully!',
+        TEMPLATE_DETAILS: 'Template details',
+        TEMPLATE_INFORMATION: 'Template information',
+        TEMPLATE_UPDATED_SUCCESSFULLY: 'Template updated successfully!',
+        TEMPLATES: 'Templates',
         TRANSLATION: 'Translation'
       }
     },

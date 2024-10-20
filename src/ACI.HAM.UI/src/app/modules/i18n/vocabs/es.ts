@@ -1,5 +1,3 @@
-import { NEVER } from "rxjs";
-
 // Spain
 export const locale = {
   lang: 'es',
@@ -267,6 +265,7 @@ export const locale = {
         BOARD_DETAILS: 'Detalles de la pensión',
         BOARD_INFORMATION: 'Información de la pensión',
         BOARD_UPDATED_SUCCESSFULLY: '¡Pensión actualizada con éxito!',
+        BOARDS: 'Pensiones',
         BUILDINGS: 'Edificios',
         CLOSE: 'Cerrar',
         COMPANIES: 'Compañías',
@@ -281,7 +280,6 @@ export const locale = {
         NAME_SHOULD_HAVE_MAXIMUM_256_CHARACTERS: 'El nombre debe tener un máximo de 256 caracteres',
         OK: 'De acuerdo',
         PLEASE_WAIT: 'Espere por favor...',        
-        ROOM_TYPES: 'Pensiones',
         SEARCH_BY_NAME: 'Buscar por nombre',
         SHORT_DESCRIPTION: 'Descripción corta',
         SHORT_DESCRIPTION_SHOULD_HAVE_MAXIMUM_500_CHARACTERS: 'La descripción corta debe tener un máximo de 500 caracteres',
@@ -718,6 +716,7 @@ export const locale = {
       SAAS: 'SaaS',
       SETTINGS: 'Ajustes',
       SIGN_OUT: 'Cerrar sesión',
+      TEMPLATES: 'Plantillas',
       TOOLBARS: 'Barras de herramientas',
       TRY: 'Probar',
       USER_MANAGEMENT: 'Gestión de usuarios',
@@ -798,6 +797,33 @@ export const locale = {
         SHORT_DESCRIPTION_SHOULD_HAVE_MAXIMUM_500_CHARACTERS: 'La descripción corta debe tener un máximo de 500 caracteres',
         SUCCESS: '¡Éxito!',
         SUBMIT: 'Enviar',
+        TRANSLATION: 'Traducción'
+      }
+    },
+    TEMPLATES: {
+      LIST: {
+        ADD_TEMPLATE: 'Añadir plantilla',
+        CLOSE: 'Cerrar',
+        DISCARD: 'Descartar',        
+        ERROR: '¡Error!',   
+        ID: 'Id',
+        LANGUAGE: 'Idioma',        
+        NAME: 'Nombre',
+        NAME_IS_REQUIRED: 'El nombre es requerido',
+        NAME_SHOULD_HAVE_AT_LEAST_4_CHARACTERS: 'El nombre debe tener al menos 4 caracteres',
+        NAME_SHOULD_HAVE_MAXIMUM_256_CHARACTERS: 'El nombre debe tener un máximo de 256 caracteres',
+        OK: 'De acuerdo',
+        PLEASE_WAIT: 'Espere por favor...',        
+        SEARCH_BY_NAME: 'Buscar por nombre',
+        SHORT_DESCRIPTION: 'Descripción corta',
+        SHORT_DESCRIPTION_SHOULD_HAVE_MAXIMUM_500_CHARACTERS: 'La descripción corta debe tener un máximo de 500 caracteres',
+        SUCCESS: '¡Éxito!',
+        SUBMIT: 'Enviar',
+        TEMPLATE_CREATED_SUCCESSFULLY: '¡Plantilla creada con éxito!',
+        TEMPLATE_DETAILS: 'Detalles de la plantilla',
+        TEMPLATE_INFORMATION: 'Información de la plantilla',
+        TEMPLATE_UPDATED_SUCCESSFULLY: '¡Plantilla actualizada con éxito!',
+        TEMPLATES: 'Plantillas',
         TRANSLATION: 'Traducción'
       }
     },

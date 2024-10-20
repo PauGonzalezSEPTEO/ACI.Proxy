@@ -12,7 +12,6 @@ namespace ACI.HAM.Mail.Extensions
             services.AddSingleton<UISettings>();
             services.AddSingleton<MailTemplateHelper>();
             services.AddSingleton<IMailService, MailService>();
-            services.AddSingleton<ITemplateService, TemplateService>();
             return services;
         }
     }

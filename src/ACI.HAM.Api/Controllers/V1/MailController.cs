@@ -18,6 +18,17 @@ namespace ACI.HAM.Api.Controllers.V1
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
         }
 
+        [HttpGet]
+        [Route("get-template-by-name/{name}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<string>> GetTemplateAsync(string name, CancellationToken cancellationToken = default)
+        {
+            string template = await _mailService.GetTemplateByNameAsync(name, cancellationToken);
+            return Ok(template);
+        }
+
         [HttpPost]
         [Route("send-mail")]
         [MapToApiVersion("1.0")]

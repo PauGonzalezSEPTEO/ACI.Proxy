@@ -13,6 +13,8 @@ namespace ACI.HAM.Mail.Services
 {
     public interface IMailService
     {
+        Task<string> GetTemplateByNameAsync(string name, CancellationToken cancelationToken = default);
+
         Task<bool> SendApiKeyRotationMailAsync(SendApiKeyRotationMailDto sendApiKeyRotationMailDto, CancellationToken cancelationToken = default);
 
         Task<bool> SendChangeEmailMailAsync(SendChangeEmailMailDto sendChangeEmailMailDto, CancellationToken cancelationToken = default);
@@ -51,6 +53,20 @@ namespace ACI.HAM.Mail.Services
             _uiSettings = uiSettings.Value;
             _localizer = localizer;
             _mailTemplateHelper = mailTemplateHelper;
+        }
+
+        public async Task<string> GetTemplateByNameAsync(string name, CancellationToken cancelationToken = default)
+        {
+
+            //ToDo Pau
+            ChangeEmail changeEmail = new ChangeEmail()
+            {
+                Url = "localhost"
+            };
+            //
+
+            var template = await _mailTemplateHelper.LoadMailTemplateAsync(name, changeEmail, cancelationToken);
+            return template ?? string.Empty;
         }
 
         public async Task<bool> SendApiKeyRotationMailAsync(SendApiKeyRotationMailDto sendApiKeyRotationMailDto, CancellationToken cancelationToken = default)

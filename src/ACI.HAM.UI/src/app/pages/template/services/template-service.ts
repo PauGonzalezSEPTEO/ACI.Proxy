@@ -5,7 +5,7 @@ import { Observable, map } from 'rxjs';
 import { Template } from '../models/template.model';
 import { DataTablesResponse } from 'src/app/shared/models/data-tables-response.model';
 
-const API_TEMPLATES_URL = `${environment.apiUrl}/boards`;
+const API_TEMPLATES_URL = `${environment.apiUrl}/templates`;
 
 @Injectable({
     providedIn: 'root'

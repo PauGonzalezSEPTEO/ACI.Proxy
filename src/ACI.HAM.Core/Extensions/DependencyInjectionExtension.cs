@@ -42,6 +42,7 @@ namespace ACI.HAM.Core.Extensions
             services.AddScoped<IHotelService, HotelService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IRoomTypeService, RoomTypeService>();
+            services.AddScoped<ITemplateService, TemplateService>();
             services.AddScoped<IUserService, UserService>();
             return services;
         }

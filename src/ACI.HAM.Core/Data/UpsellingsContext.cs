@@ -382,6 +382,19 @@ namespace ACI.HAM.Core.Data
                     .WithMany(e => e.Translations)
                     .HasForeignKey(e => e.RoomTypeId);
             });
+            modelBuilder.Entity<Template>(entity =>
+            {
+                entity.Property(e => e.Name).IsUnicode(false);
+                entity.Property(e => e.ShortDescription).IsUnicode(false);
+                entity.HasMany(e => e.Translations)
+                    .WithOne(e => e.Template)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_TemplateTranslations_Templates");
+            });
+            modelBuilder.Entity<TemplateTranslation>(entity =>
+            {
+                entity.Property(e => e.Name).IsUnicode(false);
+            });
             modelBuilder.Entity<Board>().HasQueryFilter(x => !IsAdministrator() || GetUserBoards().Contains(x.Id));
             modelBuilder.Entity<Company>().HasQueryFilter(x => !IsAdministrator() || GetUserCompanies().Contains(x.Id));
             modelBuilder.Entity<Hotel>().HasQueryFilter(x => !IsAdministrator() || GetUserHotels().Contains(x.Id));
@@ -402,6 +415,10 @@ namespace ACI.HAM.Core.Data
             await OnBeforeSaveChangesAsync();
             return await base.SaveChangesAsync(cancellationToken);
         }
+
+        public virtual DbSet<Template> Templates { get; set; }
+
+        public virtual DbSet<TemplateTranslation> TemplateTranslations { get; set; }
 
         public virtual DbSet<UserApiKey> UserApiKeys { get; set; }
 
