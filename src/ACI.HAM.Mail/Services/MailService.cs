@@ -1,4 +1,5 @@
 using ACI.HAM.Mail.Dtos;
+using ACI.HAM.Mail.Helpers;
 using ACI.HAM.Mail.Models;
 using ACI.HAM.Mail.Settings;
 using ACI.HAM.Settings;
@@ -7,8 +8,6 @@ using MailKit.Security;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using RazorEngineCore;
-using System.Text;
 
 namespace ACI.HAM.Mail.Services
 {
@@ -36,7 +35,6 @@ namespace ACI.HAM.Mail.Services
         const string API_KEY_ROTATION_EMAIL_TEMPLATE = "ApiKeyRotation";
         const string CHANGE_EMAIL_TEMPLATE = "ChangeEmail";
         const string LOCKOUT_TEMPLATE = "Lockout";
-        const string MAIL_TEMPLATE_PATH = "Files/MailTemplates";
         const string PASSWORD_CHANGE_TEMPLATE = "PasswordChange";
         const string PASSWORD_RESET_TEMPLATE = "PasswordReset";
         const string TWO_FACTOR_TEMPLATE = "TwoFactor";
@@ -44,49 +42,15 @@ namespace ACI.HAM.Mail.Services
 
         private readonly IStringLocalizer<MailService> _localizer;
         private readonly MailSettings _mailSettings;
+        private readonly MailTemplateHelper _mailTemplateHelper;
         private readonly UISettings _uiSettings;
 
-        public MailService(IOptions<MailSettings> mailSettings, IStringLocalizer<MailService> localizer, IOptions<UISettings> uiSettings)
+        public MailService(IOptions<MailSettings> mailSettings, IStringLocalizer<MailService> localizer, IOptions<UISettings> uiSettings, MailTemplateHelper mailTemplateHelper)
         {
             _mailSettings = mailSettings.Value;
             _uiSettings = uiSettings.Value;
             _localizer = localizer;
-        }
-
-        private async Task<string?> LoadMailTemplateAsync<T>(string mailTemplate, T model, CancellationToken cancelationToken = default)
-        {
-            try
-            {
-                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                string mailTemplateDirectory = Path.Combine(baseDirectory, MAIL_TEMPLATE_PATH);
-                string mailTemplatePath = Path.Combine(mailTemplateDirectory, $"{mailTemplate}.cshtml");
-                using (FileStream fileStream = new FileStream(mailTemplatePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    using (StreamReader streamReader = new StreamReader(fileStream, Encoding.Default))
-                    {
-                        string mailTemplateContent = await streamReader.ReadToEndAsync(cancelationToken);
-                        streamReader.Close();
-                        if (!string.IsNullOrEmpty(mailTemplateContent))
-                        {
-                            IRazorEngine razorEngine = new RazorEngine();
-                            IRazorEngineCompiledTemplate<MailTemplateBaseModel<T>> compiledMailTemplate = await razorEngine.CompileAsync<MailTemplateBaseModel<T>>(mailTemplateContent, builder =>
-                            {
-                                builder.AddAssemblyReferenceByName("Microsoft.Extensions.Localization.Abstractions");
-                            });
-                            return await compiledMailTemplate.RunAsync(instance =>
-                            {
-                                instance.BaseUrl = _uiSettings.BaseUrl;
-                                instance.Localizer = _localizer;                                
-                                instance.Model = model;                                
-                            });
-                        }
-                    }
-                }
-            }
-            catch
-            {
-            }
-            return null;
+            _mailTemplateHelper = mailTemplateHelper;
         }
 
         public async Task<bool> SendApiKeyRotationMailAsync(SendApiKeyRotationMailDto sendApiKeyRotationMailDto, CancellationToken cancelationToken = default)
@@ -98,7 +62,7 @@ namespace ACI.HAM.Mail.Services
                     Expiration = sendApiKeyRotationMailDto.Expiration,
                     Url = sendApiKeyRotationMailDto.Url
                 };
-                string? template = await LoadMailTemplateAsync(API_KEY_ROTATION_EMAIL_TEMPLATE, apiKeyRotation, cancelationToken);
+                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(API_KEY_ROTATION_EMAIL_TEMPLATE, apiKeyRotation, cancelationToken);
                 if (!string.IsNullOrEmpty(template))
                 {
                     SendMailDto sendMailDto = new SendMailDto()
@@ -121,7 +85,7 @@ namespace ACI.HAM.Mail.Services
                 {
                     Url = sendChangeEmailMailDto.Url
                 };
-                string? template = await LoadMailTemplateAsync(CHANGE_EMAIL_TEMPLATE, changeEmail, cancelationToken);
+                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(CHANGE_EMAIL_TEMPLATE, changeEmail, cancelationToken);
                 if (!string.IsNullOrEmpty(template))
                 {
                     SendMailDto sendMailDto = new SendMailDto()
@@ -144,7 +108,7 @@ namespace ACI.HAM.Mail.Services
                 {
                     Url = sendLockoutMailDto.Url
                 };
-                string? template = await LoadMailTemplateAsync(LOCKOUT_TEMPLATE, lockout, cancelationToken);
+                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(LOCKOUT_TEMPLATE, lockout, cancelationToken);
                 if (!string.IsNullOrEmpty(template))
                 {
                     SendMailDto sendMailDto = new SendMailDto()
@@ -228,7 +192,7 @@ namespace ACI.HAM.Mail.Services
         {
             if ((sendPasswordChangeMailDto != null) && (sendPasswordChangeMailDto.To != null))
             {
-                string? template = await LoadMailTemplateAsync(PASSWORD_CHANGE_TEMPLATE, Type.Missing, cancelationToken);
+                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(PASSWORD_CHANGE_TEMPLATE, Type.Missing, cancelationToken);
                 if (!string.IsNullOrEmpty(template))
                 {
                     SendMailDto sendMailDto = new SendMailDto()
@@ -249,7 +213,7 @@ namespace ACI.HAM.Mail.Services
             {
                 Url = sendPasswordResetMailDto.Url
             };
-            string? template = await LoadMailTemplateAsync(PASSWORD_RESET_TEMPLATE, passwordReset, cancelationToken);
+            string? template = await _mailTemplateHelper.LoadMailTemplateAsync(PASSWORD_RESET_TEMPLATE, passwordReset, cancelationToken);
             if (!string.IsNullOrEmpty(template) && !string.IsNullOrEmpty(sendPasswordResetMailDto.To))
             {
                 SendMailDto sendMailDto = new SendMailDto()
@@ -271,7 +235,7 @@ namespace ACI.HAM.Mail.Services
                 {
                     Token = sendTwoFactorMailDto.Token
                 };
-                string? template = await LoadMailTemplateAsync(TWO_FACTOR_TEMPLATE, twoFactor, cancelationToken);
+                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(TWO_FACTOR_TEMPLATE, twoFactor, cancelationToken);
                 if (!string.IsNullOrEmpty(template))
                 {
                     SendMailDto sendMailDto = new SendMailDto()
@@ -292,7 +256,7 @@ namespace ACI.HAM.Mail.Services
             {
                 Url = sendVerifyEmailMailDto.Url
             };
-            string? template = await LoadMailTemplateAsync(VERIFY_EMAIL_TEMPLATE, verifyEmail, cancelationToken);
+            string? template = await _mailTemplateHelper.LoadMailTemplateAsync(VERIFY_EMAIL_TEMPLATE, verifyEmail, cancelationToken);
             if (!string.IsNullOrEmpty(template) && !string.IsNullOrEmpty(sendVerifyEmailMailDto.To))
             {
                 SendMailDto sendMailDto = new SendMailDto()

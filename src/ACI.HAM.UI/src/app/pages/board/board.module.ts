@@ -11,6 +11,10 @@ import { TranslationModule } from '../../modules/i18n/translation.module';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { LanguageModule } from 'src/app/modules/language/language.module';
 
+// ToDo Pau
+import { EditorModule } from 'src/app/modules/editor/editor.module';
+//
+
 @NgModule({
   declarations: [
     BoardListingComponent
@@ -28,6 +32,11 @@ import { LanguageModule } from 'src/app/modules/language/language.module';
       }
     ]),
     CrudModule,
+
+    //ToDo Pau
+    EditorModule,
+    //
+
     LanguageModule,
     SharedModule,
     NgbNavModule,
