@@ -94,7 +94,8 @@ export class RoomType extends Translatable<RoomTypeTranslation>{
       id: this.id,
       name: this.name,
       roomTypeHotelsCompanies: this.getRoomTypeHotelsCompanies(),
-      shortDescription: this.shortDescription
+      shortDescription: this.shortDescription,
+      translations: this.translations
     };
   }
 

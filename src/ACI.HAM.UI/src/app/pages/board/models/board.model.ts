@@ -95,7 +95,8 @@ export class Board extends Translatable<BoardTranslation> {
       id: this.id,
       name: this.name,
       shortDescription: this.shortDescription,
-      boardHotelsCompanies: this.getBoardHotelsCompanies()
+      boardHotelsCompanies: this.getBoardHotelsCompanies(),
+      translations: this.translations
     };
   }
 

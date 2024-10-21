@@ -30,7 +30,16 @@ export class Template extends Translatable<TemplateTranslation> {
   getPayload(): any {
     return {
       id: this.id,
-      name: this.name
+      name: this.name,
+      translations: this.translations
     };
+  }
+
+  public get translationName(): string {
+    return this.getTranslation('name');
+  }
+
+  public set translationName(value: string) {
+    this.setTranslation('name', value, TemplateTranslation);
   }
 }
