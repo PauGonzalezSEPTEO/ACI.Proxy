@@ -634,6 +634,10 @@ export const locale = {
       SELECT_A_CURRENCY: 'Selecciona una divisa...',
       USA_DOLAR: 'Dólar estadounidense'
     },
+    EDITOR: {
+      ENTER_TEMPLATE_NAME: 'Introduce el nombre de la plantilla',
+      LOAD_TEMPLATE: 'Cargar plantilla'
+    },
     ERRORS: {
       ERROR_404: {
         OOPS: '¡Ups!',

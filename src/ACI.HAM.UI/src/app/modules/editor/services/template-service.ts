@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-const API_TEMPLATES_URL = `${environment.apiUrl}/templates`;
+const API_TEMPLATES_URL = `${environment.apiUrl}/mail`;
 
 @Injectable({
     providedIn: 'root'

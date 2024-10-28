@@ -634,6 +634,10 @@ export const locale = {
       SELECT_A_CURRENCY: 'Select a currency...',
       USA_DOLAR: 'USA Dolar'
     },
+    EDITOR: {
+      ENTER_TEMPLATE_NAME: 'Enter template name',
+      LOAD_TEMPLATE: 'Load template'
+    },
     ERRORS: {
       ERROR_404: {
         OOPS: 'Oops!',
