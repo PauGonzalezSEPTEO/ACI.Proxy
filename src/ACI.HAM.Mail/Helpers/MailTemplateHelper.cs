@@ -48,7 +48,7 @@ namespace ACI.HAM.Mail.Helpers
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
             }
             return null;

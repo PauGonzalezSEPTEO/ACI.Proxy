@@ -636,6 +636,7 @@ export const locale = {
     },
     EDITOR: {
       ENTER_TEMPLATE_NAME: 'Enter template name',
+      INSERT_CUSTOM_FIELD: 'Insert custom field',
       LOAD_TEMPLATE: 'Load template'
     },
     ERRORS: {

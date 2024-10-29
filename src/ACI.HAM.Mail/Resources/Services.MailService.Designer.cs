@@ -135,6 +135,15 @@ namespace ACI.HAM.Mail.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Template not found.
+        /// </summary>
+        internal static string Template_not_found {
+            get {
+                return ResourceManager.GetString("Template not found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a The Septeo team..
         /// </summary>
         internal static string The_Septeo_team_ {

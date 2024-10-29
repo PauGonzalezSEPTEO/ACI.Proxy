@@ -636,6 +636,7 @@ export const locale = {
     },
     EDITOR: {
       ENTER_TEMPLATE_NAME: 'Introduce el nombre de la plantilla',
+      INSERT_CUSTOM_FIELD: 'Insertar campo personalizado',
       LOAD_TEMPLATE: 'Cargar plantilla'
     },
     ERRORS: {

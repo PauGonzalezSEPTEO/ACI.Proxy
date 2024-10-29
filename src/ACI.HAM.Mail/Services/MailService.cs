@@ -13,7 +13,7 @@ namespace ACI.HAM.Mail.Services
 {
     public interface IMailService
     {
-        Task<string> GetTemplateByNameAsync(string name, CancellationToken cancelationToken = default);
+        Task<GetTemplateByNameDto> GetTemplateByNameAsync(string name, CancellationToken cancelationToken = default);
 
         Task<bool> SendApiKeyRotationMailAsync(SendApiKeyRotationMailDto sendApiKeyRotationMailDto, CancellationToken cancelationToken = default);
 
@@ -55,9 +55,9 @@ namespace ACI.HAM.Mail.Services
             _mailTemplateHelper = mailTemplateHelper;
         }
 
-        private T? CreateModelByTemplateName<T>(string name) where T : class
+        private async Task<GetTemplateByNameDto> CreateModelAndLoadTemplateByTemplateNameAsync<T>(string name, CancellationToken cancelationToken = default) where T : class
         {
-            return name switch
+            var model = name switch
             {
                 API_KEY_ROTATION_EMAIL_TEMPLATE => new ApiKeyRotation() as T,
                 CHANGE_EMAIL_TEMPLATE => new ChangeEmail() as T,
@@ -68,13 +68,37 @@ namespace ACI.HAM.Mail.Services
                 VERIFY_EMAIL_TEMPLATE => new VerifyEmail() as T,
                 _ => null,
             };
+            List<string>? propertyNames = null;
+            if (model != null)
+            {
+                propertyNames = model?.GetType().GetProperties().Select(p => p.Name).ToList() ?? new List<string>();
+            }
+            var template = await _mailTemplateHelper.LoadMailTemplateAsync(name, model, cancelationToken);
+            return new GetTemplateByNameDto
+            {
+                CustomFields = propertyNames,
+                HTMLContent = template,
+            };
         }
 
-        public async Task<string> GetTemplateByNameAsync(string name, CancellationToken cancelationToken = default)
+        public async Task<GetTemplateByNameDto> GetTemplateByNameAsync(string name, CancellationToken cancelationToken = default)
         {
-            var model = CreateModelByTemplateName<object>(name);
-            var template = await _mailTemplateHelper.LoadMailTemplateAsync(name, model, cancelationToken);
-            return template ?? string.Empty;
+            var result = name switch
+            {
+                API_KEY_ROTATION_EMAIL_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<ApiKeyRotation>(name, cancelationToken),
+                CHANGE_EMAIL_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<ChangeEmail>(name, cancelationToken),
+                LOCKOUT_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<Lockout>(name, cancelationToken),
+                PASSWORD_CHANGE_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<Type>(name, cancelationToken),
+                PASSWORD_RESET_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<PasswordReset>(name, cancelationToken),
+                TWO_FACTOR_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<TwoFactor>(name, cancelationToken),
+                VERIFY_EMAIL_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<VerifyEmail>(name, cancelationToken),
+                _ => null,
+            };
+            if (result == null)
+            {
+                throw new Exception(_localizer["Template not found"]);
+            }
+            return result;
         }
 
         public async Task<bool> SendApiKeyRotationMailAsync(SendApiKeyRotationMailDto sendApiKeyRotationMailDto, CancellationToken cancelationToken = default)

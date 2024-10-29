@@ -177,4 +177,7 @@
   <data name="To avoid any disruptions in accessing our service, we recommend that you generate a new API key before the mentioned date." xml:space="preserve">
     <value>Para evitar interrupciones en el acceso a nuestro servicio, le recomendamos generar una nueva clave API antes de la fecha mencionada.</value>
   </data>
+  <data name="Template not found" xml:space="preserve">
+    <value>Plantilla no encontrada</value>
+  </data>
 </root>
