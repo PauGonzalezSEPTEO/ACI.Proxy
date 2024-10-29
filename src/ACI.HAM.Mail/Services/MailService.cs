@@ -55,17 +55,25 @@ namespace ACI.HAM.Mail.Services
             _mailTemplateHelper = mailTemplateHelper;
         }
 
+        private T? CreateModelByTemplateName<T>(string name) where T : class
+        {
+            return name switch
+            {
+                API_KEY_ROTATION_EMAIL_TEMPLATE => new ApiKeyRotation() as T,
+                CHANGE_EMAIL_TEMPLATE => new ChangeEmail() as T,
+                LOCKOUT_TEMPLATE => new Lockout() as T,
+                PASSWORD_CHANGE_TEMPLATE => Type.Missing as T,
+                PASSWORD_RESET_TEMPLATE => new PasswordReset() as T,
+                TWO_FACTOR_TEMPLATE => new TwoFactor() as T,
+                VERIFY_EMAIL_TEMPLATE => new VerifyEmail() as T,
+                _ => null,
+            };
+        }
+
         public async Task<string> GetTemplateByNameAsync(string name, CancellationToken cancelationToken = default)
         {
-
-            //ToDo Pau
-            ChangeEmail changeEmail = new ChangeEmail()
-            {
-                Url = "localhost"
-            };
-            //
-
-            var template = await _mailTemplateHelper.LoadMailTemplateAsync(name, changeEmail, cancelationToken);
+            var model = CreateModelByTemplateName<object>(name);
+            var template = await _mailTemplateHelper.LoadMailTemplateAsync(name, model, cancelationToken);
             return template ?? string.Empty;
         }
 
