@@ -52,7 +52,7 @@ export class EditorComponent implements OnInit {
   initializeTinyMCE() {
       this.tinymceInitOptions = {
         plugins: 'code',
-        toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code | customFieldMenu',
+        toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | customFieldMenu | code',
         language: this.translate.currentLang,
         setup: (editor: any) => {
             this.editorInstance = editor;

@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TemplateService } from '../services/template-service';
 import { SweetAlertOptions } from 'sweetalert2';
 import { TranslateService } from '@ngx-translate/core';
