@@ -40,6 +40,7 @@ export class Template extends Translatable<TemplateTranslation> {
       id: this.id,
       name: this.name,
       content: this.content,
+      shortDescription: this.shortDescription,
       translations: this.translations
     };
   }
