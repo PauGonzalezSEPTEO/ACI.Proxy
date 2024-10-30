@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { TemplateService } from '../services/template-service';
 import { SweetAlertOptions } from 'sweetalert2';
 import { TranslateService } from '@ngx-translate/core';
-import { Template } from '../models/template.model';
+import { Template, TemplateTranslation } from '../models/template.model';
 import { DataTablesResponse } from 'src/app/shared/models/data-tables-response.model';
 import { AuthService } from 'src/app/modules/auth';
 

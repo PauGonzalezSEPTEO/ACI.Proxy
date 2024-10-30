@@ -2,6 +2,7 @@ using ACI.HAM.Mail.Models;
 using ACI.HAM.Settings;
 using Microsoft.Extensions.Localization;
 using RazorEngineCore;
+using System.Globalization;
 using System.Text;
 
 namespace ACI.HAM.Mail.Helpers
@@ -18,8 +19,10 @@ namespace ACI.HAM.Mail.Helpers
             _uiSettings = uiSettings;
         }
 
-        public async Task<string?> LoadMailTemplateAsync<T>(string mailTemplate, T model, CancellationToken cancelationToken = default)
+        public async Task<string?> LoadMailTemplateAsync<T>(string mailTemplate, T model, string? languageCode = null, CancellationToken cancelationToken = default)
         {
+            CultureInfo originalCulture = CultureInfo.CurrentCulture;
+            CultureInfo originalUICulture = CultureInfo.CurrentUICulture;
             try
             {
                 string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -33,6 +36,17 @@ namespace ACI.HAM.Mail.Helpers
                         streamReader.Close();
                         if (!string.IsNullOrEmpty(mailTemplateContent))
                         {
+                            CultureInfo culture;
+                            if (!string.IsNullOrEmpty(languageCode))
+                            {
+                                culture = new CultureInfo(languageCode);
+                            }
+                            else
+                            {
+                                culture = originalCulture;
+                            }
+                            CultureInfo.CurrentCulture = culture;
+                            CultureInfo.CurrentUICulture = culture;
                             IRazorEngine razorEngine = new RazorEngine();
                             IRazorEngineCompiledTemplate<MailTemplateBaseModel<T>> compiledMailTemplate = await razorEngine.CompileAsync<MailTemplateBaseModel<T>>(mailTemplateContent, builder =>
                             {
@@ -50,6 +64,11 @@ namespace ACI.HAM.Mail.Helpers
             }
             catch
             {
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = originalCulture;
+                CultureInfo.CurrentUICulture = originalUICulture;
             }
             return null;
         }

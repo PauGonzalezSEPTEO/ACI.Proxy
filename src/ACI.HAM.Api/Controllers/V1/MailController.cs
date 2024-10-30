@@ -23,9 +23,9 @@ namespace ACI.HAM.Api.Controllers.V1
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<GetTemplateByNameDto>> GetTemplateByNameAsync(string name, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<GetTemplateByNameDto>> GetTemplateByNameAsync(string name, string languageCode = null, CancellationToken cancellationToken = default)
         {
-            var template = await _mailService.GetTemplateByNameAsync(name, cancellationToken);
+            var template = await _mailService.GetTemplateByNameAsync(name, languageCode, cancellationToken);
             return Ok(template);
         }
 

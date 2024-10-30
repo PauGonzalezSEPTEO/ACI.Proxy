@@ -809,6 +809,7 @@ export const locale = {
       LIST: {
         ADD_TEMPLATE: 'Añadir plantilla',
         CLOSE: 'Cerrar',
+        CONTENT_IS_REQUIRED: 'El contenido es requerido',
         DISCARD: 'Descartar',        
         ERROR: '¡Error!',   
         ID: 'Id',

@@ -13,7 +13,7 @@ namespace ACI.HAM.Mail.Services
 {
     public interface IMailService
     {
-        Task<GetTemplateByNameDto> GetTemplateByNameAsync(string name, CancellationToken cancelationToken = default);
+        Task<GetTemplateByNameDto> GetTemplateByNameAsync(string name, string languageCode, CancellationToken cancelationToken = default);
 
         Task<bool> SendApiKeyRotationMailAsync(SendApiKeyRotationMailDto sendApiKeyRotationMailDto, CancellationToken cancelationToken = default);
 
@@ -55,7 +55,7 @@ namespace ACI.HAM.Mail.Services
             _mailTemplateHelper = mailTemplateHelper;
         }
 
-        private async Task<GetTemplateByNameDto> CreateModelAndLoadTemplateByTemplateNameAsync<T>(string name, CancellationToken cancelationToken = default) where T : class
+        private async Task<GetTemplateByNameDto> CreateModelAndLoadTemplateByTemplateNameAsync<T>(string name, string languageCode, CancellationToken cancelationToken = default) where T : class
         {
             var model = name switch
             {
@@ -73,7 +73,7 @@ namespace ACI.HAM.Mail.Services
             {
                 propertyNames = model?.GetType().GetProperties().Select(p => p.Name).ToList() ?? new List<string>();
             }
-            var template = await _mailTemplateHelper.LoadMailTemplateAsync(name, model, cancelationToken);
+            var template = await _mailTemplateHelper.LoadMailTemplateAsync(name, model, languageCode, cancelationToken);
             return new GetTemplateByNameDto
             {
                 CustomFields = propertyNames,
@@ -81,17 +81,17 @@ namespace ACI.HAM.Mail.Services
             };
         }
 
-        public async Task<GetTemplateByNameDto> GetTemplateByNameAsync(string name, CancellationToken cancelationToken = default)
+        public async Task<GetTemplateByNameDto> GetTemplateByNameAsync(string name, string languageCode, CancellationToken cancelationToken = default)
         {
             var result = name switch
             {
-                API_KEY_ROTATION_EMAIL_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<ApiKeyRotation>(name, cancelationToken),
-                CHANGE_EMAIL_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<ChangeEmail>(name, cancelationToken),
-                LOCKOUT_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<Lockout>(name, cancelationToken),
-                PASSWORD_CHANGE_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<Type>(name, cancelationToken),
-                PASSWORD_RESET_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<PasswordReset>(name, cancelationToken),
-                TWO_FACTOR_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<TwoFactor>(name, cancelationToken),
-                VERIFY_EMAIL_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<VerifyEmail>(name, cancelationToken),
+                API_KEY_ROTATION_EMAIL_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<ApiKeyRotation>(name, languageCode, cancelationToken),
+                CHANGE_EMAIL_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<ChangeEmail>(name, languageCode, cancelationToken),
+                LOCKOUT_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<Lockout>(name, languageCode, cancelationToken),
+                PASSWORD_CHANGE_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<Type>(name, languageCode, cancelationToken),
+                PASSWORD_RESET_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<PasswordReset>(name, languageCode, cancelationToken),
+                TWO_FACTOR_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<TwoFactor>(name, languageCode, cancelationToken),
+                VERIFY_EMAIL_TEMPLATE => await CreateModelAndLoadTemplateByTemplateNameAsync<VerifyEmail>(name, languageCode, cancelationToken),
                 _ => null,
             };
             if (result == null)
@@ -110,7 +110,7 @@ namespace ACI.HAM.Mail.Services
                     Expiration = sendApiKeyRotationMailDto.Expiration,
                     Url = sendApiKeyRotationMailDto.Url
                 };
-                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(API_KEY_ROTATION_EMAIL_TEMPLATE, apiKeyRotation, cancelationToken);
+                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(API_KEY_ROTATION_EMAIL_TEMPLATE, apiKeyRotation, null, cancelationToken);
                 if (!string.IsNullOrEmpty(template))
                 {
                     SendMailDto sendMailDto = new SendMailDto()
@@ -133,7 +133,7 @@ namespace ACI.HAM.Mail.Services
                 {
                     Url = sendChangeEmailMailDto.Url
                 };
-                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(CHANGE_EMAIL_TEMPLATE, changeEmail, cancelationToken);
+                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(CHANGE_EMAIL_TEMPLATE, changeEmail, null, cancelationToken);
                 if (!string.IsNullOrEmpty(template))
                 {
                     SendMailDto sendMailDto = new SendMailDto()
@@ -156,7 +156,7 @@ namespace ACI.HAM.Mail.Services
                 {
                     Url = sendLockoutMailDto.Url
                 };
-                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(LOCKOUT_TEMPLATE, lockout, cancelationToken);
+                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(LOCKOUT_TEMPLATE, lockout, null, cancelationToken);
                 if (!string.IsNullOrEmpty(template))
                 {
                     SendMailDto sendMailDto = new SendMailDto()
@@ -240,7 +240,7 @@ namespace ACI.HAM.Mail.Services
         {
             if ((sendPasswordChangeMailDto != null) && (sendPasswordChangeMailDto.To != null))
             {
-                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(PASSWORD_CHANGE_TEMPLATE, Type.Missing, cancelationToken);
+                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(PASSWORD_CHANGE_TEMPLATE, Type.Missing, null, cancelationToken);
                 if (!string.IsNullOrEmpty(template))
                 {
                     SendMailDto sendMailDto = new SendMailDto()
@@ -261,7 +261,7 @@ namespace ACI.HAM.Mail.Services
             {
                 Url = sendPasswordResetMailDto.Url
             };
-            string? template = await _mailTemplateHelper.LoadMailTemplateAsync(PASSWORD_RESET_TEMPLATE, passwordReset, cancelationToken);
+            string? template = await _mailTemplateHelper.LoadMailTemplateAsync(PASSWORD_RESET_TEMPLATE, passwordReset, null, cancelationToken);
             if (!string.IsNullOrEmpty(template) && !string.IsNullOrEmpty(sendPasswordResetMailDto.To))
             {
                 SendMailDto sendMailDto = new SendMailDto()
@@ -283,7 +283,7 @@ namespace ACI.HAM.Mail.Services
                 {
                     Token = sendTwoFactorMailDto.Token
                 };
-                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(TWO_FACTOR_TEMPLATE, twoFactor, cancelationToken);
+                string? template = await _mailTemplateHelper.LoadMailTemplateAsync(TWO_FACTOR_TEMPLATE, twoFactor, null, cancelationToken);
                 if (!string.IsNullOrEmpty(template))
                 {
                     SendMailDto sendMailDto = new SendMailDto()
@@ -304,7 +304,7 @@ namespace ACI.HAM.Mail.Services
             {
                 Url = sendVerifyEmailMailDto.Url
             };
-            string? template = await _mailTemplateHelper.LoadMailTemplateAsync(VERIFY_EMAIL_TEMPLATE, verifyEmail, cancelationToken);
+            string? template = await _mailTemplateHelper.LoadMailTemplateAsync(VERIFY_EMAIL_TEMPLATE, verifyEmail, null, cancelationToken);
             if (!string.IsNullOrEmpty(template) && !string.IsNullOrEmpty(sendVerifyEmailMailDto.To))
             {
                 SendMailDto sendMailDto = new SendMailDto()

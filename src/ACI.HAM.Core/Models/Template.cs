@@ -13,6 +13,9 @@ namespace ACI.HAM.Core.Models
     public partial class Template : IFilterDto<Template, TemplateDto>, IAuditable
     {
         [Required]
+        public string Content { get; set; }
+
+        [Required]
         [MinLength(4)]
         [MaxLength(256)]
         public string Name { get; set; }

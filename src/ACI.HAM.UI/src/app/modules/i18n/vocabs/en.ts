@@ -806,6 +806,7 @@ export const locale = {
       LIST: {
         ADD_TEMPLATE: 'Add template',
         CLOSE: 'Close',
+        CONTENT_IS_REQUIRED: 'Content is required',
         DISCARD: 'Discard',
         ERROR: 'Error!',
         ID: 'Id',

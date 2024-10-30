@@ -8,11 +8,15 @@ namespace ACI.HAM.Core.Dtos
 
         public TemplateEditableDto(TemplateEditableDto source)
         {
+            Content = source.Content;
             Id = source.Id;
             Name = source.Name;
             ShortDescription = source.ShortDescription;
             Translations = source.Translations;
         }
+
+        [Required(ErrorMessage = "Content is required")]
+        public string Content { get; set; }
 
         public int Id { get; set; }
 

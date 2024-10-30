@@ -4,6 +4,8 @@ namespace ACI.HAM.Core.Dtos
 {
     public class TemplateTranslationDto
     {
+        public string Content { get; set; }
+
         [Required(ErrorMessage = "Language code is required")]
         [MaxLength(10, ErrorMessage = "Language code should have maximum 10 characters")]
         public string LanguageCode { get; set; }

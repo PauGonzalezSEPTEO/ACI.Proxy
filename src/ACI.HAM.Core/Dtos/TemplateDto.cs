@@ -5,6 +5,7 @@ namespace ACI.HAM.Core.Dtos
 {
     public class TemplateDto
     {
+        private string _content;
         private readonly string _languageCode;
         private string _name;
         private string _shortDescription;
@@ -12,6 +13,21 @@ namespace ACI.HAM.Core.Dtos
         public TemplateDto() : this(null) { }
 
         public TemplateDto(string languageCode) => _languageCode = languageCode;
+
+        [Required(ErrorMessage = "Content is required")]
+        public string Content
+        {
+            get
+            {
+                string localizedContent = null;
+                if (!string.IsNullOrEmpty(_languageCode))
+                {
+                    localizedContent = Translations.SingleOrDefault(x => x.LanguageCode == _languageCode)?.Content;
+                }
+                return !string.IsNullOrEmpty(localizedContent) ? localizedContent : _content;
+            }
+            set => _content = value;
+        }
 
         public int Id { get; set; }
 

@@ -7,6 +7,10 @@ namespace ACI.HAM.Core.Models
     [PrimaryKey(nameof(TemplateId), nameof(LanguageCode))]
     public class TemplateTranslation : IAuditable
     {
+        [Required]
+        public string Content { get; set; }
+
+        [Required]
         [StringLength(256)]
         public string Name { get; set; }
 

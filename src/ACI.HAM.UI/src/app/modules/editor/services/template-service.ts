@@ -13,7 +13,9 @@ export class TemplateService {
 
     constructor(private http: HttpClient) { }
 
-    get(name: string): Observable<Template> {
-        return this.http.get<Template>(`${API_TEMPLATES_URL}/get-template-by-name/${name}`);
+    get(name: string, languageCode: string): Observable<Template> {
+        return this.http.get<Template>(`${API_TEMPLATES_URL}/get-template-by-name/${name}`, {
+            params: { languageCode }
+        });
     }
 }

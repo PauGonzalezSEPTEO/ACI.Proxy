@@ -491,8 +491,9 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Templates](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Name] [varchar](256) NOT NULL,
-	[ShortDescription] [varchar](500) NULL
+	[Name] [varchar](256) NULL,
+	[ShortDescription] [varchar](500) NULL,
+  [Content] [nvarchar](max) NOT NULL
  CONSTRAINT [PK_Templates] PRIMARY KEY CLUSTERED
 (
 	[Id] ASC
@@ -506,8 +507,9 @@ GO
 CREATE TABLE [dbo].[TemplateTranslations](
 	[LanguageCode] [varchar](10) NOT NULL,
 	[TemplateId] [int] NOT NULL,
-	[Name] [varchar](50) NULL,
+	[Name] [varchar](50) NOT NULL,
 	[ShortDescription] [varchar](500) NULL,
+  [Content] [nvarchar](max) NOT NULL,
  CONSTRAINT [PK_TemplateTranslations] PRIMARY KEY CLUSTERED
 (
 	[LanguageCode] ASC,
