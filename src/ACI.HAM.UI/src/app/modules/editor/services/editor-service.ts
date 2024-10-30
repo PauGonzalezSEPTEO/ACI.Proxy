@@ -9,7 +9,7 @@ const API_TEMPLATES_URL = `${environment.apiUrl}/mail`;
 @Injectable({
     providedIn: 'root'
 })
-export class TemplateService {
+export class EditorService {
 
     constructor(private http: HttpClient) { }
 
@@ -17,5 +17,9 @@ export class TemplateService {
         return this.http.get<Template>(`${API_TEMPLATES_URL}/get-template-by-name/${name}`, {
             params: { languageCode }
         });
+    }
+
+    getModels(): Observable<string[]> {
+        return this.http.get<string[]>(`${API_TEMPLATES_URL}/get-models`);
     }
 }

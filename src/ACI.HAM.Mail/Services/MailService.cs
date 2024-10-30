@@ -13,6 +13,8 @@ namespace ACI.HAM.Mail.Services
 {
     public interface IMailService
     {
+        string[] GetModels();
+
         Task<GetTemplateByNameDto> GetTemplateByNameAsync(string name, string languageCode, CancellationToken cancelationToken = default);
 
         Task<bool> SendApiKeyRotationMailAsync(SendApiKeyRotationMailDto sendApiKeyRotationMailDto, CancellationToken cancelationToken = default);
@@ -78,6 +80,20 @@ namespace ACI.HAM.Mail.Services
             {
                 CustomFields = propertyNames,
                 HTMLContent = template,
+            };
+        }
+
+        public string[] GetModels()
+        {
+            return new string[]
+            {
+                    API_KEY_ROTATION_EMAIL_TEMPLATE,
+                    CHANGE_EMAIL_TEMPLATE,
+                    LOCKOUT_TEMPLATE,
+                    PASSWORD_CHANGE_TEMPLATE,
+                    PASSWORD_RESET_TEMPLATE,
+                    TWO_FACTOR_TEMPLATE,
+                    VERIFY_EMAIL_TEMPLATE
             };
         }
 

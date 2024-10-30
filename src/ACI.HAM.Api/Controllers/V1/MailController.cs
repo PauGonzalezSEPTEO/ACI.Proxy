@@ -19,6 +19,17 @@ namespace ACI.HAM.Api.Controllers.V1
         }
 
         [HttpGet]
+        [Route("get-models")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult<string[]> GetModels()
+        {
+            var models = _mailService.GetModels();
+            return Ok(models);
+        }
+
+        [HttpGet]
         [Route("get-template-by-name/{name}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]

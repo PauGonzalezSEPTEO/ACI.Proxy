@@ -1,24 +1,12 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { TemplateService } from './services/template-service';
+import { EditorService } from './services/editor-service';
 import { TranslateService } from '@ngx-translate/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-editor',
-  template: `
-    <div class="input-group">
-		  <input type="text" class="form-control" [(ngModel)]="templateName" [placeholder]="'EDITOR.ENTER_TEMPLATE_NAME' | translate">
-			<div class="input-group-append">
-			  <button (click)="loadTemplate($event, templateName)" class="btn btn-secondary" type="button">{{ 'EDITOR.LOAD_TEMPLATE' | translate }}</button>
-			</div>
-		</div>
-    <editor
-      [(ngModel)]="templateContent"
-      (ngModelChange)="onEditorChange($event)"
-      apiKey="z72bhhmoeqv12t5uw13d72wdq76iimivde69bvase42k0fv2"
-      [init]="tinymceInitOptions"
-    ></editor>
-  `,
+  templateUrl: './editor.component.html',
+  styleUrls: ['./editor.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -31,6 +19,7 @@ export class EditorComponent implements ControlValueAccessor, OnInit {
   customFields: { [key: string]: any };
   editorInstance: any;
   @Input() languageCode: string;
+  modelsList: string[];
   @Input() templateContent: string;
   @Output() templateContentChange = new EventEmitter<string>();
   templateName: string
@@ -39,7 +28,7 @@ export class EditorComponent implements ControlValueAccessor, OnInit {
   private onChange: (value: string) => void;
   private onTouched: () => void;
 
-  constructor(private templateService: TemplateService, private cdr: ChangeDetectorRef, private translate: TranslateService) { } 
+  constructor(private editorService: EditorService, private cdr: ChangeDetectorRef, private translate: TranslateService) { } 
 
   createCustomFieldMenu(editor: any) {
     editor.ui.registry.addMenuButton('customfieldmenu', {
@@ -75,9 +64,16 @@ export class EditorComponent implements ControlValueAccessor, OnInit {
       };
   }
 
+  loadModels(): void {
+    this.editorService.getModels().subscribe(models => {
+      this.modelsList = models;
+      this.cdr.detectChanges();
+    });
+  }
+
   loadTemplate(event: Event, templateName: string): void {
     event.preventDefault();
-    this.templateService.get(templateName, this.languageCode).subscribe(template => {
+    this.editorService.get(templateName, this.languageCode).subscribe(template => {
       this.customFields = template.customFields.reduce((fields: { [key: string]: any }, fieldName: string) => {
         fields[fieldName] = `{{${fieldName}}}`;
         return fields;
@@ -92,6 +88,7 @@ export class EditorComponent implements ControlValueAccessor, OnInit {
   }
 
   ngOnInit() {
+    this.loadModels();
     this.initializeTinyMCE();
   }
 
