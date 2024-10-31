@@ -1,15 +1,2 @@
-<div class="scrollable-box">
-    <div class="overflow-box">
-        <ng-select [items]="modelsList" class="form-select form-select-solid form-select-lg"></ng-select>
-    </div>
-</div>
-<div class="input-group">
-    <input type="text" class="form-control" [(ngModel)]="templateName"
-        [placeholder]="'EDITOR.ENTER_TEMPLATE_NAME' | translate">
-    <div class="input-group-append">
-        <button (click)="loadTemplate($event, templateName)" class="btn btn-secondary" type="button">{{
-            'EDITOR.LOAD_TEMPLATE' | translate }}</button>
-    </div>
-</div>
 <editor [(ngModel)]="templateContent" (ngModelChange)="onEditorChange($event)"
     apiKey="z72bhhmoeqv12t5uw13d72wdq76iimivde69bvase42k0fv2" [init]="tinymceInitOptions"></editor>

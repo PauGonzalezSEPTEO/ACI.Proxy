@@ -634,10 +634,10 @@ export const locale = {
       SELECT_A_CURRENCY: 'Select a currency...',
       USA_DOLAR: 'USA Dolar'
     },
-    EDITOR: {
-      ENTER_TEMPLATE_NAME: 'Enter template name',
+    EDITOR: {      
       INSERT_CUSTOM_FIELD: 'Insert custom field',
-      LOAD_TEMPLATE: 'Load template'
+      LOAD_TEMPLATE: 'Load template',
+      SELECT_TEMPLATE_NAME: 'Select template name'
     },
     ERRORS: {
       ERROR_404: {
@@ -806,6 +806,7 @@ export const locale = {
       LIST: {
         ADD_TEMPLATE: 'Add template',
         CLOSE: 'Close',
+        CONTENT: 'Content',
         CONTENT_IS_REQUIRED: 'Content is required',
         DISCARD: 'Discard',
         ERROR: 'Error!',

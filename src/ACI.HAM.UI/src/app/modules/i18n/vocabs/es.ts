@@ -635,9 +635,9 @@ export const locale = {
       USA_DOLAR: 'Dólar estadounidense'
     },
     EDITOR: {
-      ENTER_TEMPLATE_NAME: 'Introduce el nombre de la plantilla',
       INSERT_CUSTOM_FIELD: 'Insertar campo personalizado',
-      LOAD_TEMPLATE: 'Cargar plantilla'
+      LOAD_TEMPLATE: 'Cargar plantilla',
+      SELECT_TEMPLATE_NAME: 'Selecciona el nombre de la plantilla'
     },
     ERRORS: {
       ERROR_404: {
@@ -809,6 +809,7 @@ export const locale = {
       LIST: {
         ADD_TEMPLATE: 'Añadir plantilla',
         CLOSE: 'Cerrar',
+        CONTENT: 'Contenido',
         CONTENT_IS_REQUIRED: 'El contenido es requerido',
         DISCARD: 'Descartar',        
         ERROR: '¡Error!',   
