@@ -102,7 +102,7 @@ namespace ACI.HAM.Core.Profiles
                 .ForMember(x => x.Buildings, opt => opt.MapFrom(x => x.TemplatesBuildings.Select(y => y.BuildingId).ToList()))
                 .ReverseMap()
                 .ForMember(x => x.TemplatesBuildings, opt => opt.MapFrom(x => x.Buildings.Select(y => new TemplateBuilding() { BuildingId = y, TemplateId = x.Id }).ToList()))
-                .ForMember(x => x.TemplateHotelsCompanies, opt => opt.MapFrom(x => x.TemplateHotelsCompanies.Select(y => new BoardHotelCompany() { BoardId = x.Id, CompanyId = y.CompanyId, HotelId = y.HotelId }).ToList()));
+                .ForMember(x => x.TemplateHotelsCompanies, opt => opt.MapFrom(x => x.TemplateHotelsCompanies.Select(y => new TemplateHotelCompany() { TemplateId = x.Id, CompanyId = y.CompanyId, HotelId = y.HotelId }).ToList()));
             CreateMap<Template, TemplateDto>()
                 .ForCtorParam("languageCode", opt => opt.MapFrom(x => languageCode))
                 .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations));

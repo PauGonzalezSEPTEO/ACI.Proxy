@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Observable } from 'rxjs';
@@ -20,7 +20,7 @@ import moment from 'moment';
   templateUrl: './user-listing.component.html',
   styleUrls: ['./user-listing.component.scss']
 })
-export class UserListingComponent implements OnInit, AfterViewInit, OnDestroy {
+export class UserListingComponent implements OnInit, OnDestroy {
 
   isReadOnly = false;
   isCollapsed1 = false;
@@ -112,9 +112,6 @@ export class UserListingComponent implements OnInit, AfterViewInit, OnDestroy {
         .filter(hotel => selectedHotelIds.includes(hotel.id))
         .map(hotel => hotel.id);
     });
-  }
-
-  ngAfterViewInit(): void {
   }
 
   ngOnDestroy(): void {

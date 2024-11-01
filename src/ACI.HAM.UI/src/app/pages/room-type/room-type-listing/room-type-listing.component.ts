@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Observable, Subscription } from 'rxjs';
@@ -19,7 +19,7 @@ import { Company } from '../../company/models/company.model';
   templateUrl: './room-type-listing.component.html',
   styleUrls: ['./room-type-listing.component.scss']
 })
-export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestroy {
+export class RoomTypeListingComponent implements OnInit, OnDestroy {
   isReadOnly = false;
   isCollapsed1 = false;
   isCollapsed2 = true;
@@ -133,9 +133,6 @@ export class RoomTypeListingComponent implements OnInit, AfterViewInit, OnDestro
     }, swalOptions);
     this.cdr.detectChanges();
     this.noticeSwal.fire();
-  }
-  
-  ngAfterViewInit(): void {
   }
 
   ngOnDestroy(): void {

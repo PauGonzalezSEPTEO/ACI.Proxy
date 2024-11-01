@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Observable, Subscription } from 'rxjs';
@@ -19,7 +19,7 @@ import { CompanyService } from '../../company/services/company-service';
   templateUrl: './board-listing.component.html',
   styleUrls: ['./board-listing.component.scss']
 })
-export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {  
+export class BoardListingComponent implements OnInit, OnDestroy {  
   isReadOnly = false;
   isCollapsed1 = false;
   isCollapsed2 = true;
@@ -134,9 +134,6 @@ export class BoardListingComponent implements OnInit, AfterViewInit, OnDestroy {
     }, swalOptions);
     this.cdr.detectChanges();
     this.noticeSwal.fire();
-  }
-  
-  ngAfterViewInit(): void {
   }
 
   ngOnDestroy(): void {

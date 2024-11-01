@@ -13,6 +13,7 @@ namespace ACI.HAM.Core.Dtos
             Name = source.Name;
             ShortDescription = source.ShortDescription;
             Translations = source.Translations;
+            TemplateHotelsCompanies = source.TemplateHotelsCompanies;
         }
 
         public ICollection<int> Buildings { get; set; } = new HashSet<int>();

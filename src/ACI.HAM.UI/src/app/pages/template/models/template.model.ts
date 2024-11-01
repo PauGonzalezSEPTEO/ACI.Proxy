@@ -27,7 +27,6 @@ export class TemplateTranslation extends ITranslation {
 }
 
 export class Template extends Translatable<TemplateTranslation> {
-  boardHotelsCompanies: TemplateHotelCompany[] = [];
   buildings?: number[];
   companies: number[] = [];  
   hotels: number[] = [];
@@ -36,6 +35,7 @@ export class Template extends Translatable<TemplateTranslation> {
   name: string;
   content: string;
   shortDescription?: string;
+  templateHotelsCompanies: TemplateHotelCompany[] = [];
 
   constructor(template?: Template) {
     super(template);
@@ -46,7 +46,7 @@ export class Template extends Translatable<TemplateTranslation> {
       this.name = template.name;
       this.shortDescription = template.shortDescription;
       this.hotelsList = template.hotelsList;
-      this.boardHotelsCompanies = template.boardHotelsCompanies;
+      this.templateHotelsCompanies = template.templateHotelsCompanies;
       this.extractCompaniesAndHotels();
     }
   }
@@ -58,7 +58,7 @@ export class Template extends Translatable<TemplateTranslation> {
   extractCompaniesAndHotels() {
     this.companies = [];
     this.hotels = [];
-    this.boardHotelsCompanies.forEach((item: any) => {
+    this.templateHotelsCompanies.forEach((item: any) => {
       if (item.companyId) {
         this.companies.push(item.companyId);
       }

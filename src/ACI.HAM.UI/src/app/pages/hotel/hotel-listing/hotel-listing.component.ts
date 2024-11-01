@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Observable } from 'rxjs';
@@ -16,7 +16,7 @@ import { AuthService } from 'src/app/modules/auth';
   templateUrl: './hotel-listing.component.html',
   styleUrls: ['./hotel-listing.component.scss']
 })
-export class HotelListingComponent implements OnInit, AfterViewInit, OnDestroy {
+export class HotelListingComponent implements OnInit, OnDestroy {
 
   isReadOnly = false;
   isCollapsed1 = false;
@@ -86,9 +86,6 @@ export class HotelListingComponent implements OnInit, AfterViewInit, OnDestroy {
     }, swalOptions);
     this.cdr.detectChanges();
     this.noticeSwal.fire();
-  }
-  
-  ngAfterViewInit(): void {
   }
 
   ngOnDestroy(): void {

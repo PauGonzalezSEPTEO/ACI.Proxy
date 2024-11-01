@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Observable, Subscription } from 'rxjs';
@@ -19,7 +19,7 @@ import { BuildingService } from '../../building/services/building-service';
   templateUrl: './template-listing.component.html',
   styleUrls: ['./template-listing.component.scss']
 })
-export class TemplateListingComponent implements OnInit, AfterViewInit, OnDestroy {  
+export class TemplateListingComponent implements OnInit, OnDestroy {  
   isReadOnly = false;
   isCollapsed1 = false;
   isCollapsed2 = true;
@@ -68,6 +68,7 @@ export class TemplateListingComponent implements OnInit, AfterViewInit, OnDestro
     this.aTemplate = this.apiService.get(event.id);
     this.aTemplate.subscribe((template: Template) => {
       this.templateModel = new Template(template);
+      this.loadHotelsForSelectedCompanies();   
     });
   }
 
@@ -133,9 +134,6 @@ export class TemplateListingComponent implements OnInit, AfterViewInit, OnDestro
     }, swalOptions);
     this.cdr.detectChanges();
     this.noticeSwal.fire();
-  }
-  
-  ngAfterViewInit(): void {
   }
 
   ngOnDestroy(): void {
