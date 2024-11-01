@@ -48,6 +48,9 @@ namespace ACI.HAM.Core.Models
         public virtual ICollection<RoomTypeHotelCompany> RoomTypeHotelsCompanies { get; } = new List<RoomTypeHotelCompany>();
 
         [InverseProperty("Hotel")]
+        public virtual ICollection<TemplateHotelCompany> TemplateHotelsCompanies { get; } = new List<TemplateHotelCompany>();
+
+        [InverseProperty("Hotel")]
         public virtual ICollection<UserHotelCompany> UserHotelsCompanies { get; } = new List<UserHotelCompany>();
     }
 }

@@ -15,6 +15,8 @@ namespace ACI.HAM.Core.Dtos
             Translations = source.Translations;
         }
 
+        public ICollection<int> Buildings { get; set; } = new HashSet<int>();
+
         [Required(ErrorMessage = "Content is required")]
         public string Content { get; set; }
 
@@ -29,5 +31,7 @@ namespace ACI.HAM.Core.Dtos
         public string ShortDescription { get; set; }
 
         public ICollection<TemplateTranslationDto> Translations { get; set; } = new HashSet<TemplateTranslationDto>();
+
+        public ICollection<TemplateHotelCompanyDto> TemplateHotelsCompanies { get; set; }
     }
 }

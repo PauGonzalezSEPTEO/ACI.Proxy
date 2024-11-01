@@ -94,8 +94,15 @@ namespace ACI.HAM.Core.Profiles
                 .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations));
             CreateMap<TemplateTranslationDto, TemplateTranslation>()
                 .ReverseMap();
-            CreateMap<Template, TemplateEditableDto>()
+            CreateMap<TemplateHotelCompany, TemplateHotelCompanyDto>()
+                .ForMember(x => x.CompanyName, opt => opt.MapFrom(x => x.Company.Name))
+                .ForMember(x => x.HotelName, opt => opt.MapFrom(x => x.Hotel != null ? x.Hotel.Name : null))
                 .ReverseMap();
+            CreateMap<Template, TemplateEditableDto>()
+                .ForMember(x => x.Buildings, opt => opt.MapFrom(x => x.TemplatesBuildings.Select(y => y.BuildingId).ToList()))
+                .ReverseMap()
+                .ForMember(x => x.TemplatesBuildings, opt => opt.MapFrom(x => x.Buildings.Select(y => new TemplateBuilding() { BuildingId = y, TemplateId = x.Id }).ToList()))
+                .ForMember(x => x.TemplateHotelsCompanies, opt => opt.MapFrom(x => x.TemplateHotelsCompanies.Select(y => new BoardHotelCompany() { BoardId = x.Id, CompanyId = y.CompanyId, HotelId = y.HotelId }).ToList()));
             CreateMap<Template, TemplateDto>()
                 .ForCtorParam("languageCode", opt => opt.MapFrom(x => languageCode))
                 .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations));

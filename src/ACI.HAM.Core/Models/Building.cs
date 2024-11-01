@@ -50,5 +50,8 @@ namespace ACI.HAM.Core.Models
 
         [InverseProperty("Building")]
         public virtual ICollection<BuildingTranslation> Translations { get; set; } = new HashSet<BuildingTranslation>();
+
+        [InverseProperty("Building")]
+        public virtual ICollection<TemplateBuilding> TemplatesBuildings { get; set; } = new HashSet<TemplateBuilding>();
     }
 }

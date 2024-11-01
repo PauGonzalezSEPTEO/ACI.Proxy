@@ -122,6 +122,17 @@ namespace ACI.HAM.Core.Data
                 .ToList();
         }
 
+        private List<int> GetUserTemplates()
+        {
+            var userCompanies = GetUserCompanies();
+            var userHotels = GetUserHotels();
+            return Templates
+                .IgnoreQueryFilters()
+                .Where(x => x.TemplateHotelsCompanies.Any(x => userCompanies.Contains(x.CompanyId) && (!x.HotelId.HasValue || userHotels.Contains(x.HotelId.Value))))
+                .Select(x => x.Id)
+                .ToList();
+        }
+
         private List<int> GetUserUserApiKeys()
         {
             var userId = GetUserId();
@@ -382,6 +393,25 @@ namespace ACI.HAM.Core.Data
                     .WithMany(e => e.Translations)
                     .HasForeignKey(e => e.RoomTypeId);
             });
+            modelBuilder.Entity<TemplateHotelCompany>(templateHotelCompany =>
+            {
+                templateHotelCompany.HasKey(e => new { e.Id });
+                templateHotelCompany.HasOne(e => e.Template)
+                    .WithMany(r => r.TemplateHotelsCompanies)
+                    .HasForeignKey(e => e.TemplateId)
+                    .IsRequired();
+                templateHotelCompany.HasOne(e => e.Company)
+                    .WithMany(r => r.TemplateHotelsCompanies)
+                    .HasForeignKey(e => e.CompanyId)
+                    .IsRequired();
+                templateHotelCompany.HasOne(e => e.Hotel)
+                    .WithMany(r => r.TemplateHotelsCompanies)
+                    .HasForeignKey(e => e.HotelId)
+                    .IsRequired(false);
+                templateHotelCompany.HasIndex(e => new { e.TemplateId, e.CompanyId, e.HotelId })
+                    .IsUnique()
+                    .HasDatabaseName("UQ_TemplateHotelCompany");
+            });
             modelBuilder.Entity<Template>(entity =>
             {
                 entity.Property(e => e.Name).IsUnicode(false);
@@ -391,6 +421,20 @@ namespace ACI.HAM.Core.Data
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TemplateTranslations_Templates");
             });
+            modelBuilder.Entity<TemplateBuilding>(entity =>
+            {
+                entity.HasKey(e => new
+                {
+                    e.TemplateId,
+                    e.BuildingId
+                });
+                entity.HasOne(e => e.Template)
+                    .WithMany(e => e.TemplatesBuildings)
+                    .HasForeignKey(e => e.TemplateId);
+                entity.HasOne(e => e.Building)
+                    .WithMany(e => e.TemplatesBuildings)
+                    .HasForeignKey(e => e.BuildingId);
+            });
             modelBuilder.Entity<TemplateTranslation>(entity =>
             {
                 entity.Property(e => e.Name).IsUnicode(false);
@@ -398,7 +442,8 @@ namespace ACI.HAM.Core.Data
             modelBuilder.Entity<Board>().HasQueryFilter(x => !IsAdministrator() || GetUserBoards().Contains(x.Id));
             modelBuilder.Entity<Company>().HasQueryFilter(x => !IsAdministrator() || GetUserCompanies().Contains(x.Id));
             modelBuilder.Entity<Hotel>().HasQueryFilter(x => !IsAdministrator() || GetUserHotels().Contains(x.Id));
-            modelBuilder.Entity<RoomType>().HasQueryFilter(x => !IsAdministrator() || GetUserRoomTypes().Contains(x.Id));            
+            modelBuilder.Entity<RoomType>().HasQueryFilter(x => !IsAdministrator() || GetUserRoomTypes().Contains(x.Id));
+            modelBuilder.Entity<Template>().HasQueryFilter(x => !IsAdministrator() || GetUserTemplates().Contains(x.Id));
             modelBuilder.Entity<UserApiKey>().HasQueryFilter(x => IsApiKeyRequest || !IsAdministrator() || GetUserUserApiKeys().Contains(x.Id));
         }
 
@@ -416,7 +461,11 @@ namespace ACI.HAM.Core.Data
             return await base.SaveChangesAsync(cancellationToken);
         }
 
+        public virtual DbSet<TemplateHotelCompany> TemplateHotelsCompanies { get; set; }
+
         public virtual DbSet<Template> Templates { get; set; }
+
+        public virtual DbSet<TemplateBuilding> TemplatesBuildings { get; set; }
 
         public virtual DbSet<TemplateTranslation> TemplateTranslations { get; set; }
 

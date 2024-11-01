@@ -489,6 +489,20 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+CREATE TABLE [dbo].[TemplatesBuildings](
+	[TemplateId] [int] NOT NULL,
+  [BuildingId] [int] NOT NULL,
+ CONSTRAINT [PK_TemplatesBuildings] PRIMARY KEY CLUSTERED
+(
+	[TemplateId] ASC,
+  [BuildingId] ASC
+)) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 CREATE TABLE [dbo].[Templates](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](256) NULL,
@@ -498,6 +512,23 @@ CREATE TABLE [dbo].[Templates](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TemplateHotelsCompanies]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TemplateHotelsCompanies](
+  Id INT IDENTITY(1,1) PRIMARY KEY,
+	[TemplateId] [int] NOT NULL,
+	[CompanyId] [int] NOT NULL,
+  [HotelId] [int] NULL
+ CONSTRAINT UQ_TemplateHotelCompany UNIQUE ([TemplateId], [CompanyId], [HotelId])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON
+)) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
@@ -721,6 +752,41 @@ GO
 ALTER TABLE [dbo].[BoardsBuildings] CHECK CONSTRAINT [FK_BoardsBuildings_Buildings]
 GO
 
+ALTER TABLE [dbo].[TemplatesBuildings]  WITH CHECK ADD CONSTRAINT [FK_TemplatesBuildings_Templates] FOREIGN KEY([TemplateId])
+REFERENCES [dbo].[Templates] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[TemplatesBuildings] CHECK CONSTRAINT [FK_TemplatesBuildings_Templates]
+GO
+
+ALTER TABLE [dbo].[TemplatesBuildings]  WITH CHECK ADD CONSTRAINT [FK_TemplatesBuildings_Buildings] FOREIGN KEY([BuildingId])
+REFERENCES [dbo].[Buildings] ([Id])
+ON DELETE NO ACTION
+GO
+ALTER TABLE [dbo].[TemplatesBuildings] CHECK CONSTRAINT [FK_TemplatesBuildings_Buildings]
+GO
+
+ALTER TABLE [dbo].[TemplateHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_TemplateHotelsCompanies_Boards] FOREIGN KEY([TemplateId])
+REFERENCES [dbo].[Templates] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[TemplateHotelsCompanies] CHECK CONSTRAINT [FK_TemplateHotelsCompanies_Boards]
+GO
+
+ALTER TABLE [dbo].[TemplateHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_TemplateHotelsCompanies_Companies] FOREIGN KEY([CompanyId])
+REFERENCES [dbo].[Companies] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[TemplateHotelsCompanies] CHECK CONSTRAINT [FK_TemplateHotelsCompanies_Companies]
+GO
+
+ALTER TABLE [dbo].[TemplateHotelsCompanies]  WITH CHECK ADD CONSTRAINT [FK_TemplateHotelsCompanies_Hotels] FOREIGN KEY([HotelId])
+REFERENCES [dbo].[Hotels] ([Id])
+ON DELETE NO ACTION
+GO
+ALTER TABLE [dbo].[TemplateHotelsCompanies] CHECK CONSTRAINT [FK_TemplateHotelsCompanies_Hotels]
+GO
+
 ALTER TABLE [dbo].[TemplateTranslations]  WITH CHECK ADD CONSTRAINT [FK_TemplateTranslations_Templates] FOREIGN KEY([TemplateId])
 REFERENCES [dbo].[Templates] ([Id])
 ON DELETE CASCADE
@@ -756,7 +822,9 @@ GRANT ALL ON BoardsBuildings TO [user];
 GRANT ALL ON Buildings TO [user];
 GRANT ALL ON BuildingTranslations TO [user];
 GRANT ALL ON Templates TO [user];
+GRANT ALL ON TemplateHotelsCompanies TO [user];
 GRANT ALL ON TemplateTranslations TO [user];
+GRANT ALL ON TemplatesBuildings TO [user];
 GRANT ALL ON UserApiKeys TO [user];
 GRANT ALL ON UserHotelsCompanies TO [user];
 

@@ -40,5 +40,11 @@ namespace ACI.HAM.Core.Models
 
         [InverseProperty("Template")]
         public virtual ICollection<TemplateTranslation> Translations { get; set; } = new HashSet<TemplateTranslation>();
+
+        [InverseProperty("Template")]
+        public virtual ICollection<TemplateHotelCompany> TemplateHotelsCompanies { get; } = new List<TemplateHotelCompany>();
+
+        [InverseProperty("Template")]
+        public virtual ICollection<TemplateBuilding> TemplatesBuildings { get; set; } = new HashSet<TemplateBuilding>();
     }
 }
