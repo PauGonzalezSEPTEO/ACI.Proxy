@@ -10,7 +10,8 @@ export const environment = {
   apiAccountsRelativeUrl: 'accounts',
   apiAuthenticationRelativeUrl: 'authentication',  
   appAPIUrl: 'https://preview.keenthemes.com/metronic8/angular/docs/changelog',
-  register: true
+  register: true,
+  tinymceApiKey: 'z72bhhmoeqv12t5uw13d72wdq76iimivde69bvase42k0fv2'
 };
 
 /*

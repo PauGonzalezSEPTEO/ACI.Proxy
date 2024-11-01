@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } fro
 import { EditorService } from './services/editor-service';
 import { TranslateService } from '@ngx-translate/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-editor',
@@ -16,6 +17,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ]
 })
 export class EditorComponent implements ControlValueAccessor, OnInit {
+  tinymceApiKey = environment.tinymceApiKey;
   customFields: { [key: string]: string };
   editorInstance: any;
   @Input() languageCode: string;

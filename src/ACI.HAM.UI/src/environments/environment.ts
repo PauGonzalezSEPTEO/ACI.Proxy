@@ -11,7 +11,8 @@ export const environment = {
   apiAuthenticationRelativeUrl: 'authentication',
   appAPIUrl:
     'http://localhost:5000/swagger/index.html',
-  register: true
+  register: true,
+  tinymceApiKey: 'z72bhhmoeqv12t5uw13d72wdq76iimivde69bvase42k0fv2'
 };
 
 /*
