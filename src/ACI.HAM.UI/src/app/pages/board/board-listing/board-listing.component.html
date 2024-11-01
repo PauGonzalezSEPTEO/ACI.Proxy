@@ -202,8 +202,11 @@
             <!--end::Select-->
           </div>
           <!--end::Input group-->
+          <!--begin::Input group-->
           <div class="mb-7">
+            <!--begin::Label-->
             <label class="fw-semibold fs-6 mb-5" [translate]="'BOARDS.LIST.BUILDINGS'"></label>
+            <!--end::Label-->
             <div *ngFor="let building of (buildings$ | async); let last = last">
               <div class="d-flex fv-row">
                 <div class="form-check">
@@ -224,6 +227,7 @@
               <div *ngIf="!last" class="separator separator-dashed my-5"></div>
             </div>
           </div>          
+          <!--end::Input group-->
         </div>
         <!--end::Board form-->
       </div>

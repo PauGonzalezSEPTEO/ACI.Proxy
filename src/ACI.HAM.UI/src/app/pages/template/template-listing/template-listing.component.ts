@@ -1,13 +1,18 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { TemplateService } from '../services/template-service';
 import { SweetAlertOptions } from 'sweetalert2';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Template } from '../models/template.model';
 import { DataTablesResponse } from 'src/app/shared/models/data-tables-response.model';
 import { AuthService } from 'src/app/modules/auth';
+import { Building } from '../../building/models/building.model';
+import { Company } from '../../company/models/company.model';
+import { CompanyService } from '../../company/services/company-service';
+import { HotelService } from '../../hotel/services/hotel-service';
+import { BuildingService } from '../../building/services/building-service';
 
 @Component({
   selector: 'app-template-listing',
@@ -29,10 +34,16 @@ export class TemplateListingComponent implements OnInit, AfterViewInit, OnDestro
   @ViewChild('noticeSwal')
   noticeSwal!: SwalComponent;
   swalOptions: SweetAlertOptions = {};
+  buildings$: Observable<Building[]>;
+  buildingsSubscription: Subscription;
+  companiesList: Company[] | null = null;
 
   constructor(
     private apiService: TemplateService,
+    private buildingService: BuildingService,
     public authService: AuthService,
+    private companyService: CompanyService,        
+    private hotelService: HotelService,    
     private cdr: ChangeDetectorRef,
     private translate: TranslateService
   ) { }
@@ -78,6 +89,32 @@ export class TemplateListingComponent implements OnInit, AfterViewInit, OnDestro
     return text;
   }
 
+  loadBuildingsForHotels() {
+    const hotelIds = this.templateModel.getRelevantHotelIds();
+    this.buildings$ = this.buildingService.getByHotelIds(hotelIds, this.translate.currentLang);
+    if (this.buildingsSubscription) {
+      this.buildingsSubscription.unsubscribe();
+    }
+    this.buildingsSubscription = this.buildings$.subscribe(newBuildings => {
+      const newBuildingIds = newBuildings.map(building => building.id);
+      if (this.templateModel.buildings) {
+        this.templateModel.buildings = this.templateModel.buildings.filter(buildingId => newBuildingIds.includes(buildingId));
+      }
+    });
+  }
+
+  loadHotelsForSelectedCompanies() {
+    const selectedCompanyIds = this.templateModel.companies;
+    this.hotelService.getByCompanyIds(selectedCompanyIds).subscribe(hotels => {
+      const selectedHotelIds = this.templateModel.hotels;
+      this.templateModel.hotelsList = hotels
+      this.templateModel.hotels = hotels
+        .filter(hotel => selectedHotelIds.includes(hotel.id))
+        .map(hotel => hotel.id);
+      this.loadBuildingsForHotels();     
+    });
+  }
+
   removeTranslations() {
     this.templateModel.removeTranslations();
   }
@@ -106,6 +143,12 @@ export class TemplateListingComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnInit(): void {
+    this.translate.onLangChange.subscribe((_event: LangChangeEvent) => {
+      this.loadBuildingsForHotels();
+    });
+    this.companyService.search('', '', this.translate.currentLang).subscribe((companies: Company[]) => {
+      this.companiesList = companies;
+    });     
     this.datatableConfig = {
       serverSide: true,
       ajax: (dataTablesParameters: any, callback) => {
@@ -145,6 +188,18 @@ export class TemplateListingComponent implements OnInit, AfterViewInit, OnDestro
         $('td:eq(0)', row).addClass('d-flex align-items-center');
       }
     };   
+  }
+
+  onChange($event: any, building: number) {
+    this.templateModel.updateBuilding(building, $event.target.checked);
+  }
+
+  onCompaniesChange() {
+    this.loadHotelsForSelectedCompanies();
+  }
+
+  onHotelsChange() {
+    this.loadBuildingsForHotels();
   }
 
   onSubmit(_event: Event, myForm: NgForm) {

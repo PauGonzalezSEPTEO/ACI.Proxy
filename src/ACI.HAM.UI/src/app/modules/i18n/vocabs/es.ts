@@ -808,11 +808,14 @@ export const locale = {
     TEMPLATES: {
       LIST: {
         ADD_TEMPLATE: 'Añadir plantilla',
+        BUILDINGS: 'Edificios',
         CLOSE: 'Cerrar',
+        COMPANIES: 'Compañías',
         CONTENT: 'Contenido',
         CONTENT_IS_REQUIRED: 'El contenido es requerido',
         DISCARD: 'Descartar',        
         ERROR: '¡Error!',   
+        HOTELS: 'Hoteles',     
         ID: 'Id',
         LANGUAGE: 'Idioma',        
         NAME: 'Nombre',

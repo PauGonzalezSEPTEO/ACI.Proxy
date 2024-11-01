@@ -805,11 +805,14 @@ export const locale = {
     TEMPLATES: {
       LIST: {
         ADD_TEMPLATE: 'Add template',
+        BUILDINGS: 'Buildings',        
         CLOSE: 'Close',
+        COMPANIES: 'Companies',
         CONTENT: 'Content',
         CONTENT_IS_REQUIRED: 'Content is required',
         DISCARD: 'Discard',
         ERROR: 'Error!',
+        HOTELS: 'Hotels',
         ID: 'Id',
         LANGUAGE: 'Language',
         NAME: 'Name',
