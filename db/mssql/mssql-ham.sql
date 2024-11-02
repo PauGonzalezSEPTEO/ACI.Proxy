@@ -272,14 +272,14 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ApiUsageStatistics]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UserApiUsageStatistics]') AND type in (N'U'))
 BEGIN
-CREATE TABLE [dbo].[ApiUsageStatistics] (
+CREATE TABLE [dbo].[UserApiUsageStatistics] (
     [Id] [int] IDENTITY(1,1) NOT NULL,
     [UserId] [nvarchar](450) NOT NULL,
     [ApiRoute] [varchar](512) NOT NULL,
     [RequestTime] [DATETIMEOFFSET] (7) NOT NULL
- CONSTRAINT [PK_ApiUsageStatistics] PRIMARY KEY CLUSTERED
+ CONSTRAINT [PK_UserApiUsageStatistics] PRIMARY KEY CLUSTERED
 (
 	[Id] ASC
 )) ON [PRIMARY]
@@ -679,11 +679,11 @@ GO
 INSERT [dbo].[RoomTypesBuildings] ([RoomTypeId], [BuildingId]) VALUES (1, 1)
 GO
 
-ALTER TABLE [dbo].[ApiUsageStatistics]  WITH CHECK ADD CONSTRAINT [FK_ApiUsageStatistics_AspNetUsers] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[UserApiUsageStatistics]  WITH CHECK ADD CONSTRAINT [FK_UserApiUsageStatistics_AspNetUsers] FOREIGN KEY([UserId])
 REFERENCES [dbo].[AspNetUsers] ([Id])
 ON DELETE CASCADE
 GO
-ALTER TABLE [dbo].[ApiUsageStatistics] CHECK CONSTRAINT [FK_ApiUsageStatistics_AspNetUsers]
+ALTER TABLE [dbo].[UserApiUsageStatistics] CHECK CONSTRAINT [FK_UserApiUsageStatistics_AspNetUsers]
 GO
 
 ALTER TABLE [dbo].[Hotels]  WITH CHECK ADD CONSTRAINT [FK_Hotels_Companies] FOREIGN KEY([CompanyId])
@@ -876,7 +876,6 @@ CREATE LOGIN [user] WITH PASSWORD = '.acisa159753'
 
 CREATE USER [user] FOR LOGIN [user] WITH DEFAULT_SCHEMA=[dbo]
 
-GRANT ALL ON ApiUsageStatistics TO [user];
 GRANT ALL ON AuditEntries TO [user];
 GRANT ALL ON Companies TO [user];
 GRANT ALL ON Hotels TO [user];
@@ -895,6 +894,7 @@ GRANT ALL ON TemplateHotelsCompanies TO [user];
 GRANT ALL ON TemplateTranslations TO [user];
 GRANT ALL ON TemplatesBuildings TO [user];
 GRANT ALL ON UserApiKeys TO [user];
+GRANT ALL ON UserApiUsageStatistics TO [user];
 GRANT ALL ON UserHotelsCompanies TO [user];
 
 END

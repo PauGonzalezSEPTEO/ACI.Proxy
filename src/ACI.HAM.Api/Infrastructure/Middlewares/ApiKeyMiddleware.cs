@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text.RegularExpressions;
 using ACI.HAM.Core.Data;
 using ACI.HAM.Core.Extensions;
+using ACI.HAM.Core.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -112,6 +113,14 @@ namespace ACI.HAM.Core.Infrastructure.Middlewares
                 var identity = new ClaimsIdentity(claims, "ApiKey");
                 var principal = new ClaimsPrincipal(identity);
                 context.User = principal;
+                var userApiUsageStatistic = new UserApiUsageStatistic
+                {
+                    UserId = userApiKey.User.Id,
+                    ApiRoute = path,
+                    RequestTime = DateTimeOffset.Now
+                };
+                baseContext.UserApiUsageStatistics.Add(userApiUsageStatistic);
+                await baseContext.SaveChangesAsync();
             }
             await _next(context);
         }

@@ -13,9 +13,6 @@ namespace ACI.HAM.Core.Models
     {
         public bool? AllowCommercialMail { get; set; }
 
-        [InverseProperty("User")]
-        public virtual ICollection<ApiUsageStatistic> ApiUsageStatistics { get; } = new List<ApiUsageStatistic>();
-
         public string Avatar { get; set; }
 
         public bool? CommunicationByMail { get; set; }
@@ -69,6 +66,9 @@ namespace ACI.HAM.Core.Models
 
         [InverseProperty("User")]
         public virtual ICollection<UserApiKey> UserApiKeys { get; } = new List<UserApiKey>();
+
+        [InverseProperty("User")]
+        public virtual ICollection<UserApiUsageStatistic> UserApiUsageStatistics { get; } = new List<UserApiUsageStatistic>();
 
         [InverseProperty("User")]
         public virtual ICollection<UserHotelCompany> UserHotelsCompanies { get; } = new List<UserHotelCompany>();

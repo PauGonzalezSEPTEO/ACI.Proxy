@@ -19,8 +19,6 @@ namespace ACI.HAM.Core.Data
 
         public virtual DbSet<RoleTranslation> AspNetRoleTranslations { get; set; }
 
-        public virtual DbSet<ApiUsageStatistic> ApiUsageStatistics { get; set; }
-
         public virtual DbSet<AuditEntry> AuditEntries { get; set; }
 
         public virtual DbSet<BoardHotelCompany> BoardHotelsCompanies { get; set; }
@@ -36,16 +34,6 @@ namespace ACI.HAM.Core.Data
         public virtual DbSet<BuildingTranslation> BuildingTranslations { get; set; }
 
         public virtual DbSet<Company> Companies { get; set; }
-
-        private List<int> GetApiUsageStatistics()
-        {
-            var userId = GetUserId();
-            return ApiUsageStatistics
-                .IgnoreQueryFilters()
-                .Where(x => x.UserId == userId)
-                .Select(x => x.Id)
-                .ToList();
-        }
 
         public Func<ClaimsPrincipal> GetUser { get; set; }
 
@@ -149,6 +137,16 @@ namespace ACI.HAM.Core.Data
         {
             var userId = GetUserId();
             return UserApiKeys
+                .IgnoreQueryFilters()
+                .Where(x => x.UserId == userId)
+                .Select(x => x.Id)
+                .ToList();
+        }
+
+        private List<int> GetUserUserApiUsageStatistics()
+        {
+            var userId = GetUserId();
+            return UserApiUsageStatistics
                 .IgnoreQueryFilters()
                 .Where(x => x.UserId == userId)
                 .Select(x => x.Id)
@@ -451,13 +449,13 @@ namespace ACI.HAM.Core.Data
             {
                 entity.Property(e => e.Name).IsUnicode(false);
             });
-            modelBuilder.Entity<ApiUsageStatistic>().HasQueryFilter(x => IsApiKeyRequest || !IsAdministrator() || GetApiUsageStatistics().Contains(x.Id));
             modelBuilder.Entity<Board>().HasQueryFilter(x => !IsAdministrator() || GetUserBoards().Contains(x.Id));
             modelBuilder.Entity<Company>().HasQueryFilter(x => !IsAdministrator() || GetUserCompanies().Contains(x.Id));
             modelBuilder.Entity<Hotel>().HasQueryFilter(x => !IsAdministrator() || GetUserHotels().Contains(x.Id));
             modelBuilder.Entity<RoomType>().HasQueryFilter(x => !IsAdministrator() || GetUserRoomTypes().Contains(x.Id));
             modelBuilder.Entity<Template>().HasQueryFilter(x => !IsAdministrator() || GetUserTemplates().Contains(x.Id));
             modelBuilder.Entity<UserApiKey>().HasQueryFilter(x => IsApiKeyRequest || !IsAdministrator() || GetUserUserApiKeys().Contains(x.Id));
+            modelBuilder.Entity<UserApiUsageStatistic>().HasQueryFilter(x => IsApiKeyRequest || !IsAdministrator() || GetUserUserApiUsageStatistics().Contains(x.Id));
         }
 
         public virtual DbSet<RoomTypeHotelCompany> RoomTypeHotelsCompanies { get; set; }
@@ -483,6 +481,8 @@ namespace ACI.HAM.Core.Data
         public virtual DbSet<TemplateTranslation> TemplateTranslations { get; set; }
 
         public virtual DbSet<UserApiKey> UserApiKeys { get; set; }
+
+        public virtual DbSet<UserApiUsageStatistic> UserApiUsageStatistics { get; set; }
 
         public virtual DbSet<UserHotelCompany> UserHotelsCompanies { get; set; }
     }

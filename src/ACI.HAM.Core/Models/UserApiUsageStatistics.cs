@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ACI.HAM.Core.Models
 {
     [PrimaryKey(nameof(Id))]
-    public class ApiUsageStatistic : IAuditable
+    public class UserApiUsageStatistic : IAuditable
     {
         [Required]
         [MaxLength(512)]
@@ -18,7 +18,7 @@ namespace ACI.HAM.Core.Models
         [Required]
         public DateTimeOffset RequestTime { get; set; }
 
-        [InverseProperty("ApiUsageStatistics")]
+        [InverseProperty("UserApiUsageStatistics")]
         public virtual User User { get; set; }
 
         [Required]
