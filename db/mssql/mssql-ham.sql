@@ -250,6 +250,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AuditEntries]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[AuditEntries](
   [ActionType] [int] NOT NULL,
 	[EntityName] [nvarchar](MAX) NOT NULL,
@@ -263,12 +265,33 @@ CREATE TABLE [dbo].[AuditEntries](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ApiUsageStatistics]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[ApiUsageStatistics] (
+    [Id] [int] IDENTITY(1,1) NOT NULL,
+    [UserId] [nvarchar](450) NOT NULL,
+    [ApiRoute] [varchar](512) NOT NULL,
+    [RequestTime] [DATETIMEOFFSET] (7) NOT NULL
+ CONSTRAINT [PK_ApiUsageStatistics] PRIMARY KEY CLUSTERED
+(
+	[Id] ASC
+)) ON [PRIMARY]
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Companies]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[Companies](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](256) NOT NULL
@@ -276,12 +299,15 @@ CREATE TABLE [dbo].[Companies](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Hotels]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[Hotels](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](256) NOT NULL,
@@ -290,6 +316,7 @@ CREATE TABLE [dbo].[Hotels](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
@@ -336,6 +363,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RoomTypes]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[RoomTypes](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](256) NOT NULL,
@@ -344,6 +373,7 @@ CREATE TABLE [dbo].[RoomTypes](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
@@ -367,6 +397,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RoomTypeTranslations]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[RoomTypeTranslations](
 	[LanguageCode] [varchar](10) NOT NULL,
 	[RoomTypeId] [int] NOT NULL,
@@ -377,12 +409,15 @@ CREATE TABLE [dbo].[RoomTypeTranslations](
 	[LanguageCode] ASC,
   [RoomTypeId] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Boards]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[Boards](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](256) NOT NULL,
@@ -391,6 +426,7 @@ CREATE TABLE [dbo].[Boards](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
@@ -414,6 +450,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[BoardTranslations]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[BoardTranslations](
 	[LanguageCode] [varchar](10) NOT NULL,
 	[BoardId] [int] NOT NULL,
@@ -424,12 +462,15 @@ CREATE TABLE [dbo].[BoardTranslations](
 	[LanguageCode] ASC,
   [BoardId] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Buildings]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[Buildings](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](256) NOT NULL,
@@ -439,12 +480,15 @@ CREATE TABLE [dbo].[Buildings](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[BuildingTranslations]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[BuildingTranslations](
 	[LanguageCode] [varchar](10) NOT NULL,
 	[BuildingId] [int] NOT NULL,
@@ -455,12 +499,15 @@ CREATE TABLE [dbo].[BuildingTranslations](
 	[LanguageCode] ASC,
   [BuildingId] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RoomTypesBuildings]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[RoomTypesBuildings](
 	[RoomTypeId] [int] NOT NULL,
   [BuildingId] [int] NOT NULL,
@@ -469,12 +516,15 @@ CREATE TABLE [dbo].[RoomTypesBuildings](
 	[RoomTypeId] ASC,
   [BuildingId] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[BoardsBuildings]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[BoardsBuildings](
 	[BoardId] [int] NOT NULL,
   [BuildingId] [int] NOT NULL,
@@ -483,12 +533,15 @@ CREATE TABLE [dbo].[BoardsBuildings](
 	[BoardId] ASC,
   [BuildingId] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TemplatesBuildings]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[TemplatesBuildings](
 	[TemplateId] [int] NOT NULL,
   [BuildingId] [int] NOT NULL,
@@ -497,12 +550,15 @@ CREATE TABLE [dbo].[TemplatesBuildings](
 	[TemplateId] ASC,
   [BuildingId] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Templates]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[Templates](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](256) NULL,
@@ -512,6 +568,7 @@ CREATE TABLE [dbo].[Templates](
 (
 	[Id] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET ANSI_NULLS ON
@@ -535,6 +592,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TemplateTranslations]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[TemplateTranslations](
 	[LanguageCode] [varchar](10) NOT NULL,
 	[TemplateId] [int] NOT NULL,
@@ -546,6 +605,7 @@ CREATE TABLE [dbo].[TemplateTranslations](
 	[LanguageCode] ASC,
   [TemplateId] ASC
 )) ON [PRIMARY]
+END
 GO
 
 SET IDENTITY_INSERT [dbo].[Companies] ON
@@ -617,6 +677,13 @@ INSERT [dbo].[BuildingTranslations] ([LanguageCode], [BuildingId], [Name]) VALUE
 GO
 
 INSERT [dbo].[RoomTypesBuildings] ([RoomTypeId], [BuildingId]) VALUES (1, 1)
+GO
+
+ALTER TABLE [dbo].[ApiUsageStatistics]  WITH CHECK ADD CONSTRAINT [FK_ApiUsageStatistics_AspNetUsers] FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[ApiUsageStatistics] CHECK CONSTRAINT [FK_ApiUsageStatistics_AspNetUsers]
 GO
 
 ALTER TABLE [dbo].[Hotels]  WITH CHECK ADD CONSTRAINT [FK_Hotels_Companies] FOREIGN KEY([CompanyId])
@@ -809,6 +876,8 @@ CREATE LOGIN [user] WITH PASSWORD = '.acisa159753'
 
 CREATE USER [user] FOR LOGIN [user] WITH DEFAULT_SCHEMA=[dbo]
 
+GRANT ALL ON ApiUsageStatistics TO [user];
+GRANT ALL ON AuditEntries TO [user];
 GRANT ALL ON Companies TO [user];
 GRANT ALL ON Hotels TO [user];
 GRANT ALL ON RoomTypes TO [user];

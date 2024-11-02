@@ -13,6 +13,9 @@ namespace ACI.HAM.Core.Models
     {
         public bool? AllowCommercialMail { get; set; }
 
+        [InverseProperty("User")]
+        public virtual ICollection<ApiUsageStatistic> ApiUsageStatistics { get; } = new List<ApiUsageStatistic>();
+
         public string Avatar { get; set; }
 
         public bool? CommunicationByMail { get; set; }
