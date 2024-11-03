@@ -59,6 +59,15 @@ export class AccountService implements OnDestroy {
     );
   }
 
+  getLastHourUserApiUsageStatistics(): Observable<any> {
+    return this.accountHttpService.getLastHourUserApiUsageStatistics().pipe(
+      catchError((err) => {
+        console.error('err', err);
+        return of(err);
+      })
+    );
+  }
+
   readUserApiKeysDataTable(params: any, languageCode: string): Observable<DataTablesResponse> {
     return this.accountHttpService.readUserApiKeysDataTable(params, languageCode).pipe(
       catchError((err) => {

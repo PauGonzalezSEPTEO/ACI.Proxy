@@ -23,6 +23,8 @@ namespace ACI.HAM.Core.Services
 
         Task<AccountResultDto> GetAccountAsync(string id, CancellationToken cancellationToken = default);
 
+        Task<List<UserApiUsageStatisticDto>> GetLastHourUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
         Task<DataTablesResult<UserApiKeyDto>> ReadUserApiKeysDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default);
 
         Task<UserApiKeyDto> RevokeUserApiKeysByIdAsync(int id, CancellationToken cancellationToken = default);
@@ -125,6 +127,24 @@ namespace ACI.HAM.Core.Services
             AccountResultDto readEditableResultDto = new AccountResultDto();
             User user = await _userManager.FindByNameAsync(id);
             return GetProfileDetails(user);
+        }
+
+        public async Task<List<UserApiUsageStatisticDto>> GetLastHourUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
+        {
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddHours(-1), cancellationToken);
+        }
+
+        private async Task<List<UserApiUsageStatisticDto>> GetUserApiUsageStatisticsAsync(DateTimeOffset fromDate, CancellationToken cancellationToken = default)
+        {
+            return await _baseContext.UserApiUsageStatistics
+                .Where(x => x.RequestTime >= fromDate)
+                .GroupBy(x => x.RequestTime.Date)
+                .Select(x => new UserApiUsageStatisticDto
+                {
+                    Date = x.Key,
+                    Count = x.Count()
+                }) 
+                .ToListAsync();
         }
 
         public async Task<DataTablesResult<UserApiKeyDto>> ReadUserApiKeysDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default)

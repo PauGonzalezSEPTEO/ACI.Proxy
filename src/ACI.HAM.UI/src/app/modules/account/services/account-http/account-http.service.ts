@@ -27,6 +27,9 @@ export class AccountHTTPService {
     return this.http.get<AccountModel>(`${API_ACCOUNTS_URL}/me`);
   }
 
+  getLastHourUserApiUsageStatistics(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_ACCOUNTS_URL}/get-last-hour-user-api-usage-statistics`);
+  }
   
   readUserApiKeysDataTable(params: any, languageCode: string): Observable<DataTablesResponse> {
     const httpParams = new HttpParams()

@@ -48,6 +48,16 @@ namespace ACI.HAM.Api.Controllers.V1
             }
         }
 
+        [HttpGet("get-last-hour-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLastHourUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLastHourUserApiUsageStatisticsAsync();
+            return Ok(userApiUsageStatistics);
+        }
+
         [HttpGet]
         [Route("me")]
         [MapToApiVersion("1.0")]

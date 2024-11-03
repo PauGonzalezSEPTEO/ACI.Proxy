@@ -1,14 +1,20 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import * as am4core from "@amcharts/amcharts4/core";
+import * as am4charts from "@amcharts/amcharts4/charts";
+import * as am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import moment from 'moment';
+
+am4core.useTheme(am4themes_animated.default);
 
 @Component({
   selector: 'app-api-keys',
   templateUrl: './api-keys.component.html',
 })
-export class ApiKeysComponent implements OnInit {
+export class ApiKeysComponent implements OnInit, OnDestroy {
   apiKey?: string;
+  private chart: am4charts.XYChart;
   datatableConfig: DataTables.Settings = {};
   // Reload emitter inside datatable
   reloadEvent: EventEmitter<boolean> = new EventEmitter();  
@@ -35,6 +41,19 @@ export class ApiKeysComponent implements OnInit {
     });
   }
 
+  private createChart() {
+    this.chart = am4core.create("chart", am4charts.XYChart);
+    this.chart.xAxes.push(new am4charts.DateAxis());
+    this.chart.yAxes.push(new am4charts.ValueAxis());
+    let series = this.chart.series.push(new am4charts.LineSeries());
+    series.dataFields.valueY = "value";
+    series.dataFields.dateX = "date";
+    series.tooltipText = "{value}"
+    this.chart.scrollbarX = new am4core.Scrollbar();
+    this.chart.cursor = new am4charts.XYCursor();
+    this.updateChart();
+  }
+
   delete(id: number) {
     this.accountService.deleteUserApiKey(id).subscribe(() => {
       this.reloadEvent.emit(true);
@@ -42,6 +61,7 @@ export class ApiKeysComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.createChart();
     var that = this;
     const capitalizeFirstLetter = (string: string) => {
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -99,9 +119,24 @@ export class ApiKeysComponent implements OnInit {
     };       
   };
 
+  ngOnDestroy() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  }
+
   revoke(id: number) {
     this.accountService.revokeUserApiKey(id).subscribe(() => {
       this.reloadEvent.emit(true);
+    });
+  }
+
+  private updateChart() {
+    this.accountService.getLastHourUserApiUsageStatistics().subscribe(data => {
+
+        //TODO: update chart data
+        console.log(data);    
+
     });
   }
 }
