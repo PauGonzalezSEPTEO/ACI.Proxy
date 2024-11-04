@@ -61,6 +61,15 @@ namespace ACI.HAM.Core.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Unsupported time interval.
+        /// </summary>
+        internal static string Unsupported_time_interval {
+            get {
+                return ResourceManager.GetString("Unsupported time interval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a User does not exist.
         /// </summary>
         internal static string User_does_not_exist {

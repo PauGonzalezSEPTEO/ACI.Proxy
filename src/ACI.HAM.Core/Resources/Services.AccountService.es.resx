@@ -120,4 +120,7 @@
   <data name="User does not exist" xml:space="preserve">
     <value>El usuario no existe</value>
   </data>
+  <data name="Unsupported time interval" xml:space="preserve">
+    <value>Intervalo de tiempo no soportado</value>
+  </data>
 </root>

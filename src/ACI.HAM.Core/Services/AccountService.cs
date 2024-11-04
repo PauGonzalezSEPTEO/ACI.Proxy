@@ -23,7 +23,27 @@ namespace ACI.HAM.Core.Services
 
         Task<AccountResultDto> GetAccountAsync(string id, CancellationToken cancellationToken = default);
 
+        Task<List<UserApiUsageStatisticDto>> GetLast12HoursUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
+        Task<List<UserApiUsageStatisticDto>> GetLast14DaysUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
+        Task<List<UserApiUsageStatisticDto>> GetLast3HoursUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
+        Task<List<UserApiUsageStatisticDto>> GetLast3MonthsUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
+        Task<List<UserApiUsageStatisticDto>> GetLast6HoursUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
+        Task<List<UserApiUsageStatisticDto>> GetLast6MonthsUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
+        Task<List<UserApiUsageStatisticDto>> GetLast7DaysUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
+        Task<List<UserApiUsageStatisticDto>> GetLastDayUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
         Task<List<UserApiUsageStatisticDto>> GetLastHourUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
+        Task<List<UserApiUsageStatisticDto>> GetLastMonthUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
+
+        Task<List<UserApiUsageStatisticDto>> GetLastYearUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default);
 
         Task<DataTablesResult<UserApiKeyDto>> ReadUserApiKeysDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default);
 
@@ -34,6 +54,13 @@ namespace ACI.HAM.Core.Services
 
     public class AccountService : IAccountService
     {
+        private enum TimeInterval
+        {
+            Minute,
+            Hour,
+            Day
+        }
+
         private readonly IOptions<ApiKeySettings> _apiKeySettings;
         private readonly BaseContext _baseContext;
         private readonly IDataProtector _dataProtector;
@@ -101,6 +128,13 @@ namespace ACI.HAM.Core.Services
             return generateUserApiKeyResultDto;
         }
 
+        public async Task<AccountResultDto> GetAccountAsync(string id, CancellationToken cancellationToken = default)
+        {
+            AccountResultDto readEditableResultDto = new AccountResultDto();
+            User user = await _userManager.FindByNameAsync(id);
+            return GetProfileDetails(user);
+        }
+
         private AccountResultDto GetProfileDetails(User user, CancellationToken cancellationToken = default)
         {
             AccountResultDto readEditableResultDto = new AccountResultDto();
@@ -122,29 +156,96 @@ namespace ACI.HAM.Core.Services
             return readEditableResultDto;
         }
 
-        public async Task<AccountResultDto> GetAccountAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<List<UserApiUsageStatisticDto>> GetLast12HoursUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
         {
-            AccountResultDto readEditableResultDto = new AccountResultDto();
-            User user = await _userManager.FindByNameAsync(id);
-            return GetProfileDetails(user);
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddHours(-12), TimeInterval.Minute, cancellationToken);
+        }
+
+        public async Task<List<UserApiUsageStatisticDto>> GetLast14DaysUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
+        {
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddDays(-14), TimeInterval.Hour, cancellationToken);
+        }
+
+        public async Task<List<UserApiUsageStatisticDto>> GetLast3HoursUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
+        {
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddHours(-3), TimeInterval.Minute, cancellationToken);
+        }
+
+        public async Task<List<UserApiUsageStatisticDto>> GetLast3MonthsUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
+        {
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddMonths(-3), TimeInterval.Day, cancellationToken);
+        }
+
+        public async Task<List<UserApiUsageStatisticDto>> GetLast6HoursUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
+        {
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddHours(-6), TimeInterval.Minute, cancellationToken);
+        }
+
+        public async Task<List<UserApiUsageStatisticDto>> GetLast6MonthsUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
+        {
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddMonths(-6), TimeInterval.Day, cancellationToken);
+        }
+
+        public async Task<List<UserApiUsageStatisticDto>> GetLast7DaysUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
+        {
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddDays(-7), TimeInterval.Hour, cancellationToken);
+        }
+
+        public async Task<List<UserApiUsageStatisticDto>> GetLastDayUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
+        {
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddDays(-1), TimeInterval.Hour, cancellationToken);
         }
 
         public async Task<List<UserApiUsageStatisticDto>> GetLastHourUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
         {
-            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddHours(-1), cancellationToken);
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddHours(-1), TimeInterval.Minute, cancellationToken);
         }
 
-        private async Task<List<UserApiUsageStatisticDto>> GetUserApiUsageStatisticsAsync(DateTimeOffset fromDate, CancellationToken cancellationToken = default)
+        public async Task<List<UserApiUsageStatisticDto>> GetLastMonthUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
         {
-            return await _baseContext.UserApiUsageStatistics
-                .Where(x => x.RequestTime >= fromDate)
-                .GroupBy(x => x.RequestTime.Date)
-                .Select(x => new UserApiUsageStatisticDto
-                {
-                    Date = x.Key,
-                    Count = x.Count()
-                }) 
-                .ToListAsync();
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddMonths(-1), TimeInterval.Day, cancellationToken);
+        }
+
+        public async Task<List<UserApiUsageStatisticDto>> GetLastYearUserApiUsageStatisticsAsync(CancellationToken cancellationToken = default)
+        {
+            return await GetUserApiUsageStatisticsAsync(DateTimeOffset.Now.AddDays(-365), TimeInterval.Day, cancellationToken);
+        }
+
+        private async Task<List<UserApiUsageStatisticDto>> GetUserApiUsageStatisticsAsync(DateTimeOffset fromDate, TimeInterval interval, CancellationToken cancellationToken = default)
+        {
+            IQueryable<UserApiUsageStatistic> query = _baseContext.UserApiUsageStatistics
+                .Where(x => x.RequestTime >= fromDate);
+            IQueryable<UserApiUsageStatisticDto> result;
+            switch (interval)
+            {
+                case TimeInterval.Minute:
+                    result = query.GroupBy(x => new { x.RequestTime.Date, x.RequestTime.Hour, x.RequestTime.Minute })
+                                 .Select(x => new UserApiUsageStatisticDto
+                                 {
+                                     Date = new DateTime(x.Key.Date.Year, x.Key.Date.Month, x.Key.Date.Day, x.Key.Hour, x.Key.Minute, 0),
+                                     Value = x.Count()
+                                 });
+                    break;
+                case TimeInterval.Hour:
+                    result = query.GroupBy(x => new { x.RequestTime.Date, x.RequestTime.Hour })
+                                 .Select(x => new UserApiUsageStatisticDto
+                                 {
+                                     Date = new DateTime(x.Key.Date.Year, x.Key.Date.Month, x.Key.Date.Day, x.Key.Hour, 0, 0),
+                                     Value = x.Count()
+                                 });
+                    break;
+                case TimeInterval.Day:
+                    result = query.GroupBy(x => x.RequestTime.Date)
+                                 .Select(x => new UserApiUsageStatisticDto
+                                 {
+                                     Date = x.Key,
+                                     Value = x.Count()
+                                 });
+                    break;
+                default:
+                    throw new ArgumentException(_localizer["Unsupported time interval"]);
+            }
+            return await result.ToListAsync();
         }
 
         public async Task<DataTablesResult<UserApiKeyDto>> ReadUserApiKeysDataTableAsync(DataTablesParameters dataTablesParameters, string languageCode = null, CancellationToken cancellationToken = default)

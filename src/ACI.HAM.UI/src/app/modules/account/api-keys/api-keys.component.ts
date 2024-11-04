@@ -4,7 +4,11 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import * as am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import am4lang_en_US from "@amcharts/amcharts4/lang/en_US";
+import am4lang_es_ES from "@amcharts/amcharts4/lang/es_ES";
 import moment from 'moment';
+import { Observable } from 'rxjs';
+import { UserApiUsageStatistics } from '../models/api-keys.model';
 
 am4core.useTheme(am4themes_animated.default);
 
@@ -19,10 +23,11 @@ export class ApiKeysComponent implements OnInit, OnDestroy {
   // Reload emitter inside datatable
   reloadEvent: EventEmitter<boolean> = new EventEmitter();  
   isReadOnly = false;
+  totalCalls = 0;
 
   constructor(
     private accountService: AccountService,
-    private changeDetectorRef: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef,
     private translate: TranslateService
   )
   {
@@ -30,6 +35,9 @@ export class ApiKeysComponent implements OnInit, OnDestroy {
     this.translate.onLangChange
       .subscribe((event: LangChangeEvent) => {
         moment.locale(event.lang);
+        if (this.chart) {
+          this.chart.language.locale = this.setLanguage(this.translate.currentLang);
+        }
     });    
   }
   
@@ -37,12 +45,25 @@ export class ApiKeysComponent implements OnInit, OnDestroy {
     this.accountService.generateUserApiKey().subscribe((apiKey: string) => {
       this.apiKey = apiKey;
       this.reloadEvent.emit(true);
-      this.changeDetectorRef.detectChanges();
+      this.cdr.detectChanges();
     });
   }
 
   private createChart() {
+    const buttonGroup = document.querySelector('.nav-group');
+    if (buttonGroup) {
+      buttonGroup.addEventListener('click', (event: Event) => {
+        const target = event.target as HTMLElement;
+        if (target.tagName === 'BUTTON') {
+          const buttons = buttonGroup.querySelectorAll('button');
+          buttons.forEach(button => button.classList.remove('active'));
+          target.classList.add('active');
+          this.updateChart(target.getAttribute('data-period'));
+        }
+      });
+    }
     this.chart = am4core.create("chart", am4charts.XYChart);
+    this.chart.language.locale = this.setLanguage(this.translate.currentLang);
     this.chart.xAxes.push(new am4charts.DateAxis());
     this.chart.yAxes.push(new am4charts.ValueAxis());
     let series = this.chart.series.push(new am4charts.LineSeries());
@@ -51,7 +72,7 @@ export class ApiKeysComponent implements OnInit, OnDestroy {
     series.tooltipText = "{value}"
     this.chart.scrollbarX = new am4core.Scrollbar();
     this.chart.cursor = new am4charts.XYCursor();
-    this.updateChart();
+    this.updateChart(null);
   }
 
   delete(id: number) {
@@ -131,12 +152,74 @@ export class ApiKeysComponent implements OnInit, OnDestroy {
     });
   }
 
-  private updateChart() {
-    this.accountService.getLastHourUserApiUsageStatistics().subscribe(data => {
+  setLanguage(lang: string): any | undefined {    
+    switch (lang) {
+      case 'es': {
+        return am4lang_es_ES;
+        break;
+      }
+      default: {
+        return am4lang_en_US;
+      }
+    }
+  }
 
-        //TODO: update chart data
-        console.log(data);    
+  private updateChart(action: string | null) {
+    switch (action) {
+      case 'lasthour':
+        this.updateChartData(() => this.accountService.getLastHourUserApiUsageStatistics());
+        break;
+      case 'last3hours':
+        this.updateChartData(() => this.accountService.getLast3HoursUserApiUsageStatistics());
+        break;
+      case 'last12hours':
+        this.updateChartData(() => this.accountService.getLast12HoursUserApiUsageStatistics());
+        break;
+      case 'lastday':
+        this.updateChartData(() => this.accountService.getLastDayUserApiUsageStatistics());
+        break;
+      case 'last7days':
+        this.updateChartData(() => this.accountService.getLast7DaysUserApiUsageStatistics());
+        break;
+      case 'last14days':
+        this.updateChartData(() => this.accountService.getLast14DaysUserApiUsageStatistics());
+        break;
+      case 'lastmonth':
+        this.updateChartData(() => this.accountService.getLastMonthUserApiUsageStatistics());
+        break;
+      case 'last3months':
+        this.updateChartData(() => this.accountService.getLast3MonthsUserApiUsageStatistics());
+        break;
+      case 'last6months':
+        this.updateChartData(() => this.accountService.getLast6MonthsUserApiUsageStatistics());
+        break;
+      case 'lastyear':
+        this.updateChartData(() => this.accountService.getLastYearUserApiUsageStatistics());
+        break;
+      default:
+        this.updateChartData(() => this.accountService.getLast6HoursUserApiUsageStatistics());
+        break;
+        this.accountService.getLast6HoursUserApiUsageStatistics().subscribe(data => {
+          this.chart.data = data.map(item => ({
+            date: new Date(item.date),
+            value: item.value
+          }));
+        });
+        break;  
+    }      
+  }
 
+  private updateChartData(serviceMethod: () => Observable<UserApiUsageStatistics[]>) {
+    this.totalCalls = 0;
+    serviceMethod().subscribe(data => {
+      const formattedData = data.map(item => ({
+        date: new Date(item.date),
+        value: item.value
+      }));
+      formattedData.sort((a, b) => a.date.getTime() - b.date.getTime());
+      this.totalCalls = formattedData.reduce((sum, item) => sum + item.value, 0);
+      this.chart.data = formattedData;
+      this.cdr.detectChanges();
     });
   }
 }

@@ -48,6 +48,66 @@ namespace ACI.HAM.Api.Controllers.V1
             }
         }
 
+        [HttpGet("get-last-12-hours-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLast12HoursUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLast12HoursUserApiUsageStatisticsAsync();
+            return Ok(userApiUsageStatistics);
+        }
+
+        [HttpGet("get-last-14-days-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLast14DaysUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLast14DaysUserApiUsageStatisticsAsync();
+            return Ok(userApiUsageStatistics);
+        }
+
+        [HttpGet("get-last-3-hours-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLast3HoursUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLast3HoursUserApiUsageStatisticsAsync();
+            return Ok(userApiUsageStatistics);
+        }
+
+        [HttpGet("get-last-6-hours-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLast6HoursUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLast6HoursUserApiUsageStatisticsAsync();
+             return Ok(userApiUsageStatistics);
+        }
+
+        [HttpGet("get-last-7-days-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLast7DaysUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLast7DaysUserApiUsageStatisticsAsync();
+            return Ok(userApiUsageStatistics);
+        }
+
+        [HttpGet("get-last-day-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLastDayUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLastDayUserApiUsageStatisticsAsync();
+            return Ok(userApiUsageStatistics);
+        }
+
         [HttpGet("get-last-hour-user-api-usage-statistics")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -55,6 +115,46 @@ namespace ACI.HAM.Api.Controllers.V1
         public async Task<IActionResult> GetLastHourUserApiUsageStatisticsAsync()
         {
             var userApiUsageStatistics = await _accountService.GetLastHourUserApiUsageStatisticsAsync();
+            return Ok(userApiUsageStatistics);
+        }
+
+        [HttpGet("get-last-month-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLastMonthUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLastMonthUserApiUsageStatisticsAsync();
+            return Ok(userApiUsageStatistics);
+        }
+
+        [HttpGet("get-last-3-months-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLast3MonthsUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLast3MonthsUserApiUsageStatisticsAsync();
+            return Ok(userApiUsageStatistics);
+        }
+
+        [HttpGet("get-last-6-months-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLast6MonthsUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLast6MonthsUserApiUsageStatisticsAsync();
+            return Ok(userApiUsageStatistics);
+        }
+
+        [HttpGet("get-last-year-user-api-usage-statistics")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetLastYearUserApiUsageStatisticsAsync()
+        {
+            var userApiUsageStatistics = await _accountService.GetLastYearUserApiUsageStatisticsAsync();
             return Ok(userApiUsageStatistics);
         }
 

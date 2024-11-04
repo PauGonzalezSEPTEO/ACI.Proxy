@@ -1,41 +1,73 @@
-<div id="chart"></div>
-<div *ngIf="apiKey" class="card mb-5 mb-xl-10" id="kt_profile_details_view">
-    <div class="card-body p-9">
-        <div class="row mb-7">
-            <label class="col-lg-4 fw-bold text-muted" [translate]="'ACCOUNT.API_KEYS.NEW_API_KEY'"></label>
-            <div class="col-lg-8">
-                <span class="fw-bolder fs-6 text-gray-900">{{ apiKey }}</span>
-                <div class="fs-6 text-gray-600" [translate]="'ACCOUNT.API_KEYS.IMPORTANT_THIS_KEY_WILL_ONLY_BE_SHOWN_ONCE_MAKE_SURE_TO_COPY_AND_STORE_IT_IN_A_SAFE_PLACE_AS_YOU_WONT_BE_ABLE_TO_RETRIEVE_IT_LATER_IF_YOU_LOSE_THIS_KEY_YOU_WILL_NEED_TO_GENERATE_A_NEW_ONE'"></div>
-            </div>
-        </div>
+<div class="card card-flush overflow-hidden h-lg-100">
+  <div class="card-header pt-5">
+    <!--begin::Title-->
+    <h3 class="card-title align-items-start flex-column">
+      <span class="card-label fw-bold text-gray-900" [translate]="'ACCOUNT.API_KEYS.CALLS'"></span>
+      <span class="text-gray-500 mt-1 fw-semibold fs-6">{{totalCalls}}</span>
+    </h3>
+    <!--end::Title-->
+    <!--begin::Toolbar-->
+    <div class="card-toolbar">
+      <div class="nav-group nav-group-outline mx-auto mb-15" data-kt-buttons="true" data-kt-initialized="1">
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3 me-2" data-period="lastyear">{{ 'ACCOUNT.API_KEYS.LAST_YEAR' | translate }}</button>
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3 me-2" data-period="last6months">{{ 'ACCOUNT.API_KEYS.LAST_6_MONTHS' | translate }}</button>
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3 me-2" data-period="last3months">{{ 'ACCOUNT.API_KEYS.LAST_3_MONTHS' | translate }}</button>
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3 me-2" data-period="lastmonth">{{ 'ACCOUNT.API_KEYS.LAST_MONTH' | translate }}</button>
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3 me-2" data-period="last14days">{{ 'ACCOUNT.API_KEYS.LAST_14_DAYS' | translate }}</button>
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3 me-2" data-period="last7days">{{ 'ACCOUNT.API_KEYS.LAST_7_DAYS' | translate }}</button>
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3 me-2" data-period="lastday">{{ 'ACCOUNT.API_KEYS.LAST_DAY' | translate }}</button>
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3 me-2" data-period="last12hours">{{ 'ACCOUNT.API_KEYS.LAST_12_HOURS' | translate }}</button>
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3 me-2 active" data-period="last6hours">{{ 'ACCOUNT.API_KEYS.LAST_6_HOURS' | translate }}</button>
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3 me-2" data-period="last3hours">{{ 'ACCOUNT.API_KEYS.LAST_3_HOURS' | translate }}</button>
+        <button class="btn btn-color-gray-600 btn-active btn-active-secondary px-6 py-3" data-period="lasthour">{{ 'ACCOUNT.API_KEYS.LAST_HOUR' | translate }}</button>
+      </div>      
     </div>
+    <!--end::Toolbar-->
+  </div>
+  <div class="card-body pt-6">
+    <div id="chart"></div>
+  </div>
+</div>
+<div *ngIf="apiKey" class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+  <div class="card-body p-9">
+    <div class="row mb-7">
+      <label class="col-lg-4 fw-bold text-muted" [translate]="'ACCOUNT.API_KEYS.NEW_API_KEY'"></label>
+      <div class="col-lg-8">
+        <span class="fw-bolder fs-6 text-gray-900">{{ apiKey }}</span>
+        <div class="fs-6 text-gray-600"
+          [translate]="'ACCOUNT.API_KEYS.IMPORTANT_THIS_KEY_WILL_ONLY_BE_SHOWN_ONCE_MAKE_SURE_TO_COPY_AND_STORE_IT_IN_A_SAFE_PLACE_AS_YOU_WONT_BE_ABLE_TO_RETRIEVE_IT_LATER_IF_YOU_LOSE_THIS_KEY_YOU_WILL_NEED_TO_GENERATE_A_NEW_ONE'">
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="card">
-    <div class="card-header border-0 pt-6">
-      <!--begin::Card title-->
-      <div class="card-title">
-        <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
-          <app-keenicon name="magnifier" class="fs-3 position-absolute ms-5"></app-keenicon>
-          <input type="text" data-action="filter" class="form-control form-control-solid w-250px ps-12"
-            placeholder="{{ 'ACCOUNT.API_KEYS.SEARCH_BY_API_KEY' | translate }}">
-        </div>
-        <!--end::Search-->
+  <div class="card-header border-0 pt-6">
+    <!--begin::Card title-->
+    <div class="card-title">
+      <!--begin::Search-->
+      <div class="d-flex align-items-center position-relative my-1">
+        <app-keenicon name="magnifier" class="fs-3 position-absolute ms-5"></app-keenicon>
+        <input type="text" data-action="filter" class="form-control form-control-solid w-250px ps-12"
+          placeholder="{{ 'ACCOUNT.API_KEYS.SEARCH_BY_API_KEY' | translate }}">
       </div>
-      <!--begin::Card title-->
-      <!--begin::Card toolbar-->
-      <div class="card-toolbar">
-        <!--begin::Toolbar-->
-        <div class="d-flex justify-content-end">
-          <!--begin::Add board-->
-          <button type="button" class="btn btn-primary" data-action="create">
-            {{ 'ACCOUNT.API_KEYS.NEW_API_KEY' | translate }}
-          </button>
-          <!--end::Add board-->
-        </div>
-        <!--end::Toolbar-->
-      </div>
-      <!--end::Card toolbar-->
+      <!--end::Search-->
     </div>
-    <app-crud [datatableConfig]="datatableConfig" route="/crafted/account/api-keys" (createEvent)="create()" (deleteEvent)="delete($event)" (revokeEvent)="revoke($event)" [reload]="reloadEvent" [isReadOnly]="true"></app-crud>
+    <!--begin::Card title-->
+    <!--begin::Card toolbar-->
+    <div class="card-toolbar">
+      <!--begin::Toolbar-->
+      <div class="d-flex justify-content-end">
+        <!--begin::Add board-->
+        <button type="button" class="btn btn-primary" data-action="create">
+          {{ 'ACCOUNT.API_KEYS.NEW_API_KEY' | translate }}
+        </button>
+        <!--end::Add board-->
+      </div>
+      <!--end::Toolbar-->
+    </div>
+    <!--end::Card toolbar-->
   </div>
+  <app-crud [datatableConfig]="datatableConfig" route="/crafted/account/api-keys" (createEvent)="create()"
+    (deleteEvent)="delete($event)" (revokeEvent)="revoke($event)" [reload]="reloadEvent" [isReadOnly]="true"></app-crud>
+</div>
