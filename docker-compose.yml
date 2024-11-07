@@ -13,7 +13,7 @@ services:
       - dbdata:/var/opt/mssql/data
       - ./db/mssql/docker-entrypoint.sh:/entrypoint.sh
       - ./db/mssql/docker-db-init.sh:/db-init.sh
-      - ./db/mssql/mssql-ham.sql:/db-init.sql
+      - ./db/mssql/mssql-proxy.sql:/db-init.sql
     expose:
       - "1433"
     healthcheck:
@@ -23,8 +23,8 @@ services:
       retries: 10
       start_period: 10s
 
-  aci.ham.api:
-    image: ${DOCKER_REGISTRY-}acihamapi
+  ACI.Proxy.api:
+    image: ${DOCKER_REGISTRY-}aciproxyapi
     build:
       context: .
       dockerfile: Dockerfile
@@ -39,7 +39,7 @@ services:
       - "5000"
     volumes:
       - ./certificates/certificate.pfx:/app/certificates/certificate.pfx
-      - ./certificates/key-3a196e31-a3fb-45bd-bee1-851ae2a082bb.xml:/app/certificates/key-3a196e31-a3fb-45bd-bee1-851ae2a082bb.xml 
+      - ./certificates/key-4937e7c0-d16d-4455-aa72-cdce6f38b597.xml:/app/certificates/key-4937e7c0-d16d-4455-aa72-cdce6f38b597.xml 
 
 volumes:
   dbdata:

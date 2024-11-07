@@ -3,12 +3,12 @@ WORKDIR /work
 
 COPY ./Directory.Build.props ./
 COPY ./Directory.Packages.props ./
-COPY ./ACI.HAM.ruleset ./
-COPY src/ACI.HAM.Settings/*.csproj ./
-COPY src/ACI.HAM.Api/*.csproj ./
-COPY src/ACI.HAM.Core/*.csproj ./
-COPY src/ACI.HAM.Mail/*.csproj ./
-COPY src/ACI.HAM.Database/*.csproj ./
+COPY ./ACI.Proxy.ruleset ./
+COPY src/ACI.Proxy.Settings/*.csproj ./
+COPY src/ACI.Proxy.Api/*.csproj ./
+COPY src/ACI.Proxy.Core/*.csproj ./
+COPY src/ACI.Proxy.Mail/*.csproj ./
+COPY src/ACI.Proxy.Database/*.csproj ./
 RUN for projectFile in $(ls *.csproj); \
   do \
     mkdir -p ${projectFile%.*}/ && mv $projectFile ${projectFile%.*}/; \
@@ -17,12 +17,12 @@ RUN for projectFile in $(ls *.csproj); \
 ENV DOTNET_NOLOGO=true
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
 
-RUN dotnet restore /work/ACI.HAM.Api/ACI.HAM.Api.csproj
+RUN dotnet restore /work/ACI.Proxy.Api/ACI.Proxy.Api.csproj
 
 COPY src .
 
 FROM build AS publish
-WORKDIR /work/ACI.HAM.Api
+WORKDIR /work/ACI.Proxy.Api
 
 ENV DOTNET_NOLOGO=true
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
@@ -39,4 +39,4 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
 
 EXPOSE 80
 
-ENTRYPOINT ["dotnet", "ACI.HAM.Api.dll"]
+ENTRYPOINT ["dotnet", "ACI.Proxy.Api.dll"]

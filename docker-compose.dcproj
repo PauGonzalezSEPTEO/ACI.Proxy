@@ -6,7 +6,7 @@
     <ProjectGuid>266aa60d-ca90-4b86-acd3-8b71de32bb58</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>aci.ham.api</DockerServiceName>
+    <DockerServiceName>ACI.Proxy.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

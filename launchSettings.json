@@ -4,10 +4,10 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "composeLaunchAction": "LaunchBrowser",
-      "composeLaunchServiceName": "aci.ham.api",
+      "composeLaunchServiceName": "ACI.Proxy.api",
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
       "serviceActions": {
-        "aci.ham.api": "StartDebugging",
+        "ACI.Proxy.api": "StartDebugging",
         "mssql": "StartWithoutDebugging"
       }
     }
