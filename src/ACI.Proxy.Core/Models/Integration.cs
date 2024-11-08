@@ -10,8 +10,11 @@ using System.Linq.Dynamic.Core;
 namespace ACI.Proxy.Core.Models
 {
     [PrimaryKey(nameof(Id))]
-    public class Integration : IFilterDto<Integration, IntegrationDto>, IAuditable
+    public abstract class Integration : IFilterDto<Integration, IntegrationDto>, IAuditable
     {
+        [InverseProperty("Integration")]
+        public virtual ICollection<IntegrationCustomField> CustomFields { get; set; } = new HashSet<IntegrationCustomField>();
+
         public static IQueryable<IntegrationDto> FilterAndOrder(IQueryable<Integration> query, IMapper mapper, string search, string ordering, string languageCode = null)
         {
             if (string.IsNullOrEmpty(ordering))
@@ -24,20 +27,23 @@ namespace ACI.Proxy.Core.Models
                 .OrderBy(ordering);
         }
 
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        public int IntegrationType { get; set; }
+
+        [Required]
+        [MinLength(4)]
+        [MaxLength(256)]
+        public string Name { get; set; }
+
         [InverseProperty("Integrations")]
         public virtual Project Project { get; set; }
 
         [Required]
         [ForeignKey("Project")]
         public int ProjectId { get; set; }
-
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        [MinLength(4)]
-        [MaxLength(256)]
-        public string Name { get; set; }
 
         [StringLength(500)]
         public string ShortDescription { get; set; }

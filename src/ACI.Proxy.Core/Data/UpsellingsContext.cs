@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Security.Claims;
+using ACI.Proxy.Core.Integrations;
 
 namespace ACI.Proxy.Core.Data
 {
@@ -156,6 +157,8 @@ namespace ACI.Proxy.Core.Data
         public virtual DbSet<Integration> Integrations { get; set; }
 
         public virtual DbSet<IntegrationTranslation> IntegrationTranslations { get; set; }
+
+        public virtual DbSet<IntegrationCustomField> IntegrationCustomFields { get; set; }
 
         private bool IsAdministrator()
         {
@@ -356,7 +359,8 @@ namespace ACI.Proxy.Core.Data
                     .WithOne(e => e.Integration)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_IntegrationTranslations_Integrations");
-
+                entity.HasDiscriminator<int>("IntegrationType")
+                .HasValue<SiteMinderIntegration>(1);
             });
             modelBuilder.Entity<IntegrationTranslation>(entity =>
             {
@@ -367,6 +371,13 @@ namespace ACI.Proxy.Core.Data
                 });
                 entity.HasOne(e => e.Integration)
                     .WithMany(e => e.Translations)
+                    .HasForeignKey(e => e.IntegrationId);
+            });
+            modelBuilder.Entity<IntegrationCustomField>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.Integration)
+                    .WithMany(e => e.CustomFields)
                     .HasForeignKey(e => e.IntegrationId);
             });
             modelBuilder.Entity<RoomTypeProjectCompany>(RoomTypeProjectCompany =>

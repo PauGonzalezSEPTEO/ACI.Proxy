@@ -543,6 +543,25 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IntegrationCustomFields]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[IntegrationCustomFields](
+    [Id] [int] IDENTITY(1,1) NOT NULL,
+    [IntegrationId] [int] NOT NULL,
+    [Key] [varchar](256) NOT NULL,
+    [Value] [nvarchar](max) NOT NULL,
+ CONSTRAINT [PK_IntegrationCustomFields] PRIMARY KEY CLUSTERED 
+(
+    [Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RoomTypesBuildings]') AND type in (N'U'))
 BEGIN
 CREATE TABLE [dbo].[RoomTypesBuildings](
@@ -842,6 +861,13 @@ GO
 ALTER TABLE [dbo].[IntegrationTranslations] CHECK CONSTRAINT [FK_IntegrationTranslations_Integrations]
 GO
 
+ALTER TABLE [dbo].[IntegrationCustomFields]  WITH CHECK ADD CONSTRAINT [FK_IntegrationCustomFields_Integrations] FOREIGN KEY([IntegrationId])
+REFERENCES [dbo].[Integrations] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[IntegrationCustomFields] CHECK CONSTRAINT [FK_IntegrationCustomFields_Integrations]
+GO
+
 ALTER TABLE [dbo].[RoomTypesBuildings]  WITH CHECK ADD CONSTRAINT [FK_RoomTypesBuildings_RoomTypes] FOREIGN KEY([RoomTypeId])
 REFERENCES [dbo].[RoomTypes] ([Id])
 ON DELETE CASCADE
@@ -942,6 +968,7 @@ GRANT ALL ON Buildings TO [user];
 GRANT ALL ON BuildingTranslations TO [user];
 GRANT ALL ON Integrations TO [user];
 GRANT ALL ON IntegrationTranslations TO [user];
+GRANT ALL ON IntegrationCustomFields TO [user];
 GRANT ALL ON Templates TO [user];
 GRANT ALL ON TemplateProjectsCompanies TO [user];
 GRANT ALL ON TemplateTranslations TO [user];

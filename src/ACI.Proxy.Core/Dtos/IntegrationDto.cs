@@ -13,6 +13,8 @@ namespace ACI.Proxy.Core.Dtos
 
         public IntegrationDto(string languageCode) => _languageCode = languageCode;
 
+        internal ICollection<IntegrationCustomFieldDto> CustomFields { get; set; } = new HashSet<IntegrationCustomFieldDto>();
+
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Name is required")]

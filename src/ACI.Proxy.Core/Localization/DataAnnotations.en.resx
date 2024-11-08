@@ -177,9 +177,6 @@
   <data name="Lastname should have at least 2 characters" xml:space="preserve">
     <value>Lastname should have at least 2 characters</value>
   </data>
-  <data name="Lastname should have maximum 256 characters1" xml:space="preserve">
-    <value>Lastname should have maximum 256 characters</value>
-  </data>
   <data name="Name is required" xml:space="preserve">
     <value>Name is required</value>
   </data>

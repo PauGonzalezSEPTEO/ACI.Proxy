@@ -37,6 +37,8 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "ACI.Proxy.UI", "src\ACI.Pro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACI.Proxy.Settings", "src\ACI.Proxy.Settings\ACI.Proxy.Settings.csproj", "{B80382FD-D076-4D17-B1FF-CF181769F472}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACI.Proxy.Channel", "src\ChannelProxyLogic\ACI.Proxy.Channel.csproj", "{D2F9E426-AC8A-4A5A-A0D2-C79E3C6F4DA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{B80382FD-D076-4D17-B1FF-CF181769F472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B80382FD-D076-4D17-B1FF-CF181769F472}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B80382FD-D076-4D17-B1FF-CF181769F472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2F9E426-AC8A-4A5A-A0D2-C79E3C6F4DA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2F9E426-AC8A-4A5A-A0D2-C79E3C6F4DA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2F9E426-AC8A-4A5A-A0D2-C79E3C6F4DA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2F9E426-AC8A-4A5A-A0D2-C79E3C6F4DA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +90,7 @@ Global
 		{D9D3E7FD-FB16-47E4-8824-9306D6B5BE68} = {6D3497A0-339F-4545-86B8-7E015B468025}
 		{32BBA485-3E7B-440C-86C8-234111F1F11A} = {6D3497A0-339F-4545-86B8-7E015B468025}
 		{B80382FD-D076-4D17-B1FF-CF181769F472} = {6D3497A0-339F-4545-86B8-7E015B468025}
+		{D2F9E426-AC8A-4A5A-A0D2-C79E3C6F4DA2} = {6D3497A0-339F-4545-86B8-7E015B468025}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6D8568-233C-4A49-84FF-2FE6C0DE238C}

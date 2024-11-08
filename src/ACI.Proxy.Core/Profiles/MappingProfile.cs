@@ -78,6 +78,8 @@ namespace ACI.Proxy.Core.Profiles
                 .ForMember(x => x.ProjectName, opt => opt.MapFrom(x => x.Project.Name));
             CreateMap<Building, BuildingEditableDto>()
                 .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations));
+            CreateMap<IntegrationCustomFieldDto, IntegrationCustomField>()
+                .ReverseMap();
             CreateMap<IntegrationTranslationDto, IntegrationTranslation>()
                 .ReverseMap();
             CreateMap<IntegrationEditableDto, Integration>()
@@ -85,9 +87,11 @@ namespace ACI.Proxy.Core.Profiles
             CreateMap<Integration, IntegrationDto>()
                 .ForCtorParam("languageCode", opt => opt.MapFrom(x => languageCode))
                 .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations))
+                .ForMember(x => x.CustomFields, opt => opt.MapFrom(x => x.CustomFields))
                 .ForMember(x => x.ProjectName, opt => opt.MapFrom(x => x.Project.Name));
             CreateMap<Integration, IntegrationEditableDto>()
-                .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations));
+                .ForMember(x => x.Translations, opt => opt.MapFrom(x => x.Translations))
+                .ForMember(x => x.CustomFields, opt => opt.MapFrom(x => x.CustomFields));
             CreateMap<RoomTypeTranslationDto, RoomTypeTranslation>()
                 .ReverseMap();
             CreateMap<RoomTypeProjectCompany, RoomTypeProjectCompanyDto>()
